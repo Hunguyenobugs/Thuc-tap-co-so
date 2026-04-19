@@ -1,0 +1,30 @@
+# Build output
+target/
+*.class
+*.jar
+*.war
+
+# IDE
+.idea/
+*.iml
+.vscode/
+*.swp
+*.swo
+.project
+.classpath
+.settings/
+nbproject/
+build/
+dist/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Sensitive config
+src/main/resources/db.properties
+
+# Logs
+*.log
+logs/
