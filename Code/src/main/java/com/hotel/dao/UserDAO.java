@@ -54,6 +54,17 @@ public class UserDAO {
         return false;
     }
 
+    public boolean existsByEmployeeCode(String employeeCode) {
+        String sql = "SELECT COUNT(*) FROM tbl_user WHERE employee_code=?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, employeeCode);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) return rs.getInt(1) > 0;
+        } catch (SQLException e) { e.printStackTrace(); }
+        return false;
+    }
+
     public boolean existsByEmail(String email) {
         String sql = "SELECT COUNT(*) FROM tbl_user WHERE email=?";
         try (Connection conn = DBConnection.getConnection();
@@ -85,24 +96,36 @@ public class UserDAO {
     }
 
     public boolean update(User u) {
-        String sql = "UPDATE tbl_user SET full_name=?,email=?,phone=?,role=?,join_date=?,status=?,description=? WHERE id=?";
+        String sql = "UPDATE tbl_user SET username=?,password_hash=?,full_name=?,email=?,phone=?,role=?,join_date=?,status=?,description=? WHERE id=?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, u.getFullName());
-            ps.setString(2, u.getEmail());
-            ps.setString(3, u.getPhone());
-            ps.setString(4, u.getRole());
-            ps.setDate(5, u.getJoinDate());
-            ps.setString(6, u.getStatus());
-            ps.setString(7, u.getDescription());
-            ps.setInt(8, u.getId());
+            ps.setString(1, u.getUsername());
+            ps.setString(2, u.getPasswordHash());
+            ps.setString(3, u.getFullName());
+            ps.setString(4, u.getEmail());
+            ps.setString(5, u.getPhone());
+            ps.setString(6, u.getRole());
+            ps.setDate(7, u.getJoinDate());
+            ps.setString(8, u.getStatus());
+            ps.setString(9, u.getDescription());
+            ps.setInt(10, u.getId());
             return ps.executeUpdate() > 0;
         } catch (SQLException e) { e.printStackTrace(); }
         return false;
     }
 
     public boolean delete(int id) {
-        String sql = "DELETE FROM tbl_user WHERE id=?";
+        String sql = "UPDATE tbl_user SET status='inactive' WHERE id=?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) { e.printStackTrace(); }
+        return false;
+    }
+
+    public boolean restore(int id) {
+        String sql = "UPDATE tbl_user SET status='active' WHERE id=?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, id);
