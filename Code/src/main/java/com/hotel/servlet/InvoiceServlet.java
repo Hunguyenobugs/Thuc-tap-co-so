@@ -41,10 +41,6 @@ public class InvoiceServlet extends HttpServlet {
                 req.setAttribute("bookedRooms", bookedRoomDAO.findByBookingId(inv.getBookingId()));
                 req.getRequestDispatcher("/WEB-INF/views/manager/invoice_detail.jsp").forward(req, resp);
                 break;
-            case "edit":
-                req.setAttribute("invoice", invoiceDAO.findById(Integer.parseInt(req.getParameter("id"))));
-                req.getRequestDispatcher("/WEB-INF/views/manager/edit_invoice.jsp").forward(req, resp);
-                break;
             case "add":
                 req.getRequestDispatcher("/WEB-INF/views/manager/add_invoice.jsp").forward(req, resp);
                 break;
@@ -74,13 +70,6 @@ public class InvoiceServlet extends HttpServlet {
             inv.setPaymentMethod(req.getParameter("paymentMethod")); inv.setNote(req.getParameter("note"));
             invoiceDAO.insert(inv);
             resp.sendRedirect(req.getContextPath() + "/manager/invoice?action=list&msg=add_success");
-        } else if ("update".equals(action)) {
-            Invoice inv = invoiceDAO.findById(Integer.parseInt(req.getParameter("id")));
-            inv.setNote(req.getParameter("note")); inv.setPaymentMethod(req.getParameter("paymentMethod"));
-            String pa = req.getParameter("paidAmount");
-            if (pa != null && !pa.isEmpty()) inv.setPaidAmount(new BigDecimal(pa));
-            invoiceDAO.update(inv);
-            resp.sendRedirect(req.getContextPath() + "/manager/invoice?action=list&msg=update_success");
         }
     }
 }

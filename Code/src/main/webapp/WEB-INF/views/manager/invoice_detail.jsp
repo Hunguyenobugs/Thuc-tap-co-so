@@ -1,4 +1,4 @@
-﻿<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
 <!DOCTYPE html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Chi tiết hóa đơn</title><link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css"></head>
@@ -28,7 +28,7 @@
                 <li style="padding-top:16px;border-top:2px solid var(--accent);"><span class="label fw-bold" style="font-size:16px;">Tổng cộng</span><span class="value fw-bold text-accent" style="font-size:20px;"><fmt:formatNumber value="${invoice.totalAmount}" pattern="#,##0"/>₫</span></li>
                 <li><span class="label">Đã thanh toán</span><span class="value text-success"><fmt:formatNumber value="${invoice.paidAmount}" pattern="#,##0"/>₫</span></li>
             </ul>
-            <div class="btn-group mt-3"><a href="${pageContext.request.contextPath}/manager/invoice?action=edit&id=${invoice.id}" class="btn btn-outline">✏️ Sửa</a><a href="${pageContext.request.contextPath}/manager/invoice?action=list" class="btn btn-outline">← Quay lại</a></div>
+            <div class="form-actions"><a href="${pageContext.request.contextPath}/manager/invoice?action=list" class="btn btn-outline">← Quay lại</a></div>
         </div></div>
     </div>
 </main></div><script src="${pageContext.request.contextPath}/js/main.js"></script></body></html>

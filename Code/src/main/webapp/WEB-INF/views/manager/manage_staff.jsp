@@ -29,7 +29,7 @@
         <c:when test="${empty list}"><div class="no-data">Chưa có nhân viên nào</div></c:when>
         <c:otherwise>
             <div class="table-container"><table>
-                <thead><tr><th>Mã NV</th><th>Họ tên</th><th>Username</th><th>Vai trò</th><th>SĐT</th><th>Trạng thái</th><th></th></tr></thead>
+                <thead><tr><th>Mã NV</th><th>Họ tên</th><th>Username</th><th>Vai trò</th><th>Trạng thái</th><th>Thao tác</th></tr></thead>
                 <tbody>
                 <c:forEach var="u" items="${list}">
                     <tr>
@@ -43,7 +43,6 @@
                                 <c:otherwise><span class="badge badge-info">${u.role}</span></c:otherwise>
                             </c:choose>
                         </td>
-                        <td>${u.phone}</td>
                         <td>
                             <c:choose>
                                 <c:when test="${u.status=='active'}"><span class="badge badge-success">Hoạt động</span></c:when>
@@ -51,8 +50,8 @@
                             </c:choose>
                         </td>
                         <td><div class="btn-group">
-                            <a href="${pageContext.request.contextPath}/manager/staff?action=edit&id=${u.id}" class="btn btn-outline btn-sm">✏️</a>
-                            <button onclick="confirmDelete('${pageContext.request.contextPath}/manager/staff?action=delete&id=${u.id}','${u.fullName}')" class="btn btn-danger btn-sm">🗑️</button>
+                            <a href="${pageContext.request.contextPath}/manager/staff?action=detail&id=${u.id}" class="btn btn-outline btn-sm" title="Xem chi tiết">👁️</a>
+                            <a href="${pageContext.request.contextPath}/manager/staff?action=edit&id=${u.id}" class="btn btn-outline btn-sm" title="Sửa">✏️</a>
                         </div></td>
                     </tr>
                 </c:forEach>

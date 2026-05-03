@@ -10,7 +10,7 @@ public class UserDAO {
 
     public List<User> getAll() {
         List<User> list = new ArrayList<>();
-        String sql = "SELECT * FROM tbl_user ORDER BY role, full_name";
+        String sql = "SELECT * FROM tbl_user ORDER BY employee_code";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
@@ -215,6 +215,17 @@ public class UserDAO {
             return ps.executeUpdate() > 0;
         } catch (SQLException e) { e.printStackTrace(); }
         return false;
+    }
+
+    public int getBookingCountByStaff(int staffId) {
+        String sql = "SELECT COUNT(*) FROM tbl_booking WHERE staff_id=?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, staffId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) return rs.getInt(1);
+        } catch (SQLException e) { e.printStackTrace(); }
+        return 0;
     }
 
     public boolean hasRelatedData(int userId) {

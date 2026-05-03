@@ -29,6 +29,13 @@ public class StaffServlet extends HttpServlet {
                 }
                 req.getRequestDispatcher("/WEB-INF/views/manager/manage_staff.jsp").forward(req, resp);
                 break;
+            case "detail":
+                int detailId = Integer.parseInt(req.getParameter("id"));
+                User staff = dao.findById(detailId);
+                req.setAttribute("staff", staff);
+                req.setAttribute("bookingCount", dao.getBookingCountByStaff(detailId));
+                req.getRequestDispatcher("/WEB-INF/views/manager/staff_detail.jsp").forward(req, resp);
+                break;
             case "edit":
                 req.setAttribute("staff", dao.findById(Integer.parseInt(req.getParameter("id"))));
                 req.getRequestDispatcher("/WEB-INF/views/manager/edit_staff.jsp").forward(req, resp); break;
