@@ -21,8 +21,14 @@ public class ServiceServlet extends HttpServlet {
                 req.getRequestDispatcher("/WEB-INF/views/manager/add_service.jsp").forward(req, resp); break;
             case "search":
                 String kw = req.getParameter("keyword");
-                if (kw != null && !kw.trim().isEmpty()) { req.setAttribute("results", dao.searchByName(kw)); req.setAttribute("keyword", kw); }
-                req.getRequestDispatcher("/WEB-INF/views/manager/search_service.jsp").forward(req, resp); break;
+                if (kw != null && !kw.trim().isEmpty()) {
+                    req.setAttribute("results", dao.searchByName(kw));
+                    req.setAttribute("keyword", kw);
+                } else {
+                    req.setAttribute("results", dao.getAll());
+                }
+                req.getRequestDispatcher("/WEB-INF/views/manager/manage_service.jsp").forward(req, resp);
+                break;
             case "edit":
                 req.setAttribute("service", dao.findById(Integer.parseInt(req.getParameter("id"))));
                 req.getRequestDispatcher("/WEB-INF/views/manager/edit_service.jsp").forward(req, resp); break;
@@ -31,6 +37,7 @@ public class ServiceServlet extends HttpServlet {
                 if (dao.isUsedInInvoice(id)) { resp.sendRedirect(req.getContextPath() + "/manager/service?action=search&keyword=&error=in_use"); }
                 else { dao.delete(id); resp.sendRedirect(req.getContextPath() + "/manager/service?msg=delete_success"); } break;
             default:
+                req.setAttribute("services", dao.getAll());
                 req.getRequestDispatcher("/WEB-INF/views/manager/manage_service.jsp").forward(req, resp);
         }
     }

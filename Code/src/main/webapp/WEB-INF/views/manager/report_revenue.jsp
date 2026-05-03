@@ -1,8 +1,8 @@
-<%@ page contentType="text/html;charset=UTF-8" %>
+﻿<%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
 <!DOCTYPE html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Báo cáo doanh thu</title><link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css"></head>
-<body><div class="layout"><jsp:include page="../components/sidebar.jsp"/><main class="main-content fade-in">
+<body><div class="layout manager-layout"><jsp:include page="../components/sidebar.jsp"/>`n    <jsp:include page="../components/manager_header.jsp"/><main class="main-content fade-in">
     <div class="topbar"><div><h1>📈 Báo cáo <span>doanh thu</span></h1></div></div>
     <form class="search-bar" method="get" action="${pageContext.request.contextPath}/manager/report">
         <label class="fs-sm text-muted" style="white-space:nowrap;padding:10px 0;">Kỳ báo cáo (YYYY-MM)</label>

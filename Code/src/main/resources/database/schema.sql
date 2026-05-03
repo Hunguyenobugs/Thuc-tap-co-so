@@ -89,14 +89,15 @@ CREATE TABLE tbl_user (
     username      VARCHAR(50)     NOT NULL UNIQUE,
     password_hash VARCHAR(255)    NOT NULL,
     full_name     VARCHAR(150)    NOT NULL,
-    email         VARCHAR(100)    DEFAULT NULL UNIQUE,
-    phone         VARCHAR(15)     DEFAULT NULL,
+    email         VARCHAR(100)    NOT NULL UNIQUE,
+    phone         VARCHAR(15)     NOT NULL UNIQUE,
     role          ENUM('STAFF','MANAGER','ADMIN')
                                   NOT NULL DEFAULT 'STAFF',
-    join_date     DATE            DEFAULT NULL,
+    join_date     DATE            NOT NULL,
     status        ENUM('active','inactive')
                                   DEFAULT 'active',
     description   TEXT            DEFAULT NULL,
+    avatar_url    VARCHAR(500)    DEFAULT NULL,
     created_at    TIMESTAMP       DEFAULT CURRENT_TIMESTAMP,
     updated_at    TIMESTAMP       DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 

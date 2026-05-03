@@ -15,6 +15,7 @@ public class User {
     private Date joinDate;
     private String status;
     private String description;
+    private String avatarUrl;
     private Timestamp createdAt;
     private Timestamp updatedAt;
 
@@ -42,6 +43,8 @@ public class User {
     public void setStatus(String status) { this.status = status; }
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
+    public String getAvatarUrl() { return avatarUrl; }
+    public void setAvatarUrl(String avatarUrl) { this.avatarUrl = avatarUrl; }
     public Timestamp getCreatedAt() { return createdAt; }
     public void setCreatedAt(Timestamp createdAt) { this.createdAt = createdAt; }
     public Timestamp getUpdatedAt() { return updatedAt; }

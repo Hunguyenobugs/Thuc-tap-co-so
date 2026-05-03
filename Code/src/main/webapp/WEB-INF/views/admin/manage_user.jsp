@@ -3,14 +3,14 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <title>Quản lý tài khoản</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
 </head>
 <body>
-<div class="layout">
+<div class="layout admin-layout">
     <jsp:include page="../components/sidebar.jsp"/>
+    <jsp:include page="../components/admin_header.jsp"/>
     <main class="main-content fade-in">
         <div class="topbar">
             <div><h1>👤 Quản lý <span>tài khoản</span></h1></div>
@@ -23,15 +23,14 @@
             <div class="alert alert-danger">⚠️ Không thể xóa: Bạn không thể tự khóa tài khoản của chính mình!</div>
         <% } %>
 
-        <div class="btn-group mb-3">
-            <a href="${pageContext.request.contextPath}/admin/user?action=add" class="btn btn-primary">➕ Thêm tài khoản</a>
+        <div style="display: flex; gap: 16px; width: 100%; margin-bottom: 20px;">
+            <form method="get" action="${pageContext.request.contextPath}/admin/user" style="display: flex; gap: 16px; flex: 1; margin: 0;">
+                <input type="hidden" name="action" value="manage">
+                <input type="text" name="keyword" class="form-control" placeholder="Nhập tên, mã NV hoặc username..." value="${keyword}" style="flex: 1; max-width: none;">
+                <button type="submit" class="btn btn-primary" style="flex-shrink: 0;">🔍 Tìm kiếm</button>
+            </form>
+            <a href="${pageContext.request.contextPath}/admin/user?action=add" class="btn btn-primary" style="flex-shrink: 0;">➕ Thêm tài khoản</a>
         </div>
-
-        <form class="search-bar mb-3" method="get" action="${pageContext.request.contextPath}/admin/user">
-            <input type="hidden" name="action" value="manage">
-            <input type="text" name="keyword" class="form-control" placeholder="Nhập tên, mã NV hoặc username..." value="${keyword}">
-            <button type="submit" class="btn btn-primary">🔍 Tìm kiếm</button>
-        </form>
 
         <c:if test="${results != null}">
             <c:choose>

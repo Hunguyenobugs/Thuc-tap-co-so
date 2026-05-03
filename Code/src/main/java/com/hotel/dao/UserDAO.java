@@ -8,6 +8,17 @@ import java.util.List;
 
 public class UserDAO {
 
+    public List<User> getAll() {
+        List<User> list = new ArrayList<>();
+        String sql = "SELECT * FROM tbl_user ORDER BY role, full_name";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) list.add(mapRow(rs));
+        } catch (SQLException e) { e.printStackTrace(); }
+        return list;
+    }
+
     public User findById(int id) {
         String sql = "SELECT * FROM tbl_user WHERE id=?";
         try (Connection conn = DBConnection.getConnection();
@@ -65,6 +76,18 @@ public class UserDAO {
         return false;
     }
 
+    public boolean existsByEmployeeCodeExcludeId(String employeeCode, int id) {
+        String sql = "SELECT COUNT(*) FROM tbl_user WHERE employee_code=? AND id != ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, employeeCode);
+            ps.setInt(2, id);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) return rs.getInt(1) > 0;
+        } catch (SQLException e) { e.printStackTrace(); }
+        return false;
+    }
+
     public boolean existsByEmail(String email) {
         String sql = "SELECT COUNT(*) FROM tbl_user WHERE email=?";
         try (Connection conn = DBConnection.getConnection();
@@ -76,8 +99,55 @@ public class UserDAO {
         return false;
     }
 
+    public boolean existsByEmailExcludeId(String email, int id) {
+        String sql = "SELECT COUNT(*) FROM tbl_user WHERE email=? AND id != ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, email);
+            ps.setInt(2, id);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) return rs.getInt(1) > 0;
+        } catch (SQLException e) { e.printStackTrace(); }
+        return false;
+    }
+
+    public boolean existsByPhone(String phone) {
+        String sql = "SELECT COUNT(*) FROM tbl_user WHERE phone=?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, phone);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) return rs.getInt(1) > 0;
+        } catch (SQLException e) { e.printStackTrace(); }
+        return false;
+    }
+
+    public boolean existsByPhoneExcludeId(String phone, int id) {
+        String sql = "SELECT COUNT(*) FROM tbl_user WHERE phone=? AND id != ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, phone);
+            ps.setInt(2, id);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) return rs.getInt(1) > 0;
+        } catch (SQLException e) { e.printStackTrace(); }
+        return false;
+    }
+
+    public boolean existsByUsernameExcludeId(String username, int id) {
+        String sql = "SELECT COUNT(*) FROM tbl_user WHERE username=? AND id != ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, username);
+            ps.setInt(2, id);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) return rs.getInt(1) > 0;
+        } catch (SQLException e) { e.printStackTrace(); }
+        return false;
+    }
+
     public boolean insert(User u) {
-        String sql = "INSERT INTO tbl_user (employee_code,username,password_hash,full_name,email,phone,role,join_date,status,description) VALUES (?,?,?,?,?,?,?,?,?,?)";
+        String sql = "INSERT INTO tbl_user (employee_code,username,password_hash,full_name,email,phone,role,join_date,status,description,avatar_url) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, u.getEmployeeCode());
@@ -90,13 +160,14 @@ public class UserDAO {
             ps.setDate(8, u.getJoinDate());
             ps.setString(9, u.getStatus() != null ? u.getStatus() : "active");
             ps.setString(10, u.getDescription());
+            ps.setString(11, u.getAvatarUrl());
             return ps.executeUpdate() > 0;
         } catch (SQLException e) { e.printStackTrace(); }
         return false;
     }
 
     public boolean update(User u) {
-        String sql = "UPDATE tbl_user SET username=?,password_hash=?,full_name=?,email=?,phone=?,role=?,join_date=?,status=?,description=? WHERE id=?";
+        String sql = "UPDATE tbl_user SET username=?,password_hash=?,full_name=?,email=?,phone=?,role=?,join_date=?,status=?,description=?,avatar_url=? WHERE id=?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, u.getUsername());
@@ -108,7 +179,8 @@ public class UserDAO {
             ps.setDate(7, u.getJoinDate());
             ps.setString(8, u.getStatus());
             ps.setString(9, u.getDescription());
-            ps.setInt(10, u.getId());
+            ps.setString(10, u.getAvatarUrl());
+            ps.setInt(11, u.getId());
             return ps.executeUpdate() > 0;
         } catch (SQLException e) { e.printStackTrace(); }
         return false;
@@ -169,6 +241,7 @@ public class UserDAO {
         u.setJoinDate(rs.getDate("join_date"));
         u.setStatus(rs.getString("status"));
         u.setDescription(rs.getString("description"));
+        u.setAvatarUrl(rs.getString("avatar_url"));
         u.setCreatedAt(rs.getTimestamp("created_at"));
         u.setUpdatedAt(rs.getTimestamp("updated_at"));
         return u;

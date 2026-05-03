@@ -21,8 +21,14 @@ public class StaffServlet extends HttpServlet {
                 req.getRequestDispatcher("/WEB-INF/views/manager/add_staff.jsp").forward(req, resp); break;
             case "search":
                 String kw = req.getParameter("keyword");
-                if (kw != null && !kw.trim().isEmpty()) { req.setAttribute("results", dao.searchByUsernameOrCode(kw)); req.setAttribute("keyword", kw); }
-                req.getRequestDispatcher("/WEB-INF/views/manager/search_staff.jsp").forward(req, resp); break;
+                if (kw != null && !kw.trim().isEmpty()) {
+                    req.setAttribute("results", dao.searchByUsernameOrCode(kw));
+                    req.setAttribute("keyword", kw);
+                } else {
+                    req.setAttribute("results", dao.getAll());
+                }
+                req.getRequestDispatcher("/WEB-INF/views/manager/manage_staff.jsp").forward(req, resp);
+                break;
             case "edit":
                 req.setAttribute("staff", dao.findById(Integer.parseInt(req.getParameter("id"))));
                 req.getRequestDispatcher("/WEB-INF/views/manager/edit_staff.jsp").forward(req, resp); break;
@@ -33,6 +39,7 @@ public class StaffServlet extends HttpServlet {
                 } else { dao.delete(id); resp.sendRedirect(req.getContextPath() + "/manager/staff?msg=delete_success"); }
                 break;
             default:
+                req.setAttribute("staff", dao.getAll());
                 req.getRequestDispatcher("/WEB-INF/views/manager/manage_staff.jsp").forward(req, resp);
         }
     }

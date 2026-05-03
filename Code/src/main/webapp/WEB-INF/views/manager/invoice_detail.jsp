@@ -1,8 +1,8 @@
-<%@ page contentType="text/html;charset=UTF-8" %>
+﻿<%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
 <!DOCTYPE html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Chi tiết hóa đơn</title><link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css"></head>
-<body><div class="layout"><jsp:include page="../components/sidebar.jsp"/><main class="main-content fade-in">
+<body><div class="layout manager-layout"><jsp:include page="../components/sidebar.jsp"/>`n    <jsp:include page="../components/manager_header.jsp"/><main class="main-content fade-in">
     <div class="topbar"><div><h1>🧾 Hóa đơn <span>${invoice.code}</span></h1><div class="breadcrumb"><a href="${pageContext.request.contextPath}/manager/invoice?action=list">Hóa đơn</a><span>Chi tiết</span></div></div></div>
     <div class="detail-grid">
         <div><div class="card mb-3"><div class="card-header"><h3>Thông tin hóa đơn</h3></div>

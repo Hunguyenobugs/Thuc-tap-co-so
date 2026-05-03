@@ -28,8 +28,10 @@ public class RoomServlet extends HttpServlet {
                 if (keyword != null && !keyword.trim().isEmpty()) {
                     req.setAttribute("results", roomDAO.searchByNumber(keyword));
                     req.setAttribute("keyword", keyword);
+                } else {
+                    req.setAttribute("results", roomDAO.getAll());
                 }
-                req.getRequestDispatcher("/WEB-INF/views/manager/search_room.jsp").forward(req, resp);
+                req.getRequestDispatcher("/WEB-INF/views/manager/manage_room.jsp").forward(req, resp);
                 break;
             case "edit":
                 req.setAttribute("room", roomDAO.findById(Integer.parseInt(req.getParameter("id"))));
@@ -46,6 +48,7 @@ public class RoomServlet extends HttpServlet {
                 }
                 break;
             default:
+                req.setAttribute("rooms", roomDAO.getAll());
                 req.getRequestDispatcher("/WEB-INF/views/manager/manage_room.jsp").forward(req, resp);
         }
     }

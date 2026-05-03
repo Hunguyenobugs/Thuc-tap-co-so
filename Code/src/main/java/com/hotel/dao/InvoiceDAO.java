@@ -10,6 +10,20 @@ import java.util.List;
 
 public class InvoiceDAO {
 
+    public List<Invoice> getAll() {
+        List<Invoice> list = new ArrayList<>();
+        String sql = "SELECT i.*, b.code AS booking_code, c.full_name AS customer_name, u.full_name AS staff_name " +
+                "FROM tbl_invoice i JOIN tbl_booking b ON i.booking_id=b.id " +
+                "JOIN tbl_customer c ON b.customer_id=c.id LEFT JOIN tbl_user u ON i.staff_id=u.id " +
+                "ORDER BY i.issue_date DESC";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) list.add(mapRow(rs));
+        } catch (SQLException e) { e.printStackTrace(); }
+        return list;
+    }
+
     public Invoice findById(int id) {
         String sql = "SELECT i.*, b.code AS booking_code, c.full_name AS customer_name, u.full_name AS staff_name " +
                 "FROM tbl_invoice i JOIN tbl_booking b ON i.booking_id=b.id " +

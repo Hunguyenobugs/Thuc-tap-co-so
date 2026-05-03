@@ -22,13 +22,14 @@ public class InvoiceServlet extends HttpServlet {
         switch (action) {
             case "list":
                 String from = req.getParameter("from"), to = req.getParameter("to");
+                String kw = req.getParameter("keyword");
                 if (from != null && to != null && !from.isEmpty() && !to.isEmpty()) {
                     req.setAttribute("invoices", invoiceDAO.filter(from, to));
                     req.setAttribute("from", from); req.setAttribute("to", to);
-                }
-                String kw = req.getParameter("keyword");
-                if (kw != null && !kw.isEmpty()) {
+                } else if (kw != null && !kw.isEmpty()) {
                     req.setAttribute("invoices", invoiceDAO.searchByCode(kw)); req.setAttribute("keyword", kw);
+                } else {
+                    req.setAttribute("invoices", invoiceDAO.getAll());
                 }
                 req.getRequestDispatcher("/WEB-INF/views/manager/invoice_list.jsp").forward(req, resp);
                 break;

@@ -4,10 +4,6 @@
 <c:set var="role" value="${user.role}"/>
 <c:set var="base" value="${pageContext.request.contextPath}"/>
 <aside class="sidebar">
-    <div class="sidebar-header">
-        <h2>🏨 Grand Lotus</h2>
-        <p>Hotel Management System</p>
-    </div>
     <nav class="sidebar-nav">
         <c:if test="${role == 'ADMIN'}">
             <div class="nav-divider">Quản trị</div>
@@ -35,14 +31,5 @@
             <a href="${base}/staff/serviceUpdate?action=search">🛎️ Cập nhật DV</a>
             <a href="${base}/staff/checkout?action=search">🚪 Check-out</a>
         </c:if>
-        <div class="nav-divider">Tài khoản</div>
-        <a href="${base}/auth?action=changePasswordPage">🔒 Đổi mật khẩu</a>
-        <a href="${base}/auth?action=logout">🚪 Đăng xuất</a>
     </nav>
-    <div class="sidebar-footer">
-        <div class="user-info">
-            <strong>${user.fullName}</strong>
-            ${user.role} • ${user.employeeCode}
-        </div>
-    </div>
 </aside>

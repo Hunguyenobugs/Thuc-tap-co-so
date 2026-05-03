@@ -73,12 +73,22 @@ public class UserServlet extends HttpServlet {
                 req.getRequestDispatcher("/WEB-INF/views/admin/add_user.jsp").forward(req, resp); return;
             }
             if (dao.existsByUsername(username)) {
-                req.setAttribute("error", "Tên đăng nhập đã được sử dụng, vui lòng chọn tên khác");
+                req.setAttribute("error", "Tên đăng nhập đã được sử dụng!");
                 req.setAttribute("inputUser", u);
                 req.getRequestDispatcher("/WEB-INF/views/admin/add_user.jsp").forward(req, resp); return;
             }
             if (dao.existsByEmployeeCode(empCode)) {
-                req.setAttribute("error", "Mã nhân viên đã tồn tại, vui lòng nhập mã khác");
+                req.setAttribute("error", "Mã nhân viên đã tồn tại!");
+                req.setAttribute("inputUser", u);
+                req.getRequestDispatcher("/WEB-INF/views/admin/add_user.jsp").forward(req, resp); return;
+            }
+            if (dao.existsByEmail(u.getEmail())) {
+                req.setAttribute("error", "Email đã được sử dụng!");
+                req.setAttribute("inputUser", u);
+                req.getRequestDispatcher("/WEB-INF/views/admin/add_user.jsp").forward(req, resp); return;
+            }
+            if (dao.existsByPhone(u.getPhone())) {
+                req.setAttribute("error", "Số điện thoại đã được sử dụng!");
                 req.setAttribute("inputUser", u);
                 req.getRequestDispatcher("/WEB-INF/views/admin/add_user.jsp").forward(req, resp); return;
             }
@@ -99,16 +109,58 @@ public class UserServlet extends HttpServlet {
             if (newUsername != null && !newUsername.isEmpty()) {
                 u.setUsername(newUsername);
             }
+
+            String newEmpCode = req.getParameter("employeeCode");
+            if (newEmpCode != null && !newEmpCode.equals(u.getEmployeeCode()) && dao.existsByEmployeeCode(newEmpCode)) {
+                req.setAttribute("error", "Mã nhân viên đã tồn tại!");
+                req.setAttribute("editUser", u);
+                req.getRequestDispatcher("/WEB-INF/views/admin/edit_user.jsp").forward(req, resp); return;
+            }
+            if (newEmpCode != null) u.setEmployeeCode(newEmpCode);
             
             String newPw = req.getParameter("password");
+            String confirmPw = req.getParameter("confirmPassword");
             if (newPw != null && !newPw.trim().isEmpty()) {
+                if (!newPw.equals(confirmPw)) {
+                    req.setAttribute("error", "Mật khẩu xác nhận không khớp!");
+                    req.setAttribute("editUser", u);
+                    req.getRequestDispatcher("/WEB-INF/views/admin/edit_user.jsp").forward(req, resp);
+                    return;
+                }
                 u.setPasswordHash(PasswordUtil.hash(newPw));
             }
 
-            u.setFullName(req.getParameter("fullName")); u.setEmail(req.getParameter("email"));
-            u.setPhone(req.getParameter("phone")); u.setRole(req.getParameter("role"));
+            u.setFullName(req.getParameter("fullName"));
+            String newEmail = req.getParameter("email");
+            if (newEmail != null && !newEmail.equals(u.getEmail()) && dao.existsByEmail(newEmail)) {
+                req.setAttribute("error", "Email đã tồn tại!");
+                req.setAttribute("editUser", u);
+                req.getRequestDispatcher("/WEB-INF/views/admin/edit_user.jsp").forward(req, resp); return;
+            }
+            u.setEmail(newEmail);
+
+            String newPhone = req.getParameter("phone");
+            if (newPhone != null && !newPhone.equals(u.getPhone()) && dao.existsByPhone(newPhone)) {
+                req.setAttribute("error", "Số điện thoại đã tồn tại!");
+                req.setAttribute("editUser", u);
+                req.getRequestDispatcher("/WEB-INF/views/admin/edit_user.jsp").forward(req, resp); return;
+            }
+            u.setPhone(newPhone);
+
+            String jd = req.getParameter("joinDate");
+            if (jd != null && !jd.isEmpty()) u.setJoinDate(java.sql.Date.valueOf(jd));
+
+            u.setRole(req.getParameter("role"));
             u.setStatus(req.getParameter("status")); u.setDescription(req.getParameter("description"));
             dao.update(u);
+
+            HttpSession session = req.getSession(false);
+            if (session != null) {
+                User currentUser = (User) session.getAttribute("currentUser");
+                if (currentUser != null && currentUser.getId() == u.getId()) {
+                    session.setAttribute("currentUser", u);
+                }
+            }
             resp.sendRedirect(req.getContextPath() + "/admin/user?msg=update_success");
         }
     }

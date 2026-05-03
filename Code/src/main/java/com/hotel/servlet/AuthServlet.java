@@ -5,10 +5,19 @@ import com.hotel.model.User;
 import com.hotel.util.PasswordUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.http.*;
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
+import java.util.UUID;
 
 @WebServlet("/auth")
+@MultipartConfig(
+    fileSizeThreshold = 1024 * 1024 * 1, // 1 MB
+    maxFileSize = 1024 * 1024 * 5,      // 5 MB
+    maxRequestSize = 1024 * 1024 * 10   // 10 MB
+)
 public class AuthServlet extends HttpServlet {
     private final UserDAO userDAO = new UserDAO();
 
@@ -26,6 +35,9 @@ public class AuthServlet extends HttpServlet {
                 if (session != null) session.invalidate();
                 resp.sendRedirect(req.getContextPath() + "/auth?action=loginPage&msg=logout_success");
                 break;
+            case "profilePage":
+                req.getRequestDispatcher("/WEB-INF/views/admin/admin_profile.jsp").forward(req, resp);
+                break;
             case "changePasswordPage":
                 req.getRequestDispatcher("/WEB-INF/views/change_password.jsp").forward(req, resp);
                 break;
@@ -41,6 +53,8 @@ public class AuthServlet extends HttpServlet {
             doLogin(req, resp);
         } else if ("changePassword".equals(action)) {
             doChangePassword(req, resp);
+        } else if ("updateProfile".equals(action)) {
+            doUpdateProfile(req, resp);
         }
     }
 
@@ -108,5 +122,37 @@ public class AuthServlet extends HttpServlet {
             default: redirectUrl = "/staff/home";
         }
         resp.sendRedirect(req.getContextPath() + redirectUrl + "?msg=password_changed");
+    }
+
+    private void doUpdateProfile(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        HttpSession session = req.getSession(false);
+        User user = (User) session.getAttribute("currentUser");
+        
+        user.setFullName(req.getParameter("fullName"));
+        user.setEmail(req.getParameter("email"));
+        user.setPhone(req.getParameter("phone"));
+        user.setDescription(req.getParameter("description"));
+        
+        try {
+            Part filePart = req.getPart("avatarFile");
+            if (filePart != null && filePart.getSize() > 0) {
+                String fileName = UUID.randomUUID().toString() + "_" + Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
+                String uploadPath = req.getServletContext().getRealPath("") + File.separator + "images" + File.separator + "avatars";
+                
+                File uploadDir = new File(uploadPath);
+                if (!uploadDir.exists()) uploadDir.mkdirs();
+                
+                filePart.write(uploadPath + File.separator + fileName);
+                user.setAvatarUrl("/images/avatars/" + fileName);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Handle error or just ignore if no file is uploaded
+        }
+        
+        userDAO.update(user); // update the db
+        session.setAttribute("currentUser", user); // update session
+        
+        resp.sendRedirect(req.getContextPath() + "/auth?action=profilePage&msg=profile_updated");
     }
 }
