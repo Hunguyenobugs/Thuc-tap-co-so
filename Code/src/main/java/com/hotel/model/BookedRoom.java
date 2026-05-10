@@ -8,8 +8,8 @@ public class BookedRoom {
     private int id;
     private int bookingId;
     private int roomId;
-    private Date checkIn;
-    private Date checkOut;
+    private Timestamp checkIn;
+    private Timestamp checkOut;
     private Timestamp actualCheckin;
     private Timestamp actualCheckout;
     private BigDecimal actualPrice;
@@ -28,10 +28,10 @@ public class BookedRoom {
     public void setBookingId(int bookingId) { this.bookingId = bookingId; }
     public int getRoomId() { return roomId; }
     public void setRoomId(int roomId) { this.roomId = roomId; }
-    public Date getCheckIn() { return checkIn; }
-    public void setCheckIn(Date checkIn) { this.checkIn = checkIn; }
-    public Date getCheckOut() { return checkOut; }
-    public void setCheckOut(Date checkOut) { this.checkOut = checkOut; }
+    public Timestamp getCheckIn() { return checkIn; }
+    public void setCheckIn(Timestamp checkIn) { this.checkIn = checkIn; }
+    public Timestamp getCheckOut() { return checkOut; }
+    public void setCheckOut(Timestamp checkOut) { this.checkOut = checkOut; }
     public Timestamp getActualCheckin() { return actualCheckin; }
     public void setActualCheckin(Timestamp actualCheckin) { this.actualCheckin = actualCheckin; }
     public Timestamp getActualCheckout() { return actualCheckout; }

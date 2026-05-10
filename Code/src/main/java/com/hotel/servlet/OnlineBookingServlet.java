@@ -21,7 +21,7 @@ public class OnlineBookingServlet extends HttpServlet {
         int rtId = Integer.parseInt(req.getParameter("roomTypeId"));
         RoomType rt = roomTypeDAO.findById(rtId);
         req.setAttribute("roomType", rt); req.setAttribute("checkIn", ci); req.setAttribute("checkOut", co);
-        long nights = (Date.valueOf(co).getTime() - Date.valueOf(ci).getTime()) / 86400000;
+        long nights = java.time.temporal.ChronoUnit.DAYS.between(java.time.LocalDate.parse(ci), java.time.LocalDate.parse(co));
         req.setAttribute("nights", nights);
         req.setAttribute("totalEstimate", rt.getBasePrice().multiply(BigDecimal.valueOf(nights)));
         req.getRequestDispatcher("/WEB-INF/views/customer/confirm_online_booking.jsp").forward(req, resp);
@@ -45,11 +45,11 @@ public class OnlineBookingServlet extends HttpServlet {
         b.setCustomerId(customer.getId());
         b.setStaffId(null);
         b.setStatus("Chờ xác nhận");
-        b.setSpecialRequests(req.getParameter("specialRequests"));
+        b.setNote(req.getParameter("specialRequests"));
 
         BookedRoom br = new BookedRoom();
         br.setRoomId(roomId);
-        br.setCheckIn(Date.valueOf(ci)); br.setCheckOut(Date.valueOf(co));
+        br.setCheckIn(java.sql.Timestamp.valueOf(ci + " 14:00:00")); br.setCheckOut(java.sql.Timestamp.valueOf(co + " 12:00:00"));
         br.setActualPrice(roomTypeDAO.findById(rtId).getBasePrice());
 
         bookingDAO.insert(b, br);

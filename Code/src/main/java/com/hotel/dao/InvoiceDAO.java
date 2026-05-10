@@ -151,7 +151,7 @@ public class InvoiceDAO {
             ps1.executeUpdate();
 
             conn.prepareStatement("UPDATE tbl_booking SET status='Đã trả phòng' WHERE id=" + bookingId).executeUpdate();
-            conn.prepareStatement("UPDATE tbl_room SET status='Cần dọn dẹp' WHERE id IN (SELECT room_id FROM tbl_booked_room WHERE booking_id=" + bookingId + ")").executeUpdate();
+            conn.prepareStatement("UPDATE tbl_room SET status='Trống' WHERE id IN (SELECT room_id FROM tbl_booked_room WHERE booking_id=" + bookingId + ")").executeUpdate();
 
             conn.commit();
             return true;

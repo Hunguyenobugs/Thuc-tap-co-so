@@ -2,15 +2,19 @@
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
 <!DOCTYPE html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Chi tiết Check-out</title><link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css"></head>
-<body><div class="layout"><jsp:include page="../components/sidebar.jsp"/><main class="main-content fade-in">
+<body><div class="layout staff-layout"><jsp:include page="../components/sidebar.jsp"/>
+    <jsp:include page="../components/staff_header.jsp"/><main class="main-content fade-in">
     <div class="topbar"><div><h1>🚪 Check-out <span>${booking.code}</span></h1></div></div>
     <div class="detail-grid">
         <div>
             <div class="card mb-3"><div class="card-header"><h3>🛏️ Thông tin phòng</h3></div>
                 <ul class="detail-list">
                     <li><span class="label">Phòng</span><span class="value">${booking.roomTypeName} - ${booking.roomNumber}</span></li>
-                    <li><span class="label">Check-in</span><span class="value">${bookedRoom.checkIn}</span></li>
-                    <li><span class="label">Check-out</span><span class="value">${bookedRoom.checkOut}</span></li>
+                    <li><span class="label">Ngày nhận phòng</span><span class="value"><fmt:formatDate value="${bookedRoom.checkIn}" pattern="HH:mm dd/MM/yyyy"/></span></li>
+                    <li><span class="label">Ngày trả phòng</span><span class="value"><fmt:formatDate value="${bookedRoom.checkOut}" pattern="HH:mm dd/MM/yyyy"/></span></li>
+                    <c:if test="${bookedRoom.actualCheckin != null}">
+                        <li><span class="label">Check-in</span><span class="value"><fmt:formatDate value="${bookedRoom.actualCheckin}" pattern="HH:mm dd/MM/yyyy"/></span></li>
+                    </c:if>
                     <li><span class="label">Số đêm</span><span class="value">${nights} đêm</span></li>
                     <li><span class="label">Giá/đêm</span><span class="value"><fmt:formatNumber value="${bookedRoom.actualPrice}" pattern="#,##0"/>₫</span></li>
                     <li><span class="label fw-bold">Tiền phòng</span><span class="value fw-bold text-accent"><fmt:formatNumber value="${roomTotal}" pattern="#,##0"/>₫</span></li>

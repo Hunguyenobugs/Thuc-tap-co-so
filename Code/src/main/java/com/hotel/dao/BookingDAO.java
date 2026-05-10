@@ -13,7 +13,7 @@ import java.util.List;
 public class BookingDAO {
 
     public Booking findById(int id) {
-        String sql = "SELECT b.*, c.full_name AS customer_name, u.full_name AS staff_name, " +
+        String sql = "SELECT b.*, c.full_name AS customer_name, c.id_card AS customer_id_card, c.phone AS customer_phone, u.full_name AS staff_name, " +
                 "br.check_in, br.check_out, r.room_number, rt.name AS room_type_name " +
                 "FROM tbl_booking b " +
                 "JOIN tbl_customer c ON b.customer_id=c.id " +
@@ -154,7 +154,7 @@ public class BookingDAO {
             conn = DBConnection.getConnection();
             conn.setAutoCommit(false);
 
-            String sql1 = "INSERT INTO tbl_booking (code,customer_id,staff_id,booking_date,deposit_amount,deposit_date,status,special_requests,note) VALUES (?,?,?,NOW(),?,?,?,?,?)";
+            String sql1 = "INSERT INTO tbl_booking (code,customer_id,staff_id,booking_date,deposit_amount,deposit_date,status,note) VALUES (?,?,?,NOW(),?,?,?,?)";
             PreparedStatement ps1 = conn.prepareStatement(sql1, Statement.RETURN_GENERATED_KEYS);
             ps1.setString(1, b.getCode());
             ps1.setInt(2, b.getCustomerId());
@@ -162,8 +162,7 @@ public class BookingDAO {
             ps1.setBigDecimal(4, b.getDepositAmount() != null ? b.getDepositAmount() : BigDecimal.ZERO);
             ps1.setTimestamp(5, b.getDepositDate());
             ps1.setString(6, b.getStatus());
-            ps1.setString(7, b.getSpecialRequests());
-            ps1.setString(8, b.getNote());
+            ps1.setString(7, b.getNote());
             ps1.executeUpdate();
             ResultSet keys = ps1.getGeneratedKeys();
             int bookingId = 0;
@@ -173,8 +172,8 @@ public class BookingDAO {
             PreparedStatement ps2 = conn.prepareStatement(sql2);
             ps2.setInt(1, bookingId);
             ps2.setInt(2, br.getRoomId());
-            ps2.setDate(3, br.getCheckIn());
-            ps2.setDate(4, br.getCheckOut());
+            ps2.setTimestamp(3, br.getCheckIn());
+            ps2.setTimestamp(4, br.getCheckOut());
             ps2.setBigDecimal(5, br.getActualPrice());
             ps2.executeUpdate();
 
@@ -212,6 +211,17 @@ public class BookingDAO {
         } finally {
             if (conn != null) try { conn.setAutoCommit(true); conn.close(); } catch (SQLException ignored) {}
         }
+        return false;
+    }
+
+    public boolean approveBooking(int bookingId, int staffId) {
+        String sql = "UPDATE tbl_booking SET status='Đã xác nhận', staff_id=? WHERE id=?";
+        try (java.sql.Connection conn = DBConnection.getConnection();
+             java.sql.PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, staffId);
+            ps.setInt(2, bookingId);
+            return ps.executeUpdate() > 0;
+        } catch (java.sql.SQLException e) { e.printStackTrace(); }
         return false;
     }
 
@@ -265,7 +275,6 @@ public class BookingDAO {
         b.setDepositAmount(rs.getBigDecimal("deposit_amount"));
         b.setDepositDate(rs.getTimestamp("deposit_date"));
         b.setStatus(rs.getString("status"));
-        b.setSpecialRequests(rs.getString("special_requests"));
         b.setNote(rs.getString("note"));
         try { b.setCustomerName(rs.getString("customer_name")); } catch (SQLException ignored) {}
         return b;
@@ -278,6 +287,8 @@ public class BookingDAO {
         try { b.setRoomNumber(rs.getString("room_number")); } catch (SQLException ignored) {}
         try { b.setRoomTypeName(rs.getString("room_type_name")); } catch (SQLException ignored) {}
         try { b.setStaffName(rs.getString("staff_name")); } catch (SQLException ignored) {}
+        try { b.setCustomerIdCard(rs.getString("customer_id_card")); } catch (SQLException ignored) {}
+        try { b.setCustomerPhone(rs.getString("customer_phone")); } catch (SQLException ignored) {}
         return b;
     }
 }

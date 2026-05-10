@@ -22,22 +22,22 @@ public class ManageBookingServlet extends HttpServlet {
         switch (action) {
             case "search":
                 String q = req.getParameter("q");
-                if (q != null && !q.trim().isEmpty()) {
-                    req.setAttribute("results", bookingDAO.searchByCodeOrCustomer(q));
-                    req.setAttribute("keyword", q);
-                }
+                if (q == null) q = "";
+                req.setAttribute("results", bookingDAO.searchByCodeOrCustomer(q));
+                req.setAttribute("keyword", q);
                 req.getRequestDispatcher("/WEB-INF/views/staff/search_booking.jsp").forward(req, resp);
                 break;
-            case "edit":
-                int bid = Integer.parseInt(req.getParameter("bookingId"));
+            case "view":
+                String bidStr = req.getParameter("bookingId");
+                if (bidStr == null || bidStr.isEmpty()) {
+                    resp.sendRedirect(req.getContextPath() + "/staff/manageBooking?action=search");
+                    return;
+                }
+                int bid = Integer.parseInt(bidStr);
                 Booking b = bookingDAO.findById(bid);
                 req.setAttribute("booking", b);
                 req.setAttribute("bookedRooms", bookedRoomDAO.findByBookingId(bid));
-                if (b.getCheckIn() != null && b.getCheckOut() != null) {
-                    int rtId = roomDAO.findById(bookedRoomDAO.findByBookingId(bid).get(0).getRoomId()).getRoomTypeId();
-                    req.setAttribute("freeRooms", roomDAO.searchFreeRooms(b.getCheckIn(), b.getCheckOut(), rtId));
-                }
-                req.getRequestDispatcher("/WEB-INF/views/staff/edit_booking.jsp").forward(req, resp);
+                req.getRequestDispatcher("/WEB-INF/views/staff/view_booking.jsp").forward(req, resp);
                 break;
             default:
                 resp.sendRedirect(req.getContextPath() + "/staff/manageBooking?action=search");
@@ -46,12 +46,16 @@ public class ManageBookingServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        if ("update".equals(req.getParameter("action"))) {
-            int bookingId = Integer.parseInt(req.getParameter("bookingId"));
-            int newRoomId = Integer.parseInt(req.getParameter("roomId"));
-            BigDecimal price = roomTypeDAO.findById(roomDAO.findById(newRoomId).getRoomTypeId()).getBasePrice();
-            bookingDAO.updateBookedRoom(bookingId, newRoomId, price);
-            resp.sendRedirect(req.getContextPath() + "/staff/home?msg=booking_updated");
+        if ("approve".equals(req.getParameter("action"))) {
+            String bidStr = req.getParameter("bookingId");
+            if (bidStr == null || bidStr.isEmpty()) {
+                resp.sendRedirect(req.getContextPath() + "/staff/manageBooking?action=search");
+                return;
+            }
+            int bookingId = Integer.parseInt(bidStr);
+            com.hotel.model.User staff = (com.hotel.model.User) req.getSession().getAttribute("currentUser");
+            bookingDAO.approveBooking(bookingId, staff.getId());
+            resp.sendRedirect(req.getContextPath() + "/staff/manageBooking?msg=booking_approved");
         }
     }
 }

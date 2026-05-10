@@ -2,7 +2,8 @@
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
 <!DOCTYPE html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Tìm phòng trống</title><link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css"></head>
-<body><div class="layout"><jsp:include page="../components/sidebar.jsp"/><main class="main-content fade-in">
+<body><div class="layout staff-layout"><jsp:include page="../components/sidebar.jsp"/>
+    <jsp:include page="../components/staff_header.jsp"/><main class="main-content fade-in">
     <div class="topbar"><div><h1>📝 Đặt phòng - <span>Tìm phòng trống</span></h1><div class="breadcrumb"><span>Bước 1: Chọn phòng</span></div></div></div>
     <form class="search-bar" method="get" action="${pageContext.request.contextPath}/staff/booking">
         <input type="hidden" name="action" value="searchRoom">

@@ -12,7 +12,7 @@ public class Booking {
     private BigDecimal depositAmount;
     private Timestamp depositDate;
     private String status;
-    private String specialRequests;
+
     private String note;
     private Timestamp createdAt;
     private Timestamp updatedAt;
@@ -23,6 +23,8 @@ public class Booking {
     private String roomTypeName;
     private String checkIn;
     private String checkOut;
+    private String customerPhone;
+    private String customerIdCard;
 
     public Booking() {}
 
@@ -42,8 +44,7 @@ public class Booking {
     public void setDepositDate(Timestamp depositDate) { this.depositDate = depositDate; }
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
-    public String getSpecialRequests() { return specialRequests; }
-    public void setSpecialRequests(String specialRequests) { this.specialRequests = specialRequests; }
+
     public String getNote() { return note; }
     public void setNote(String note) { this.note = note; }
     public Timestamp getCreatedAt() { return createdAt; }
@@ -62,4 +63,8 @@ public class Booking {
     public void setCheckIn(String checkIn) { this.checkIn = checkIn; }
     public String getCheckOut() { return checkOut; }
     public void setCheckOut(String checkOut) { this.checkOut = checkOut; }
+    public String getCustomerPhone() { return customerPhone; }
+    public void setCustomerPhone(String customerPhone) { this.customerPhone = customerPhone; }
+    public String getCustomerIdCard() { return customerIdCard; }
+    public void setCustomerIdCard(String customerIdCard) { this.customerIdCard = customerIdCard; }
 }

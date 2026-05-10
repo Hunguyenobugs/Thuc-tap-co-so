@@ -38,7 +38,7 @@
                         <td><strong>${inv.code}</strong></td>
                         <td>${inv.bookingCode}</td>
                         <td>${inv.customerName}</td>
-                        <td><fmt:formatDate value="${inv.issueDate}" pattern="dd/MM/yyyy HH:mm"/></td>
+                        <td><fmt:formatDate value="${inv.issueDate}" pattern="HH:mm dd/MM/yyyy"/></td>
                         <td class="text-accent fw-bold"><fmt:formatNumber value="${inv.totalAmount}" pattern="#,##0"/>₫</td>
                         <td><span class="badge badge-info">${inv.paymentMethod}</span></td>
                         <td><a href="${pageContext.request.contextPath}/manager/invoice?action=detail&id=${inv.id}" class="btn btn-outline btn-sm">👁️ Xem</a></td>

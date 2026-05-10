@@ -32,10 +32,9 @@ public class BookingServlet extends HttpServlet {
             case "searchCustomer":
                 req.getSession().setAttribute("bookRoomId", req.getParameter("roomId"));
                 String q = req.getParameter("q");
-                if (q != null && !q.trim().isEmpty()) {
-                    req.setAttribute("customers", customerDAO.searchByIdCard(q));
-                    req.setAttribute("keyword", q);
-                }
+                if (q == null) q = "";
+                req.setAttribute("customers", customerDAO.searchByIdCard(q));
+                req.setAttribute("keyword", q);
                 req.getRequestDispatcher("/WEB-INF/views/staff/search_customer.jsp").forward(req, resp); break;
             case "addCustomer":
                 req.getRequestDispatcher("/WEB-INF/views/staff/add_customer.jsp").forward(req, resp); break;
@@ -49,7 +48,7 @@ public class BookingServlet extends HttpServlet {
                 req.setAttribute("checkIn", s.getAttribute("bookCheckIn")); req.setAttribute("checkOut", s.getAttribute("bookCheckOut"));
                 RoomType rt = roomTypeDAO.findById(room.getRoomTypeId());
                 req.setAttribute("roomType", rt);
-                long nights = (Date.valueOf((String) s.getAttribute("bookCheckOut")).getTime() - Date.valueOf((String) s.getAttribute("bookCheckIn")).getTime()) / 86400000;
+                long nights = java.time.temporal.ChronoUnit.DAYS.between(java.time.LocalDate.parse((String) s.getAttribute("bookCheckIn")), java.time.LocalDate.parse((String) s.getAttribute("bookCheckOut")));
                 req.setAttribute("nights", nights);
                 req.setAttribute("totalEstimate", rt.getBasePrice().multiply(BigDecimal.valueOf(nights)));
                 req.getRequestDispatcher("/WEB-INF/views/staff/confirm_booking.jsp").forward(req, resp); break;
@@ -83,11 +82,11 @@ public class BookingServlet extends HttpServlet {
             b.setCustomerId(Integer.parseInt(req.getParameter("customerId")));
             b.setStaffId(staff.getId());
             b.setStatus("Đã xác nhận");
-            b.setSpecialRequests(req.getParameter("specialRequests"));
+            b.setNote(req.getParameter("specialRequests"));
             BookedRoom br = new BookedRoom();
             br.setRoomId(Integer.parseInt((String) s.getAttribute("bookRoomId")));
-            br.setCheckIn(Date.valueOf((String) s.getAttribute("bookCheckIn")));
-            br.setCheckOut(Date.valueOf((String) s.getAttribute("bookCheckOut")));
+            br.setCheckIn(java.sql.Timestamp.valueOf(s.getAttribute("bookCheckIn") + " 14:00:00"));
+            br.setCheckOut(java.sql.Timestamp.valueOf(s.getAttribute("bookCheckOut") + " 12:00:00"));
             RoomType rt = roomTypeDAO.findById(roomDAO.findById(br.getRoomId()).getRoomTypeId());
             br.setActualPrice(rt.getBasePrice());
             int bookingId = bookingDAO.insert(b, br);

@@ -10,9 +10,13 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
 </head>
 <body>
-<div class="layout admin-layout">
+<div class="layout ${user.role == 'ADMIN' ? 'admin-layout' : (user.role == 'MANAGER' ? 'manager-layout' : 'staff-layout')}">
     <jsp:include page="../components/sidebar.jsp"/>
-    <jsp:include page="../components/admin_header.jsp"/>
+    <c:choose>
+        <c:when test="${user.role == 'ADMIN'}"><jsp:include page="../components/admin_header.jsp"/></c:when>
+        <c:when test="${user.role == 'MANAGER'}"><jsp:include page="../components/manager_header.jsp"/></c:when>
+        <c:otherwise><jsp:include page="../components/staff_header.jsp"/></c:otherwise>
+    </c:choose>
     <main class="main-content fade-in">
         <div class="topbar">
             <div><h1>👤 Thông tin <span>cá nhân</span></h1></div>
@@ -68,7 +72,17 @@
 
                 <div class="btn-group" style="margin-top: 24px; justify-content: center;">
                     <button type="submit" class="btn btn-primary">💾 Lưu thay đổi</button>
-                    <a href="${pageContext.request.contextPath}/admin/home" class="btn btn-outline">← Hủy</a>
+                    <c:choose>
+                        <c:when test="${user.role == 'ADMIN'}">
+                            <a href="${pageContext.request.contextPath}/admin/home" class="btn btn-outline">← Hủy</a>
+                        </c:when>
+                        <c:when test="${user.role == 'MANAGER'}">
+                            <a href="${pageContext.request.contextPath}/manager/home" class="btn btn-outline">← Hủy</a>
+                        </c:when>
+                        <c:otherwise>
+                            <a href="${pageContext.request.contextPath}/staff/home" class="btn btn-outline">← Hủy</a>
+                        </c:otherwise>
+                    </c:choose>
                 </div>
             </form>
         </div>

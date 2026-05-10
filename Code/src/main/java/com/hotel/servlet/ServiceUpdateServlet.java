@@ -21,10 +21,9 @@ public class ServiceUpdateServlet extends HttpServlet {
         switch (action) {
             case "search":
                 String q = req.getParameter("q");
-                if (q != null && !q.trim().isEmpty()) {
-                    req.setAttribute("results", bookingDAO.searchForService(q));
-                    req.setAttribute("keyword", q);
-                }
+                if (q == null) q = "";
+                req.setAttribute("results", bookingDAO.searchForService(q));
+                req.setAttribute("keyword", q);
                 req.getRequestDispatcher("/WEB-INF/views/staff/search_booking_service.jsp").forward(req, resp);
                 break;
             case "load":

@@ -105,8 +105,8 @@ a:hover { color:var(--accent-hover); }
     max-width: 1200px;
 }
 
-/* ===== MANAGER LAYOUT (same as admin) ===== */
-.manager-layout .main-content {
+/* ===== MANAGER & STAFF LAYOUT (same as admin) ===== */
+.manager-layout .main-content, .staff-layout .main-content {
     margin-left: 260px;
     padding-top: 100px;
     width: calc(100% - 260px);
@@ -114,12 +114,12 @@ a:hover { color:var(--accent-hover); }
     flex-direction: column;
     align-items: center;
 }
-.manager-layout .sidebar {
+.manager-layout .sidebar, .staff-layout .sidebar {
     top: 70px;
     height: calc(100vh - 70px);
     z-index: 999;
 }
-.manager-layout .main-content > * {
+.manager-layout .main-content > *, .staff-layout .main-content > * {
     width: 100%;
     max-width: 1200px;
 }

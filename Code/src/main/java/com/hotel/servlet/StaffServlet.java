@@ -55,15 +55,32 @@ public class StaffServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String action = req.getParameter("action");
         if ("insert".equals(action)) {
+            String username = req.getParameter("username");
+            String employeeCode = req.getParameter("employeeCode");
             String email = req.getParameter("email");
-            if (dao.existsByEmail(email)) {
-                req.setAttribute("error", "Email đã được sử dụng, vui lòng nhập email khác");
+            String phone = req.getParameter("phone");
+
+            if (dao.existsByUsername(username)) {
+                req.setAttribute("error", "Username đã tồn tại");
                 req.getRequestDispatcher("/WEB-INF/views/manager/add_staff.jsp").forward(req, resp); return;
             }
+            if (dao.existsByEmployeeCode(employeeCode)) {
+                req.setAttribute("error", "Mã nhân viên đã tồn tại");
+                req.getRequestDispatcher("/WEB-INF/views/manager/add_staff.jsp").forward(req, resp); return;
+            }
+            if (dao.existsByEmail(email)) {
+                req.setAttribute("error", "Email đã được sử dụng");
+                req.getRequestDispatcher("/WEB-INF/views/manager/add_staff.jsp").forward(req, resp); return;
+            }
+            if (dao.existsByPhone(phone)) {
+                req.setAttribute("error", "Số điện thoại đã được sử dụng");
+                req.getRequestDispatcher("/WEB-INF/views/manager/add_staff.jsp").forward(req, resp); return;
+            }
+
             User u = new User();
-            u.setFullName(req.getParameter("fullName")); u.setEmail(email); u.setPhone(req.getParameter("phone"));
+            u.setFullName(req.getParameter("fullName")); u.setEmail(email); u.setPhone(phone);
             u.setRole(req.getParameter("role")); u.setDescription(req.getParameter("description"));
-            u.setEmployeeCode(req.getParameter("employeeCode")); u.setUsername(req.getParameter("username"));
+            u.setEmployeeCode(employeeCode); u.setUsername(username);
             u.setPasswordHash(PasswordUtil.hash("@Hotel2025"));
             String jd = req.getParameter("joinDate");
             if (jd != null && !jd.isEmpty()) u.setJoinDate(java.sql.Date.valueOf(jd));

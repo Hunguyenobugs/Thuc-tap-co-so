@@ -1,7 +1,8 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!DOCTYPE html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Thêm khách hàng</title><link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css"></head>
-<body><div class="layout"><jsp:include page="../components/sidebar.jsp"/><main class="main-content fade-in">
+<body><div class="layout staff-layout"><jsp:include page="../components/sidebar.jsp"/>
+    <jsp:include page="../components/staff_header.jsp"/><main class="main-content fade-in">
     <div class="topbar"><div><h1>➕ Thêm <span>khách hàng mới</span></h1></div></div>
     <div class="card" style="max-width:700px;"><form method="post" action="${pageContext.request.contextPath}/staff/booking"><input type="hidden" name="action" value="insertCustomer">
         <div class="form-row"><div class="form-group"><label>Họ tên <span class="required">*</span></label><input type="text" name="fullName" class="form-control" required></div><div class="form-group"><label>Số CCCD <span class="required">*</span></label><input type="text" name="idCard" class="form-control" required></div></div>

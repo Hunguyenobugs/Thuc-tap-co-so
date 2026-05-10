@@ -11,7 +11,7 @@
                 <li><span class="label">Mã phiếu đặt</span><span class="value">${invoice.bookingCode}</span></li>
                 <li><span class="label">Khách hàng</span><span class="value">${invoice.customerName}</span></li>
                 <li><span class="label">NV lập</span><span class="value">${invoice.staffName}</span></li>
-                <li><span class="label">Ngày lập</span><span class="value"><fmt:formatDate value="${invoice.issueDate}" pattern="dd/MM/yyyy HH:mm"/></span></li>
+                <li><span class="label">Ngày lập</span><span class="value"><fmt:formatDate value="${invoice.issueDate}" pattern="HH:mm dd/MM/yyyy"/></span></li>
                 <li><span class="label">Phương thức</span><span class="value"><span class="badge badge-info">${invoice.paymentMethod}</span></span></li>
             </ul></div>
             <c:if test="${not empty usedServices}"><div class="card"><div class="card-header"><h3>Dịch vụ sử dụng</h3></div>

@@ -14,9 +14,9 @@ public class ManagerHomeServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try (Connection conn = DBConnection.getConnection()) {
 
-            // 1. Số phòng đang được thuê (status = 'Đang sử dụng')
+            // 1. Số phòng đang được thuê (status = 2: 'Đang sử dụng')
             PreparedStatement ps1 = conn.prepareStatement(
-                "SELECT COUNT(*) AS cnt FROM tbl_room WHERE status = 'Đang sử dụng'");
+                "SELECT COUNT(*) AS cnt FROM tbl_room WHERE status = 2");
             ResultSet rs1 = ps1.executeQuery();
             if (rs1.next()) req.setAttribute("rentedRooms", rs1.getInt("cnt"));
 
@@ -25,9 +25,9 @@ public class ManagerHomeServlet extends HttpServlet {
             ResultSet rs2 = ps2.executeQuery();
             if (rs2.next()) req.setAttribute("totalRooms", rs2.getInt("cnt"));
 
-            // 3. Số đặt phòng đang chờ xử lý
+            // 3. Số đặt phòng đang chờ xử lý (status 1,2: 'Chờ xác nhận','Đã xác nhận')
             PreparedStatement ps3 = conn.prepareStatement(
-                "SELECT COUNT(*) AS cnt FROM tbl_booking WHERE status IN ('Chờ xác nhận','Đã xác nhận')");
+                "SELECT COUNT(*) AS cnt FROM tbl_booking WHERE status IN (1, 2)");
             ResultSet rs3 = ps3.executeQuery();
             if (rs3.next()) req.setAttribute("pendingBookings", rs3.getInt("cnt"));
 
@@ -35,13 +35,17 @@ public class ManagerHomeServlet extends HttpServlet {
             PreparedStatement ps4 = conn.prepareStatement(
                 "SELECT COALESCE(SUM(total_amount),0) AS total FROM tbl_invoice WHERE DATE_FORMAT(issue_date,'%Y-%m') = DATE_FORMAT(NOW(),'%Y-%m')");
             ResultSet rs4 = ps4.executeQuery();
-            if (rs4.next()) req.setAttribute("monthRevenue", rs4.getBigDecimal("total"));
+            if (rs4.next()) {
+                req.setAttribute("monthRevenue", rs4.getBigDecimal("total"));
+            }
 
             // 5. Số hóa đơn hôm nay
             PreparedStatement ps5 = conn.prepareStatement(
                 "SELECT COUNT(*) AS cnt FROM tbl_invoice WHERE DATE(issue_date) = CURDATE()");
             ResultSet rs5 = ps5.executeQuery();
-            if (rs5.next()) req.setAttribute("todayInvoices", rs5.getInt("cnt"));
+            if (rs5.next()) {
+                req.setAttribute("todayInvoices", rs5.getInt("cnt"));
+            }
 
             // 6. Top 5 phòng được thuê nhiều nhất
             PreparedStatement ps6 = conn.prepareStatement(

@@ -37,8 +37,8 @@ public class BookedRoomDAO {
         br.setId(rs.getInt("id"));
         br.setBookingId(rs.getInt("booking_id"));
         br.setRoomId(rs.getInt("room_id"));
-        br.setCheckIn(rs.getDate("check_in"));
-        br.setCheckOut(rs.getDate("check_out"));
+        br.setCheckIn(rs.getTimestamp("check_in"));
+        br.setCheckOut(rs.getTimestamp("check_out"));
         br.setActualCheckin(rs.getTimestamp("actual_checkin"));
         br.setActualCheckout(rs.getTimestamp("actual_checkout"));
         br.setActualPrice(rs.getBigDecimal("actual_price"));

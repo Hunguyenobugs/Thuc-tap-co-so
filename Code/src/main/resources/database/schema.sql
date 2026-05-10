@@ -49,7 +49,7 @@ CREATE TABLE tbl_room (
     id            INT             AUTO_INCREMENT PRIMARY KEY,
     room_number   VARCHAR(20)     NOT NULL UNIQUE,
     floor         INT             DEFAULT 1,
-    status        ENUM('Trống','Đang sử dụng','Cần dọn dẹp','Bảo trì')
+    status        ENUM('Trống','Đang sử dụng','Bảo trì')
                                   DEFAULT 'Trống',
     description   TEXT            DEFAULT NULL,
     room_type_id  INT             NOT NULL,
@@ -115,7 +115,7 @@ CREATE TABLE tbl_booking (
     deposit_date      DATETIME        DEFAULT NULL,
     status            ENUM('Chờ xác nhận','Đã xác nhận','Đang lưu trú','Đã trả phòng','Đã hủy')
                                       DEFAULT 'Chờ xác nhận',
-    special_requests  TEXT            DEFAULT NULL,
+
     note              TEXT            DEFAULT NULL,
     created_at        TIMESTAMP       DEFAULT CURRENT_TIMESTAMP,
     updated_at        TIMESTAMP       DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -135,8 +135,8 @@ CREATE TABLE tbl_booked_room (
     id              INT             AUTO_INCREMENT PRIMARY KEY,
     booking_id      INT             NOT NULL,
     room_id         INT             NOT NULL,
-    check_in        DATE            NOT NULL,
-    check_out       DATE            NOT NULL,
+    check_in        DATETIME        NOT NULL,
+    check_out       DATETIME        NOT NULL,
     actual_checkin   DATETIME       DEFAULT NULL,
     actual_checkout  DATETIME       DEFAULT NULL,
     actual_price    DECIMAL(15,2)   DEFAULT NULL,

@@ -10,7 +10,7 @@ public class UserDAO {
 
     public List<User> getAll() {
         List<User> list = new ArrayList<>();
-        String sql = "SELECT * FROM tbl_user ORDER BY employee_code";
+        String sql = "SELECT * FROM tbl_user ORDER BY id";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {

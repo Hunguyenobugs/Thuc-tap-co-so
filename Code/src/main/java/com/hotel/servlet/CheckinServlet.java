@@ -20,10 +20,9 @@ public class CheckinServlet extends HttpServlet {
         switch (action) {
             case "search":
                 String q = req.getParameter("q");
-                if (q != null && !q.trim().isEmpty()) {
-                    req.setAttribute("results", bookingDAO.searchForCheckin(q));
-                    req.setAttribute("keyword", q);
-                }
+                if (q == null) q = "";
+                req.setAttribute("results", bookingDAO.searchForCheckin(q));
+                req.setAttribute("keyword", q);
                 req.getRequestDispatcher("/WEB-INF/views/staff/search_checkin.jsp").forward(req, resp);
                 break;
             case "confirm":

@@ -17,14 +17,14 @@
         <c:otherwise>
             <div class="table-container">
                 <table>
-                    <thead><tr><th>Mã phiếu</th><th>Phòng</th><th>Nhận phòng</th><th>Trả phòng</th><th>Trạng thái</th><th></th></tr></thead>
+                    <thead><tr><th>Mã phiếu</th><th>Phòng</th><th>Ngày nhận phòng</th><th>Ngày trả phòng</th><th>Trạng thái</th><th></th></tr></thead>
                     <tbody>
                     <c:forEach var="b" items="${bookings}">
                         <tr>
                             <td><strong>${b.code}</strong></td>
                             <td>${b.roomTypeName} - ${b.roomNumber}</td>
-                            <td>${b.checkIn}</td>
-                            <td>${b.checkOut}</td>
+                            <td><fmt:parseDate value="${b.checkIn}" pattern="yyyy-MM-dd HH:mm:ss" var="pCI"/><fmt:formatDate value="${pCI}" pattern="HH:mm dd/MM/yyyy"/></td>
+                            <td><fmt:parseDate value="${b.checkOut}" pattern="yyyy-MM-dd HH:mm:ss" var="pCO"/><fmt:formatDate value="${pCO}" pattern="HH:mm dd/MM/yyyy"/></td>
                             <td>
                                 <c:choose>
                                     <c:when test="${b.status=='Chờ xác nhận'}"><span class="badge badge-warning">${b.status}</span></c:when>

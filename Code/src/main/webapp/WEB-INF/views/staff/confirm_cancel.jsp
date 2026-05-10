@@ -1,7 +1,8 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!DOCTYPE html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Xác nhận hủy</title><link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css"></head>
-<body><div class="layout"><jsp:include page="../components/sidebar.jsp"/><main class="main-content fade-in">
+<body><div class="layout staff-layout"><jsp:include page="../components/sidebar.jsp"/>
+    <jsp:include page="../components/staff_header.jsp"/><main class="main-content fade-in">
     <div class="topbar"><div><h1>⚠️ Xác nhận <span>hủy phiếu</span></h1></div></div>
     <div class="confirm-box">
         <div class="alert alert-warning">Bạn có chắc chắn muốn hủy phiếu đặt <strong>${booking.code}</strong>?</div>

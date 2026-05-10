@@ -26,10 +26,9 @@ public class CheckoutServlet extends HttpServlet {
         switch (action) {
             case "search":
                 String q = req.getParameter("q");
-                if (q != null && !q.trim().isEmpty()) {
-                    req.setAttribute("results", bookingDAO.searchForCheckout(q));
-                    req.setAttribute("keyword", q);
-                }
+                if (q == null) q = "";
+                req.setAttribute("results", bookingDAO.searchForCheckout(q));
+                req.setAttribute("keyword", q);
                 req.getRequestDispatcher("/WEB-INF/views/staff/search_checkout.jsp").forward(req, resp);
                 break;
             case "detail":
@@ -42,7 +41,7 @@ public class CheckoutServlet extends HttpServlet {
                 long nights = 0;
                 BigDecimal roomTotal = BigDecimal.ZERO;
                 if (br != null) {
-                    nights = ChronoUnit.DAYS.between(br.getCheckIn().toLocalDate(), br.getCheckOut().toLocalDate());
+                    nights = ChronoUnit.DAYS.between(br.getCheckIn().toLocalDateTime().toLocalDate(), br.getCheckOut().toLocalDateTime().toLocalDate());
                     roomTotal = br.getActualPrice().multiply(BigDecimal.valueOf(nights));
                 }
                 req.setAttribute("booking", b); req.setAttribute("bookedRoom", br);

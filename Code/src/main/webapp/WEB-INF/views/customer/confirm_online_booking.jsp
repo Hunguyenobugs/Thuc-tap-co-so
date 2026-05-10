@@ -14,8 +14,8 @@
             <div class="card mb-3">
                 <ul class="detail-list">
                     <li><span class="label">Loại phòng</span><span class="value">${roomType.name}</span></li>
-                    <li><span class="label">Ngày nhận</span><span class="value">${checkIn}</span></li>
-                    <li><span class="label">Ngày trả</span><span class="value">${checkOut}</span></li>
+                    <li><span class="label">Ngày nhận phòng</span><span class="value">14:00 <fmt:parseDate value="${checkIn}" pattern="yyyy-MM-dd" var="pCI"/><fmt:formatDate value="${pCI}" pattern="dd/MM/yyyy"/></span></li>
+                    <li><span class="label">Ngày trả phòng</span><span class="value">12:00 <fmt:parseDate value="${checkOut}" pattern="yyyy-MM-dd" var="pCO"/><fmt:formatDate value="${pCO}" pattern="dd/MM/yyyy"/></span></li>
                     <li><span class="label">Số đêm</span><span class="value">${nights} đêm</span></li>
                     <li><span class="label">Giá/đêm</span><span class="value"><fmt:formatNumber value="${roomType.basePrice}" pattern="#,##0"/>₫</span></li>
                     <li><span class="label fw-bold">Tổng ước tính</span><span class="value fw-bold text-accent"><fmt:formatNumber value="${totalEstimate}" pattern="#,##0"/>₫</span></li>
@@ -26,7 +26,7 @@
             <input type="hidden" name="roomTypeId" value="${roomType.id}">
             <input type="hidden" name="checkIn" value="${checkIn}">
             <input type="hidden" name="checkOut" value="${checkOut}">
-            <div class="form-group"><label>Yêu cầu đặc biệt</label><textarea name="specialRequests" class="form-control" rows="3" placeholder="VD: Cần thêm gối, phòng tầng cao..."></textarea></div>
+            <div class="form-group"><label>Ghi chú</label><textarea name="specialRequests" class="form-control" rows="3" placeholder="VD: Cần thêm gối, phòng tầng cao..."></textarea></div>
             <div class="btn-group" style="justify-content:center;">
                 <a href="${pageContext.request.contextPath}/search" class="btn btn-outline">← Quay lại</a>
                 <button type="submit" class="btn btn-primary btn-lg">Xác nhận đặt phòng</button>

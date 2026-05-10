@@ -2,7 +2,8 @@
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
 <!DOCTYPE html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Xác nhận đặt phòng</title><link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css"></head>
-<body><div class="layout"><jsp:include page="../components/sidebar.jsp"/><main class="main-content fade-in">
+<body><div class="layout staff-layout"><jsp:include page="../components/sidebar.jsp"/>
+    <jsp:include page="../components/staff_header.jsp"/><main class="main-content fade-in">
     <div class="topbar"><div><h1>📝 Đặt phòng - <span>Xác nhận</span></h1><div class="breadcrumb"><span>Bước 3: Xác nhận thông tin</span></div></div></div>
     <div class="detail-grid">
         <div>
@@ -16,8 +17,8 @@
             <div class="card"><div class="card-header"><h3>🛏️ Thông tin phòng</h3></div>
                 <ul class="detail-list">
                     <li><span class="label">Phòng</span><span class="value">${room.roomNumber} - ${roomType.name}</span></li>
-                    <li><span class="label">Nhận phòng</span><span class="value">${checkIn}</span></li>
-                    <li><span class="label">Trả phòng</span><span class="value">${checkOut}</span></li>
+                    <li><span class="label">Ngày nhận phòng</span><span class="value">14:00 <fmt:parseDate value="${checkIn}" pattern="yyyy-MM-dd" var="pCI"/><fmt:formatDate value="${pCI}" pattern="dd/MM/yyyy"/></span></li>
+                    <li><span class="label">Ngày trả phòng</span><span class="value">12:00 <fmt:parseDate value="${checkOut}" pattern="yyyy-MM-dd" var="pCO"/><fmt:formatDate value="${pCO}" pattern="dd/MM/yyyy"/></span></li>
                     <li><span class="label">Số đêm</span><span class="value">${nights} đêm</span></li>
                     <li><span class="label">Giá/đêm</span><span class="value"><fmt:formatNumber value="${roomType.basePrice}" pattern="#,##0"/>₫</span></li>
                 </ul></div>
@@ -27,7 +28,7 @@
             <div style="text-align:center;padding:20px;"><span style="font-size:32px;font-weight:700;color:var(--accent);"><fmt:formatNumber value="${totalEstimate}" pattern="#,##0"/>₫</span></div>
             <form method="post" action="${pageContext.request.contextPath}/staff/booking">
                 <input type="hidden" name="action" value="insert"><input type="hidden" name="customerId" value="${customer.id}">
-                <div class="form-group"><label>Yêu cầu đặc biệt</label><textarea name="specialRequests" class="form-control" rows="3"></textarea></div>
+                <div class="form-group"><label>Ghi chú</label><textarea name="specialRequests" class="form-control" rows="3"></textarea></div>
                 <button type="submit" class="btn btn-primary btn-block btn-lg">✅ Xác nhận đặt phòng</button>
             </form>
             <a href="${pageContext.request.contextPath}/staff/booking?action=searchRoom" class="btn btn-outline btn-block mt-2">← Đặt lại từ đầu</a>

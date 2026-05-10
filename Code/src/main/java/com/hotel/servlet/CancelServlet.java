@@ -19,12 +19,11 @@ public class CancelServlet extends HttpServlet {
         switch (action) {
             case "search":
                 String q = req.getParameter("q");
-                if (q != null && !q.trim().isEmpty()) {
-                    List<Booking> results = bookingDAO.searchByCodeOrCustomer(q);
-                    results.removeIf(b -> "Đã hủy".equals(b.getStatus()) || "Đã trả phòng".equals(b.getStatus()));
-                    req.setAttribute("results", results);
-                    req.setAttribute("keyword", q);
-                }
+                if (q == null) q = "";
+                List<Booking> results = bookingDAO.searchByCodeOrCustomer(q);
+                results.removeIf(b -> "Đã hủy".equals(b.getStatus()) || "Đã trả phòng".equals(b.getStatus()) || "Đang lưu trú".equals(b.getStatus()));
+                req.setAttribute("results", results);
+                req.setAttribute("keyword", q);
                 req.getRequestDispatcher("/WEB-INF/views/staff/search_booking_cancel.jsp").forward(req, resp);
                 break;
             case "confirm":
