@@ -7,11 +7,16 @@
     <div class="topbar"><div><h1>✏️ Quản lý <span>phiếu đặt</span></h1></div></div>
     <form class="search-bar" method="get" action="${pageContext.request.contextPath}/staff/manageBooking"><input type="hidden" name="action" value="search">
         <input type="text" name="q" class="form-control" placeholder="Nhập mã phiếu hoặc tên khách..." value="${keyword}"><button type="submit" class="btn btn-primary">🔍 Tìm</button></form>
+
     <c:if test="${results != null}"><c:choose><c:when test="${empty results}"><div class="no-data">Không tìm thấy</div></c:when><c:otherwise>
-        <div class="table-container"><table><thead><tr><th>Mã phiếu</th><th>Khách</th><th>Phòng</th><th>Ngày nhận phòng</th><th>Ngày trả phòng</th><th>Trạng thái</th><th></th></tr></thead><tbody>
-        <c:forEach var="b" items="${results}"><tr><td><strong>${b.code}</strong></td><td>${b.customerName}</td><td>${b.roomNumber}</td>
-            <td><fmt:parseDate value="${b.checkIn}" pattern="yyyy-MM-dd HH:mm:ss" var="parsedCheckIn" /><fmt:formatDate value="${parsedCheckIn}" pattern="HH:mm dd/MM/yyyy" /></td>
-            <td><fmt:parseDate value="${b.checkOut}" pattern="yyyy-MM-dd HH:mm:ss" var="parsedCheckOut" /><fmt:formatDate value="${parsedCheckOut}" pattern="HH:mm dd/MM/yyyy" /></td>
+        <div class="table-container"><table><thead><tr>
+            <th>Mã phiếu</th><th>Khách hàng</th><th>Số phòng</th><th>Ngày đặt</th><th>Trạng thái</th><th></th>
+        </tr></thead><tbody>
+        <c:forEach var="b" items="${results}"><tr>
+            <td><strong>${b.code}</strong></td>
+            <td>${b.customerName}</td>
+            <td><span class="badge badge-primary">${b.roomCount} phòng</span></td>
+            <td><fmt:formatDate value="${b.bookingDate}" pattern="HH:mm dd/MM/yyyy"/></td>
             <td>
                 <c:choose>
                     <c:when test="${b.status=='Chờ xác nhận'}"><span class="badge badge-warning">${b.status}</span></c:when>
@@ -30,6 +35,8 @@
                         <button type="submit" class="btn btn-primary btn-sm" onclick="return confirm('Xác nhận duyệt phiếu này?');">✅ Duyệt</button>
                     </form>
                 </c:if>
-            </td></tr></c:forEach>
-        </tbody></table></div></c:otherwise></c:choose></c:if>
+            </td>
+        </tr></c:forEach>
+        </tbody></table></div>
+    </c:otherwise></c:choose></c:if>
 </main></div><script src="${pageContext.request.contextPath}/js/main.js"></script></body></html>

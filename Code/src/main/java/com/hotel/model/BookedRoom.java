@@ -14,6 +14,7 @@ public class BookedRoom {
     private Timestamp actualCheckout;
     private BigDecimal actualPrice;
     private boolean isCheckedIn;
+    private String roomStatus;   // Chờ / Đã check-in / Đã check-out / Đã hủy
     private Timestamp createdAt;
     private Timestamp updatedAt;
 
@@ -40,6 +41,8 @@ public class BookedRoom {
     public void setActualPrice(BigDecimal actualPrice) { this.actualPrice = actualPrice; }
     public boolean isCheckedIn() { return isCheckedIn; }
     public void setCheckedIn(boolean checkedIn) { isCheckedIn = checkedIn; }
+    public String getRoomStatus() { return roomStatus; }
+    public void setRoomStatus(String roomStatus) { this.roomStatus = roomStatus; }
     public Timestamp getCreatedAt() { return createdAt; }
     public void setCreatedAt(Timestamp createdAt) { this.createdAt = createdAt; }
     public Timestamp getUpdatedAt() { return updatedAt; }

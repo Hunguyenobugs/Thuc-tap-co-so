@@ -113,9 +113,9 @@ CREATE TABLE tbl_booking (
     booking_date      DATETIME        DEFAULT CURRENT_TIMESTAMP,
     deposit_amount    DECIMAL(15,2)   DEFAULT 0,
     deposit_date      DATETIME        DEFAULT NULL,
+    -- Trạng thái booking tổng hợp (tự cập nhật khi tất cả phòng check-out)
     status            ENUM('Chờ xác nhận','Đã xác nhận','Đang lưu trú','Đã trả phòng','Đã hủy')
                                       DEFAULT 'Chờ xác nhận',
-
     note              TEXT            DEFAULT NULL,
     created_at        TIMESTAMP       DEFAULT CURRENT_TIMESTAMP,
     updated_at        TIMESTAMP       DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -132,17 +132,20 @@ CREATE TABLE tbl_booking (
 ) ENGINE=InnoDB;
 
 CREATE TABLE tbl_booked_room (
-    id              INT             AUTO_INCREMENT PRIMARY KEY,
-    booking_id      INT             NOT NULL,
-    room_id         INT             NOT NULL,
-    check_in        DATETIME        NOT NULL,
-    check_out       DATETIME        NOT NULL,
-    actual_checkin   DATETIME       DEFAULT NULL,
-    actual_checkout  DATETIME       DEFAULT NULL,
-    actual_price    DECIMAL(15,2)   DEFAULT NULL,
-    is_checked_in   BOOLEAN         DEFAULT FALSE,
-    created_at      TIMESTAMP       DEFAULT CURRENT_TIMESTAMP,
-    updated_at      TIMESTAMP       DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    id               INT             AUTO_INCREMENT PRIMARY KEY,
+    booking_id       INT             NOT NULL,
+    room_id          INT             NOT NULL,
+    check_in         DATETIME        NOT NULL,
+    check_out        DATETIME        NOT NULL,
+    actual_checkin   DATETIME        DEFAULT NULL,
+    actual_checkout  DATETIME        DEFAULT NULL,
+    actual_price     DECIMAL(15,2)   DEFAULT NULL,
+    is_checked_in    BOOLEAN         DEFAULT FALSE,
+    -- Trạng thái từng phòng riêng biệt
+    room_status      ENUM('Chờ','Đã check-in','Đã check-out','Đã hủy')
+                                     DEFAULT 'Chờ',
+    created_at       TIMESTAMP       DEFAULT CURRENT_TIMESTAMP,
+    updated_at       TIMESTAMP       DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
     CONSTRAINT fk_bookedroom_booking FOREIGN KEY (booking_id)
         REFERENCES tbl_booking(id) ON UPDATE CASCADE ON DELETE CASCADE,
@@ -170,31 +173,39 @@ CREATE TABLE tbl_service (
     INDEX idx_service_category (category)
 ) ENGINE=InnoDB;
 
+-- Dịch vụ liên kết theo từng phòng trong booking
 CREATE TABLE tbl_used_service (
-    id          INT             AUTO_INCREMENT PRIMARY KEY,
-    booking_id  INT             NOT NULL,
-    service_id  INT             NOT NULL,
-    quantity    DECIMAL(10,2)   NOT NULL DEFAULT 1,
-    unit_price  DECIMAL(15,2)   NOT NULL,
-    used_date   DATETIME        DEFAULT CURRENT_TIMESTAMP,
-    note        VARCHAR(300)    DEFAULT NULL,
-    created_at  TIMESTAMP       DEFAULT CURRENT_TIMESTAMP,
+    id              INT             AUTO_INCREMENT PRIMARY KEY,
+    booking_id      INT             NOT NULL,
+    booked_room_id  INT             DEFAULT NULL,  -- NULL = áp dụng cho toàn booking
+    service_id      INT             NOT NULL,
+    quantity        DECIMAL(10,2)   NOT NULL DEFAULT 1,
+    unit_price      DECIMAL(15,2)   NOT NULL,
+    used_date       DATETIME        DEFAULT CURRENT_TIMESTAMP,
+    note            VARCHAR(300)    DEFAULT NULL,
+    created_at      TIMESTAMP       DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT fk_usedservice_booking FOREIGN KEY (booking_id)
         REFERENCES tbl_booking(id) ON UPDATE CASCADE ON DELETE RESTRICT,
+    CONSTRAINT fk_usedservice_bookedroom FOREIGN KEY (booked_room_id)
+        REFERENCES tbl_booked_room(id) ON UPDATE CASCADE ON DELETE SET NULL,
     CONSTRAINT fk_usedservice_service FOREIGN KEY (service_id)
         REFERENCES tbl_service(id) ON UPDATE CASCADE ON DELETE RESTRICT,
     CONSTRAINT chk_us_quantity CHECK (quantity > 0),
     CONSTRAINT chk_us_unitprice CHECK (unit_price >= 0),
 
     INDEX idx_us_booking (booking_id),
+    INDEX idx_us_bookedroom (booked_room_id),
     INDEX idx_us_service (service_id)
 ) ENGINE=InnoDB;
 
+-- Mỗi hóa đơn gắn với một booked_room (một phòng trong booking)
+-- Cho phép nhiều hóa đơn trên cùng một booking (khác phòng)
 CREATE TABLE tbl_invoice (
     id              INT             AUTO_INCREMENT PRIMARY KEY,
     code            VARCHAR(20)     NOT NULL UNIQUE,
-    booking_id      INT             NOT NULL UNIQUE,
+    booking_id      INT             NOT NULL,
+    booked_room_id  INT             DEFAULT NULL,  -- phòng cụ thể được thanh toán
     staff_id        INT             DEFAULT NULL,
     issue_date      DATETIME        DEFAULT CURRENT_TIMESTAMP,
     room_total      DECIMAL(15,2)   DEFAULT 0,
@@ -210,11 +221,14 @@ CREATE TABLE tbl_invoice (
 
     CONSTRAINT fk_invoice_booking FOREIGN KEY (booking_id)
         REFERENCES tbl_booking(id) ON UPDATE CASCADE ON DELETE RESTRICT,
+    CONSTRAINT fk_invoice_bookedroom FOREIGN KEY (booked_room_id)
+        REFERENCES tbl_booked_room(id) ON UPDATE CASCADE ON DELETE SET NULL,
     CONSTRAINT fk_invoice_staff FOREIGN KEY (staff_id)
         REFERENCES tbl_user(id) ON UPDATE CASCADE ON DELETE SET NULL,
 
     INDEX idx_invoice_code (code),
     INDEX idx_invoice_booking (booking_id),
+    INDEX idx_invoice_bookedroom (booked_room_id),
     INDEX idx_invoice_date (issue_date)
 ) ENGINE=InnoDB;
 
@@ -228,8 +242,8 @@ SELECT
     SUM(i.total_amount)                                         AS total_revenue
 FROM tbl_invoice i
     JOIN tbl_booking b      ON i.booking_id = b.id
-    JOIN tbl_booked_room br ON br.booking_id = b.id
-WHERE b.status = 'Đã trả phòng'
+    JOIN tbl_booked_room br ON i.booked_room_id = br.id
+WHERE b.status IN ('Đang lưu trú', 'Đã trả phòng')
 GROUP BY DATE_FORMAT(i.issue_date, '%Y-%m');
 
 CREATE VIEW v_room_stat AS

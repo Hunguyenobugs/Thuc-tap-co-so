@@ -22,20 +22,46 @@ public class UsedServiceDAO {
         return list;
     }
 
+    public List<UsedService> listByBookedRoom(int bookedRoomId) {
+        List<UsedService> list = new ArrayList<>();
+        String sql = "SELECT us.*, s.name AS service_name, s.unit AS service_unit FROM tbl_used_service us " +
+                "JOIN tbl_service s ON us.service_id=s.id WHERE us.booked_room_id=? ORDER BY us.used_date";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, bookedRoomId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) list.add(mapRow(rs));
+        } catch (SQLException e) { e.printStackTrace(); }
+        return list;
+    }
+
     public boolean insert(UsedService us) {
-        String sql = "INSERT INTO tbl_used_service (booking_id,service_id,quantity,unit_price,used_date,note) VALUES (?,?,?,?,NOW(),?)";
+        String sql = "INSERT INTO tbl_used_service (booking_id,booked_room_id,service_id,quantity,unit_price,used_date,note) VALUES (?,?,?,?,?,NOW(),?)";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, us.getBookingId());
-            ps.setInt(2, us.getServiceId());
-            ps.setBigDecimal(3, us.getQuantity());
-            ps.setBigDecimal(4, us.getUnitPrice());
-            ps.setString(5, us.getNote());
+            if (us.getBookedRoomId() != null) ps.setInt(2, us.getBookedRoomId()); else ps.setNull(2, java.sql.Types.INTEGER);
+            ps.setInt(3, us.getServiceId());
+            ps.setBigDecimal(4, us.getQuantity());
+            ps.setBigDecimal(5, us.getUnitPrice());
+            ps.setString(6, us.getNote());
             return ps.executeUpdate() > 0;
         } catch (SQLException e) { e.printStackTrace(); }
         return false;
     }
 
+    public BigDecimal getTotalByBookedRoom(int bookedRoomId) {
+        String sql = "SELECT COALESCE(SUM(quantity * unit_price), 0) AS total FROM tbl_used_service WHERE booked_room_id=?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, bookedRoomId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) return rs.getBigDecimal("total");
+        } catch (SQLException e) { e.printStackTrace(); }
+        return BigDecimal.ZERO;
+    }
+
+    /** Tổng dịch vụ cho toàn bộ booking (dùng cho ServiceUpdateServlet) */
     public BigDecimal getTotalByBooking(int bookingId) {
         String sql = "SELECT COALESCE(SUM(quantity * unit_price), 0) AS total FROM tbl_used_service WHERE booking_id=?";
         try (Connection conn = DBConnection.getConnection();
@@ -46,6 +72,7 @@ public class UsedServiceDAO {
         } catch (SQLException e) { e.printStackTrace(); }
         return BigDecimal.ZERO;
     }
+
 
     private UsedService mapRow(ResultSet rs) throws SQLException {
         UsedService us = new UsedService();

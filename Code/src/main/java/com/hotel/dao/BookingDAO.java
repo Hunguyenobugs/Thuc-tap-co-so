@@ -44,75 +44,124 @@ public class BookingDAO {
 
     public List<Booking> searchByCodeOrCustomer(String keyword) {
         List<Booking> list = new ArrayList<>();
-        String sql = "SELECT b.*, c.full_name AS customer_name, br.check_in, br.check_out, r.room_number, rt.name AS room_type_name " +
+        // Trả về từng booking (không nhân bản theo phòng), thêm số phòng
+        String sql = "SELECT b.*, c.full_name AS customer_name, c.id_card AS customer_id_card, c.phone AS customer_phone, " +
+                "u.full_name AS staff_name, " +
+                "COUNT(br.id) AS room_count " +
                 "FROM tbl_booking b JOIN tbl_customer c ON b.customer_id=c.id " +
+                "LEFT JOIN tbl_user u ON b.staff_id=u.id " +
                 "LEFT JOIN tbl_booked_room br ON br.booking_id=b.id " +
-                "LEFT JOIN tbl_room r ON br.room_id=r.id " +
-                "LEFT JOIN tbl_room_type rt ON r.room_type_id=rt.id " +
-                "WHERE b.code LIKE ? OR c.full_name LIKE ? ORDER BY b.booking_date DESC";
+                "WHERE b.code LIKE ? OR c.full_name LIKE ? " +
+                "GROUP BY b.id ORDER BY b.booking_date DESC";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             String k = "%" + keyword + "%";
             ps.setString(1, k); ps.setString(2, k);
             ResultSet rs = ps.executeQuery();
-            while (rs.next()) list.add(mapRowFull(rs));
+            while (rs.next()) {
+                Booking b = mapRowBasic(rs);
+                b.setRoomCount(rs.getInt("room_count"));
+                try { b.setStaffName(rs.getString("staff_name")); } catch (SQLException ignored) {}
+                try { b.setCustomerIdCard(rs.getString("customer_id_card")); } catch (SQLException ignored) {}
+                try { b.setCustomerPhone(rs.getString("customer_phone")); } catch (SQLException ignored) {}
+                list.add(b);
+            }
         } catch (SQLException e) { e.printStackTrace(); }
         return list;
     }
 
+    /** Check-in: Trả về bookings (Đã xác nhận | Đang lưu trú) có ít nhất 1 phòng chờ check-in */
     public List<Booking> searchForCheckin(String keyword) {
-        List<Booking> list = new ArrayList<>();
-        String sql = "SELECT b.*, c.full_name AS customer_name, br.check_in, br.check_out, r.room_number, rt.name AS room_type_name " +
-                "FROM tbl_booking b JOIN tbl_customer c ON b.customer_id=c.id " +
-                "LEFT JOIN tbl_booked_room br ON br.booking_id=b.id " +
-                "LEFT JOIN tbl_room r ON br.room_id=r.id " +
-                "LEFT JOIN tbl_room_type rt ON r.room_type_id=rt.id " +
-                "WHERE b.status='Đã xác nhận' AND (b.code LIKE ? OR c.full_name LIKE ?) ORDER BY br.check_in";
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            String k = "%" + keyword + "%";
-            ps.setString(1, k); ps.setString(2, k);
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) list.add(mapRowFull(rs));
-        } catch (SQLException e) { e.printStackTrace(); }
-        return list;
+        return searchBookingsWithRooms(
+            "WHERE b.status IN ('Đã xác nhận','Đang lưu trú') " +
+            "AND EXISTS (SELECT 1 FROM tbl_booked_room brx WHERE brx.booking_id=b.id AND brx.room_status='Chờ') " +
+            "AND (b.code LIKE ? OR c.full_name LIKE ?)",
+            // room filter: chỉ lấy phòng chờ check-in
+            "AND br.room_status='Chờ'",
+            keyword);
     }
 
+    /** Check-out: Trả về bookings Đang lưu trú có ít nhất 1 phòng đã check-in */
     public List<Booking> searchForCheckout(String keyword) {
-        List<Booking> list = new ArrayList<>();
-        String sql = "SELECT b.*, c.full_name AS customer_name, br.check_in, br.check_out, r.room_number, rt.name AS room_type_name " +
-                "FROM tbl_booking b JOIN tbl_customer c ON b.customer_id=c.id " +
-                "LEFT JOIN tbl_booked_room br ON br.booking_id=b.id " +
-                "LEFT JOIN tbl_room r ON br.room_id=r.id " +
-                "LEFT JOIN tbl_room_type rt ON r.room_type_id=rt.id " +
-                "WHERE b.status='Đang lưu trú' AND (b.code LIKE ? OR c.full_name LIKE ?) ORDER BY br.check_out";
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            String k = "%" + keyword + "%";
-            ps.setString(1, k); ps.setString(2, k);
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) list.add(mapRowFull(rs));
-        } catch (SQLException e) { e.printStackTrace(); }
-        return list;
+        return searchBookingsWithRooms(
+            "WHERE b.status='Đang lưu trú' " +
+            "AND EXISTS (SELECT 1 FROM tbl_booked_room brx WHERE brx.booking_id=b.id AND brx.room_status='Đã check-in') " +
+            "AND (b.code LIKE ? OR c.full_name LIKE ?)",
+            "AND br.room_status='Đã check-in'",
+            keyword);
     }
 
+    /** Dịch vụ: Trả về bookings Đang lưu trú kèm tất cả phòng đang ở */
     public List<Booking> searchForService(String keyword) {
-        List<Booking> list = new ArrayList<>();
-        String sql = "SELECT b.*, c.full_name AS customer_name, br.check_in, br.check_out, r.room_number, rt.name AS room_type_name " +
+        return searchBookingsWithRooms(
+            "WHERE b.status='Đang lưu trú' " +
+            "AND (b.code LIKE ? OR c.full_name LIKE ?)",
+            "AND br.room_status='Đã check-in'",
+            keyword);
+    }
+
+    /**
+     * Hàm chung: trả về danh sách Booking, mỗi Booking gắn sẵn List<BookedRoom> rooms.
+     * @param bookingWhere  điều kiện lọc booking (có ? cho keyword x2)
+     * @param roomFilter    điều kiện lọc phòng con (AND ...)
+     * @param keyword       từ khóa tìm kiếm
+     */
+    private List<Booking> searchBookingsWithRooms(String bookingWhere, String roomFilter, String keyword) {
+        List<Booking> bookings = new ArrayList<>();
+        // 1. Lấy danh sách booking distinct
+        String sqlB = "SELECT b.*, c.full_name AS customer_name, c.phone AS customer_phone, c.id_card AS customer_id_card " +
                 "FROM tbl_booking b JOIN tbl_customer c ON b.customer_id=c.id " +
-                "LEFT JOIN tbl_booked_room br ON br.booking_id=b.id " +
-                "LEFT JOIN tbl_room r ON br.room_id=r.id " +
-                "LEFT JOIN tbl_room_type rt ON r.room_type_id=rt.id " +
-                "WHERE b.status='Đang lưu trú' AND (b.code LIKE ? OR r.room_number LIKE ?) ORDER BY r.room_number";
+                bookingWhere +
+                " ORDER BY b.booking_date DESC";
         try (Connection conn = DBConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+             PreparedStatement ps = conn.prepareStatement(sqlB)) {
             String k = "%" + keyword + "%";
             ps.setString(1, k); ps.setString(2, k);
             ResultSet rs = ps.executeQuery();
-            while (rs.next()) list.add(mapRowFull(rs));
+            while (rs.next()) {
+                Booking b = mapRowBasic(rs);
+                try { b.setCustomerPhone(rs.getString("customer_phone")); } catch (SQLException ignored) {}
+                try { b.setCustomerIdCard(rs.getString("customer_id_card")); } catch (SQLException ignored) {}
+                bookings.add(b);
+            }
         } catch (SQLException e) { e.printStackTrace(); }
-        return list;
+
+        // 2. Với mỗi booking, lấy danh sách phòng con
+        String sqlR = "SELECT br.*, r.room_number, rt.name AS room_type_name " +
+                "FROM tbl_booked_room br " +
+                "JOIN tbl_room r ON br.room_id=r.id " +
+                "JOIN tbl_room_type rt ON r.room_type_id=rt.id " +
+                "WHERE br.booking_id=? " + roomFilter +
+                " ORDER BY br.check_in";
+        for (Booking b : bookings) {
+            List<BookedRoom> rooms = new ArrayList<>();
+            try (Connection conn = DBConnection.getConnection();
+                 PreparedStatement ps = conn.prepareStatement(sqlR)) {
+                ps.setInt(1, b.getId());
+                ResultSet rs = ps.executeQuery();
+                while (rs.next()) {
+                    BookedRoom br = new BookedRoom();
+                    br.setId(rs.getInt("id"));
+                    br.setBookingId(rs.getInt("booking_id"));
+                    br.setRoomId(rs.getInt("room_id"));
+                    br.setCheckIn(rs.getTimestamp("check_in"));
+                    br.setCheckOut(rs.getTimestamp("check_out"));
+                    br.setActualCheckin(rs.getTimestamp("actual_checkin"));
+                    br.setActualCheckout(rs.getTimestamp("actual_checkout"));
+                    br.setActualPrice(rs.getBigDecimal("actual_price"));
+                    br.setCheckedIn(rs.getBoolean("is_checked_in"));
+                    br.setRoomStatus(rs.getString("room_status"));
+                    br.setRoomNumber(rs.getString("room_number"));
+                    br.setRoomTypeName(rs.getString("room_type_name"));
+                    rooms.add(br);
+                }
+            } catch (SQLException e) { e.printStackTrace(); }
+            b.setRooms(rooms);
+            b.setRoomCount(rooms.size());
+        }
+        return bookings;
     }
+
 
     public List<Booking> findByCustomer(int customerId) {
         List<Booking> list = new ArrayList<>();
@@ -187,6 +236,50 @@ public class BookingDAO {
         }
         return -1;
     }
+
+    public int insertMultiple(Booking b, List<BookedRoom> rooms) {
+        Connection conn = null;
+        try {
+            conn = DBConnection.getConnection();
+            conn.setAutoCommit(false);
+
+            String sql1 = "INSERT INTO tbl_booking (code,customer_id,staff_id,booking_date,deposit_amount,deposit_date,status,note) VALUES (?,?,?,NOW(),?,?,?,?)";
+            PreparedStatement ps1 = conn.prepareStatement(sql1, Statement.RETURN_GENERATED_KEYS);
+            ps1.setString(1, b.getCode());
+            ps1.setInt(2, b.getCustomerId());
+            if (b.getStaffId() != null) ps1.setInt(3, b.getStaffId()); else ps1.setNull(3, Types.INTEGER);
+            ps1.setBigDecimal(4, b.getDepositAmount() != null ? b.getDepositAmount() : BigDecimal.ZERO);
+            ps1.setTimestamp(5, b.getDepositDate());
+            ps1.setString(6, b.getStatus());
+            ps1.setString(7, b.getNote());
+            ps1.executeUpdate();
+            ResultSet keys = ps1.getGeneratedKeys();
+            int bookingId = 0;
+            if (keys.next()) bookingId = keys.getInt(1);
+
+            String sql2 = "INSERT INTO tbl_booked_room (booking_id,room_id,check_in,check_out,actual_price,is_checked_in) VALUES (?,?,?,?,?,FALSE)";
+            PreparedStatement ps2 = conn.prepareStatement(sql2);
+            for (BookedRoom br : rooms) {
+                ps2.setInt(1, bookingId);
+                ps2.setInt(2, br.getRoomId());
+                ps2.setTimestamp(3, br.getCheckIn());
+                ps2.setTimestamp(4, br.getCheckOut());
+                ps2.setBigDecimal(5, br.getActualPrice());
+                ps2.addBatch();
+            }
+            ps2.executeBatch();
+
+            conn.commit();
+            return bookingId;
+        } catch (SQLException e) {
+            if (conn != null) try { conn.rollback(); } catch (SQLException ignored) {}
+            e.printStackTrace();
+        } finally {
+            if (conn != null) try { conn.setAutoCommit(true); conn.close(); } catch (SQLException ignored) {}
+        }
+        return -1;
+    }
+
 
     public boolean cancel(int bookingId) {
         Connection conn = null;

@@ -12,6 +12,9 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
+/**
+ * Check-out và tạo hóa đơn cho từng phòng riêng lẻ trong một booking.
+ */
 @WebServlet("/staff/checkout")
 public class CheckoutServlet extends HttpServlet {
     private final BookingDAO bookingDAO = new BookingDAO();
@@ -23,33 +26,49 @@ public class CheckoutServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String action = req.getParameter("action");
         if (action == null) action = "search";
+
         switch (action) {
-            case "search":
+            case "search": {
                 String q = req.getParameter("q");
                 if (q == null) q = "";
+                // Trả về List<Booking>, mỗi Booking đã gắn sẵn rooms đang check-in
                 req.setAttribute("results", bookingDAO.searchForCheckout(q));
                 req.setAttribute("keyword", q);
                 req.getRequestDispatcher("/WEB-INF/views/staff/search_checkout.jsp").forward(req, resp);
                 break;
-            case "detail":
-                int bid = Integer.parseInt(req.getParameter("bookingId"));
-                Booking b = bookingDAO.findById(bid);
-                List<BookedRoom> rooms = bookedRoomDAO.findByBookingId(bid);
-                List<UsedService> services = usedServiceDAO.listByBooking(bid);
-                BigDecimal serviceTotal = usedServiceDAO.getTotalByBooking(bid);
-                BookedRoom br = rooms.isEmpty() ? null : rooms.get(0);
-                long nights = 0;
-                BigDecimal roomTotal = BigDecimal.ZERO;
-                if (br != null) {
-                    nights = ChronoUnit.DAYS.between(br.getCheckIn().toLocalDateTime().toLocalDate(), br.getCheckOut().toLocalDateTime().toLocalDate());
-                    roomTotal = br.getActualPrice().multiply(BigDecimal.valueOf(nights));
+            }
+            case "detail": {
+                String brid = req.getParameter("bookedRoomId");
+                if (brid == null || brid.isEmpty()) {
+                    resp.sendRedirect(req.getContextPath() + "/staff/checkout?action=search");
+                    return;
                 }
-                req.setAttribute("booking", b); req.setAttribute("bookedRoom", br);
-                req.setAttribute("usedServices", services); req.setAttribute("serviceTotal", serviceTotal);
-                req.setAttribute("roomTotal", roomTotal); req.setAttribute("nights", nights);
+                int bookedRoomId = Integer.parseInt(brid);
+                BookedRoom br = bookedRoomDAO.findById(bookedRoomId);
+                Booking booking = bookingDAO.findById(br.getBookingId());
+
+                // Dịch vụ của phòng này
+                List<UsedService> services = usedServiceDAO.listByBookedRoom(bookedRoomId);
+                BigDecimal serviceTotal = services.stream()
+                        .map(UsedService::getSubtotal)
+                        .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+                // Tính tiền phòng
+                long nights = ChronoUnit.DAYS.between(
+                        br.getCheckIn().toLocalDateTime().toLocalDate(),
+                        br.getCheckOut().toLocalDateTime().toLocalDate());
+                BigDecimal roomTotal = br.getActualPrice().multiply(BigDecimal.valueOf(nights));
+
+                req.setAttribute("booking", booking);
+                req.setAttribute("bookedRoom", br);
+                req.setAttribute("usedServices", services);
+                req.setAttribute("serviceTotal", serviceTotal);
+                req.setAttribute("roomTotal", roomTotal);
+                req.setAttribute("nights", nights);
                 req.setAttribute("grandTotal", roomTotal.add(serviceTotal));
                 req.getRequestDispatcher("/WEB-INF/views/staff/checkout_detail.jsp").forward(req, resp);
                 break;
+            }
             default:
                 resp.sendRedirect(req.getContextPath() + "/staff/checkout?action=search");
         }
@@ -58,8 +77,10 @@ public class CheckoutServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         if ("execute".equals(req.getParameter("action"))) {
-            int bookingId = Integer.parseInt(req.getParameter("bookingId"));
+            int bookedRoomId = Integer.parseInt(req.getParameter("bookedRoomId"));
             User staff = (User) req.getSession().getAttribute("currentUser");
+
+            BookedRoom br = bookedRoomDAO.findById(bookedRoomId);
 
             BigDecimal roomTotal = new BigDecimal(req.getParameter("roomTotal"));
             BigDecimal serviceTotal = new BigDecimal(req.getParameter("serviceTotal"));
@@ -68,11 +89,14 @@ public class CheckoutServlet extends HttpServlet {
             if (surchargeStr != null && !surchargeStr.isEmpty()) surcharge = new BigDecimal(surchargeStr);
             BigDecimal totalAmount = roomTotal.add(serviceTotal).add(surcharge);
 
-            bookedRoomDAO.updateCheckout(bookingId, Timestamp.valueOf(LocalDateTime.now()));
+            // 1. Cập nhật trạng thái phòng (checkout từng phòng)
+            bookedRoomDAO.checkoutRoom(bookedRoomId, Timestamp.valueOf(LocalDateTime.now()));
 
+            // 2. Tạo hóa đơn cho phòng này
             Invoice inv = new Invoice();
             inv.setCode(invoiceDAO.generateCode());
-            inv.setBookingId(bookingId);
+            inv.setBookingId(br.getBookingId());
+            inv.setBookedRoomId(bookedRoomId);
             inv.setStaffId(staff.getId());
             inv.setRoomTotal(roomTotal);
             inv.setServiceTotal(serviceTotal);
@@ -82,7 +106,8 @@ public class CheckoutServlet extends HttpServlet {
             inv.setPaymentMethod(req.getParameter("paymentMethod"));
             inv.setNote(req.getParameter("note"));
 
-            invoiceDAO.createCheckoutInvoice(inv, bookingId);
+            invoiceDAO.createRoomInvoice(inv);
+
             resp.sendRedirect(req.getContextPath() + "/staff/home?msg=checkout_success&code=" + inv.getCode());
         }
     }

@@ -7,6 +7,7 @@ public class Invoice {
     private int id;
     private String code;
     private int bookingId;
+    private Integer bookedRoomId;  // phòng cụ thể trong booking
     private Integer staffId;
     private Timestamp issueDate;
     private BigDecimal roomTotal;
@@ -31,6 +32,8 @@ public class Invoice {
     public void setCode(String code) { this.code = code; }
     public int getBookingId() { return bookingId; }
     public void setBookingId(int bookingId) { this.bookingId = bookingId; }
+    public Integer getBookedRoomId() { return bookedRoomId; }
+    public void setBookedRoomId(Integer bookedRoomId) { this.bookedRoomId = bookedRoomId; }
     public Integer getStaffId() { return staffId; }
     public void setStaffId(Integer staffId) { this.staffId = staffId; }
     public Timestamp getIssueDate() { return issueDate; }

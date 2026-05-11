@@ -2,6 +2,8 @@ package com.hotel.model;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Booking {
     private int id;
@@ -25,6 +27,8 @@ public class Booking {
     private String checkOut;
     private String customerPhone;
     private String customerIdCard;
+    private int roomCount;   // số phòng trong booking (dùng cho danh sách)
+    private List<BookedRoom> rooms = new ArrayList<>();  // dùng cho giao diện gom nhóm
 
     public Booking() {}
 
@@ -67,4 +71,8 @@ public class Booking {
     public void setCustomerPhone(String customerPhone) { this.customerPhone = customerPhone; }
     public String getCustomerIdCard() { return customerIdCard; }
     public void setCustomerIdCard(String customerIdCard) { this.customerIdCard = customerIdCard; }
+    public int getRoomCount() { return roomCount; }
+    public void setRoomCount(int roomCount) { this.roomCount = roomCount; }
+    public List<BookedRoom> getRooms() { return rooms; }
+    public void setRooms(List<BookedRoom> rooms) { this.rooms = rooms; }
 }

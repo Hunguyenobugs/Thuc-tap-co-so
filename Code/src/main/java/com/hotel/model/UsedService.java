@@ -6,6 +6,7 @@ import java.sql.Timestamp;
 public class UsedService {
     private int id;
     private int bookingId;
+    private Integer bookedRoomId;  // phòng cụ thể sử dụng dịch vụ
     private int serviceId;
     private BigDecimal quantity;
     private BigDecimal unitPrice;
@@ -22,6 +23,8 @@ public class UsedService {
     public void setId(int id) { this.id = id; }
     public int getBookingId() { return bookingId; }
     public void setBookingId(int bookingId) { this.bookingId = bookingId; }
+    public Integer getBookedRoomId() { return bookedRoomId; }
+    public void setBookedRoomId(Integer bookedRoomId) { this.bookedRoomId = bookedRoomId; }
     public int getServiceId() { return serviceId; }
     public void setServiceId(int serviceId) { this.serviceId = serviceId; }
     public BigDecimal getQuantity() { return quantity; }
