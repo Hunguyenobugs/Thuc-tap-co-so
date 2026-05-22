@@ -12,9 +12,10 @@ public class InvoiceDAO {
 
     public List<Invoice> getAll() {
         List<Invoice> list = new ArrayList<>();
-        String sql = "SELECT i.*, b.code AS booking_code, c.full_name AS customer_name, u.full_name AS staff_name " +
+        String sql = "SELECT i.*, b.code AS booking_code, c.full_name AS customer_name, u.full_name AS staff_name, r.room_number " +
                 "FROM tbl_invoice i JOIN tbl_booking b ON i.booking_id=b.id " +
                 "JOIN tbl_customer c ON b.customer_id=c.id LEFT JOIN tbl_user u ON i.staff_id=u.id " +
+                "LEFT JOIN tbl_booked_room br ON i.booked_room_id=br.id LEFT JOIN tbl_room r ON br.room_id=r.id " +
                 "ORDER BY i.issue_date DESC";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
@@ -25,9 +26,10 @@ public class InvoiceDAO {
     }
 
     public Invoice findById(int id) {
-        String sql = "SELECT i.*, b.code AS booking_code, c.full_name AS customer_name, u.full_name AS staff_name " +
+        String sql = "SELECT i.*, b.code AS booking_code, c.full_name AS customer_name, u.full_name AS staff_name, r.room_number " +
                 "FROM tbl_invoice i JOIN tbl_booking b ON i.booking_id=b.id " +
-                "JOIN tbl_customer c ON b.customer_id=c.id LEFT JOIN tbl_user u ON i.staff_id=u.id WHERE i.id=?";
+                "JOIN tbl_customer c ON b.customer_id=c.id LEFT JOIN tbl_user u ON i.staff_id=u.id " +
+                "LEFT JOIN tbl_booked_room br ON i.booked_room_id=br.id LEFT JOIN tbl_room r ON br.room_id=r.id WHERE i.id=?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, id);
@@ -39,9 +41,10 @@ public class InvoiceDAO {
 
     /** Lấy hóa đơn đầu tiên của booking (backward compatibility) */
     public Invoice findFirstByBookingId(int bookingId) {
-        String sql = "SELECT i.*, b.code AS booking_code, c.full_name AS customer_name, u.full_name AS staff_name " +
+        String sql = "SELECT i.*, b.code AS booking_code, c.full_name AS customer_name, u.full_name AS staff_name, r.room_number " +
                 "FROM tbl_invoice i JOIN tbl_booking b ON i.booking_id=b.id " +
-                "JOIN tbl_customer c ON b.customer_id=c.id LEFT JOIN tbl_user u ON i.staff_id=u.id WHERE i.booking_id=? LIMIT 1";
+                "JOIN tbl_customer c ON b.customer_id=c.id LEFT JOIN tbl_user u ON i.staff_id=u.id " +
+                "LEFT JOIN tbl_booked_room br ON i.booked_room_id=br.id LEFT JOIN tbl_room r ON br.room_id=r.id WHERE i.booking_id=? LIMIT 1";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, bookingId);
@@ -53,9 +56,10 @@ public class InvoiceDAO {
 
     public List<Invoice> filter(String from, String to) {
         List<Invoice> list = new ArrayList<>();
-        String sql = "SELECT i.*, b.code AS booking_code, c.full_name AS customer_name, u.full_name AS staff_name " +
+        String sql = "SELECT i.*, b.code AS booking_code, c.full_name AS customer_name, u.full_name AS staff_name, r.room_number " +
                 "FROM tbl_invoice i JOIN tbl_booking b ON i.booking_id=b.id " +
                 "JOIN tbl_customer c ON b.customer_id=c.id LEFT JOIN tbl_user u ON i.staff_id=u.id " +
+                "LEFT JOIN tbl_booked_room br ON i.booked_room_id=br.id LEFT JOIN tbl_room r ON br.room_id=r.id " +
                 "WHERE DATE(i.issue_date) BETWEEN ? AND ? ORDER BY i.issue_date DESC";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -69,9 +73,10 @@ public class InvoiceDAO {
 
     public List<Invoice> searchByCode(String keyword) {
         List<Invoice> list = new ArrayList<>();
-        String sql = "SELECT i.*, b.code AS booking_code, c.full_name AS customer_name, u.full_name AS staff_name " +
+        String sql = "SELECT i.*, b.code AS booking_code, c.full_name AS customer_name, u.full_name AS staff_name, r.room_number " +
                 "FROM tbl_invoice i JOIN tbl_booking b ON i.booking_id=b.id " +
                 "JOIN tbl_customer c ON b.customer_id=c.id LEFT JOIN tbl_user u ON i.staff_id=u.id " +
+                "LEFT JOIN tbl_booked_room br ON i.booked_room_id=br.id LEFT JOIN tbl_room r ON br.room_id=r.id " +
                 "WHERE i.code LIKE ? ORDER BY i.issue_date DESC";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -120,9 +125,10 @@ public class InvoiceDAO {
     }
 
     public Invoice findByBookedRoomId(int bookedRoomId) {
-        String sql = "SELECT i.*, b.code AS booking_code, c.full_name AS customer_name, u.full_name AS staff_name " +
+        String sql = "SELECT i.*, b.code AS booking_code, c.full_name AS customer_name, u.full_name AS staff_name, r.room_number " +
                 "FROM tbl_invoice i JOIN tbl_booking b ON i.booking_id=b.id " +
-                "JOIN tbl_customer c ON b.customer_id=c.id LEFT JOIN tbl_user u ON i.staff_id=u.id WHERE i.booked_room_id=?";
+                "JOIN tbl_customer c ON b.customer_id=c.id LEFT JOIN tbl_user u ON i.staff_id=u.id " +
+                "LEFT JOIN tbl_booked_room br ON i.booked_room_id=br.id LEFT JOIN tbl_room r ON br.room_id=r.id WHERE i.booked_room_id=?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, bookedRoomId);
@@ -134,9 +140,10 @@ public class InvoiceDAO {
 
     public List<Invoice> findByBookingId(int bookingId) {
         List<Invoice> list = new ArrayList<>();
-        String sql = "SELECT i.*, b.code AS booking_code, c.full_name AS customer_name, u.full_name AS staff_name " +
+        String sql = "SELECT i.*, b.code AS booking_code, c.full_name AS customer_name, u.full_name AS staff_name, r.room_number " +
                 "FROM tbl_invoice i JOIN tbl_booking b ON i.booking_id=b.id " +
                 "JOIN tbl_customer c ON b.customer_id=c.id LEFT JOIN tbl_user u ON i.staff_id=u.id " +
+                "LEFT JOIN tbl_booked_room br ON i.booked_room_id=br.id LEFT JOIN tbl_room r ON br.room_id=r.id " +
                 "WHERE i.booking_id=? ORDER BY i.issue_date";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -199,6 +206,7 @@ public class InvoiceDAO {
         try { inv.setCustomerName(rs.getString("customer_name")); } catch (SQLException ignored) {}
         try { inv.setStaffName(rs.getString("staff_name")); } catch (SQLException ignored) {}
         try { inv.setBookingCode(rs.getString("booking_code")); } catch (SQLException ignored) {}
+        try { inv.setRoomNumber(rs.getString("room_number")); } catch (SQLException ignored) {}
         return inv;
     }
 }

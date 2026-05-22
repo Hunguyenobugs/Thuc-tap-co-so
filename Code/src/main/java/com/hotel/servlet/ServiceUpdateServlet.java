@@ -41,6 +41,10 @@ public class ServiceUpdateServlet extends HttpServlet {
                 Booking booking = bookingDAO.findById(bookingId);
                 req.setAttribute("booking", booking);
 
+                // Luôn load toàn bộ danh sách dịch vụ (theo category)
+                List<Service> allServices = serviceDAO.getAll();
+                req.setAttribute("allServices", allServices);
+
                 // Nếu có bookedRoomId → hiển thị dịch vụ theo phòng cụ thể
                 if (brid != null && !brid.isEmpty()) {
                     int bookedRoomId = Integer.parseInt(brid);
@@ -56,11 +60,6 @@ public class ServiceUpdateServlet extends HttpServlet {
                     req.setAttribute("serviceTotal", usedServiceDAO.getTotalByBooking(bookingId));
                 }
 
-                String kw = req.getParameter("keyword");
-                if (kw != null && !kw.trim().isEmpty()) {
-                    req.setAttribute("searchServices", serviceDAO.searchByName(kw));
-                    req.setAttribute("keyword", kw);
-                }
                 req.getRequestDispatcher("/WEB-INF/views/staff/update_service.jsp").forward(req, resp);
                 break;
             }
@@ -71,9 +70,11 @@ public class ServiceUpdateServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        if ("addService".equals(req.getParameter("action"))) {
-            int bookingId = Integer.parseInt(req.getParameter("bookingId"));
-            String brid = req.getParameter("bookedRoomId");
+        String action = req.getParameter("action");
+        String brid = req.getParameter("bookedRoomId");
+        int bookingId = Integer.parseInt(req.getParameter("bookingId"));
+
+        if ("addService".equals(action)) {
             int serviceId = Integer.parseInt(req.getParameter("serviceId"));
             BigDecimal qty = new BigDecimal(req.getParameter("quantity"));
             Service svc = serviceDAO.findById(serviceId);
@@ -90,9 +91,14 @@ public class ServiceUpdateServlet extends HttpServlet {
             }
             usedServiceDAO.insert(us);
 
-            String redirectUrl = req.getContextPath() + "/staff/serviceUpdate?action=load&bookingId=" + bookingId + "&msg=service_added";
-            if (brid != null && !brid.isEmpty()) redirectUrl += "&bookedRoomId=" + brid;
-            resp.sendRedirect(redirectUrl);
+        } else if ("deleteService".equals(action)) {
+            // Xóa dịch vụ đã thêm nhầm
+            int usedServiceId = Integer.parseInt(req.getParameter("usedServiceId"));
+            usedServiceDAO.delete(usedServiceId);
         }
+
+        String redirectUrl = req.getContextPath() + "/staff/serviceUpdate?action=load&bookingId=" + bookingId + "&msg=updated";
+        if (brid != null && !brid.isEmpty()) redirectUrl += "&bookedRoomId=" + brid;
+        resp.sendRedirect(redirectUrl);
     }
 }

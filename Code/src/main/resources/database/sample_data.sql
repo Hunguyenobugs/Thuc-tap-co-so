@@ -82,7 +82,7 @@ INSERT INTO tbl_booking (id, code, customer_id, staff_id, booking_date, deposit_
 (7, 'PD2026050007', 7, 3, '2026-05-06 09:00:00', 500000.00,  '2026-05-06 09:10:00', 'Đang lưu trú', NULL),
 (8, 'PD2026050008', 8, 4, '2026-05-07 10:00:00', 1500000.00, '2026-05-07 10:20:00', 'Đang lưu trú', 'Chuẩn bị phòng tắm'),
 -- Tương lai
-(9, 'PD2026050009', 1, 3, '2026-05-08 12:00:00', 800000.00,  '2026-05-08 12:05:00', 'Đã xác nhận',  'Đến muộn'),
+(9, 'PD2026050009', 1, 3, '2026-05-08 12:00:00', 800000.00,  '2026-05-08 12:05:00', 'Chưa nhận phòng',  'Đến muộn'),
 (10,'PD2026050010', 2, NULL, '2026-05-08 15:00:00', 0, NULL, 'Chờ xác nhận', 'Vui lòng gọi lại xác nhận');
 
 -- Booked Room (id cột có giá trị tường minh để dùng trong FK)
@@ -101,8 +101,8 @@ INSERT INTO tbl_booked_room (id, booking_id, room_id, check_in, check_out, actua
 -- booking 8 - phòng 412
 (9,  8,  12, '2026-05-08 14:00:00', '2026-05-11 12:00:00', '2026-05-08 14:00:00', NULL, 1500000.00, TRUE,  'Đã check-in'),
 -- Tương lai
-(10, 9,  1,  '2026-05-12 14:00:00', '2026-05-15 12:00:00', NULL, NULL, 800000.00,  FALSE, 'Chờ'),
-(11, 10, 7,  '2026-05-15 14:00:00', '2026-05-20 12:00:00', NULL, NULL, 1500000.00, FALSE, 'Chờ');
+(10, 9,  1,  '2026-05-12 14:00:00', '2026-05-15 12:00:00', NULL, NULL, 800000.00,  FALSE, 'Chờ check in'),
+(11, 10, 7,  '2026-05-15 14:00:00', '2026-05-20 12:00:00', NULL, NULL, 1500000.00, FALSE, 'Chờ check in');
 
 -- Used Services (thêm booked_room_id để liên kết với phòng cụ thể)
 INSERT INTO tbl_used_service (booking_id, booked_room_id, service_id, quantity, unit_price, used_date) VALUES

@@ -16,7 +16,7 @@ public class BookingHistoryServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Customer customer = (Customer) req.getSession().getAttribute("currentCustomer");
-        List<Booking> bookings = bookingDAO.findByCustomer(customer.getId());
+        List<Booking> bookings = bookingDAO.findByCustomerGrouped(customer.getId());
         req.setAttribute("bookings", bookings);
         req.getRequestDispatcher("/WEB-INF/views/customer/booking_history.jsp").forward(req, resp);
     }

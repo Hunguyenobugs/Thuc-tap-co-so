@@ -104,6 +104,7 @@ public class RoomTypeDAO {
                 "  SELECT br.room_id FROM tbl_booked_room br " +
                 "  JOIN tbl_booking b ON br.booking_id = b.id " +
                 "  WHERE b.status NOT IN ('Đã hủy','Đã trả phòng') " +
+                "  AND br.room_status != 'Đã hủy' " +
                 "  AND br.check_in < ? AND br.check_out > ?" +
                 ") ORDER BY rt.base_price";
         try (Connection conn = DBConnection.getConnection();

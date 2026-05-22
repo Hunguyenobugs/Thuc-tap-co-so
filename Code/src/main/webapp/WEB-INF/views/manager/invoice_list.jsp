@@ -28,24 +28,69 @@
     </div></div>
 
     <c:choose>
-        <c:when test="${empty invoices}"><div class="no-data">Chưa có hóa đơn nào</div></c:when>
+        <c:when test="${empty invoiceGroups}"><div class="no-data">Chưa có hóa đơn nào</div></c:when>
         <c:otherwise>
-            <div class="table-container"><table>
-                <thead><tr><th>Mã HD</th><th>Mã đặt phòng</th><th>Khách hàng</th><th>Ngày lập</th><th>Tổng tiền</th><th>Thanh toán</th><th></th></tr></thead>
-                <tbody>
-                <c:forEach var="inv" items="${invoices}">
-                    <tr>
-                        <td><strong>${inv.code}</strong></td>
-                        <td>${inv.bookingCode}</td>
-                        <td>${inv.customerName}</td>
-                        <td><fmt:formatDate value="${inv.issueDate}" pattern="HH:mm dd/MM/yyyy"/></td>
-                        <td class="text-accent fw-bold"><fmt:formatNumber value="${inv.totalAmount}" pattern="#,##0"/>₫</td>
-                        <td><span class="badge badge-info">${inv.paymentMethod}</span></td>
-                        <td><a href="${pageContext.request.contextPath}/manager/invoice?action=detail&id=${inv.id}" class="btn btn-outline btn-sm">👁️ Xem</a></td>
-                    </tr>
+            <div class="table-container">
+                <style>
+                .booking-group{border:1px solid var(--border);border-radius:12px;margin-bottom:20px;overflow:hidden;box-shadow:var(--shadow-sm);}
+                .booking-group-header{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;background:var(--bg-secondary);border-bottom:1px solid var(--border);flex-wrap:wrap;gap:10px;}
+                .booking-group-header .bk-code{font-size:17px;font-weight:700;color:var(--accent);}
+                .booking-group-header .bk-meta{font-size:13px;color:var(--text-muted);display:flex;gap:16px;flex-wrap:wrap;}
+                .room-rows{padding:0 16px 12px;}
+                </style>
+                <c:forEach var="ig" items="${invoiceGroups}">
+                    <div class="booking-group">
+                        <div class="booking-group-header">
+                            <div>
+                                <span class="bk-code">📋 Phiếu đặt: ${ig.bookingCode}</span>
+                                <div class="bk-meta">
+                                    <span>👤 Khách hàng: ${ig.customerName}</span>
+                                    <c:if test="${ig.notCheckedOutCount > 0}">
+                                        <span class="badge badge-warning" style="padding:2px 6px;">Cần TT: ${ig.notCheckedOutCount} phòng</span>
+                                    </c:if>
+                                </div>
+                            </div>
+                            <div style="text-align:right;">
+                                <div style="font-size:12px; color:var(--text-muted); text-transform:uppercase; font-weight:600; margin-bottom:2px;">Tổng thanh toán</div>
+                                <div style="font-size:20px; font-weight:700; color:var(--accent);"><fmt:formatNumber value="${ig.totalAmount}" pattern="#,##0"/>₫</div>
+                            </div>
+                        </div>
+                        <div class="room-rows">
+                            <table style="width:100%; text-align:left; border-collapse:collapse; margin-top:8px;">
+                                <thead>
+                                    <tr style="border-bottom:1px solid var(--border); font-size:13px; color:var(--text-muted);">
+                                        <th style="padding:8px 0;">Mã HĐ</th>
+                                        <th style="padding:8px 0;">Phòng</th>
+                                        <th style="padding:8px 0;">Ngày lập</th>
+                                        <th style="padding:8px 0;">Tổng tiền</th>
+                                        <th style="padding:8px 0;">Đã thanh toán</th>
+                                        <th style="padding:8px 0;">Phương thức</th>
+                                        <th style="padding:8px 0;"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <c:forEach var="inv" items="${ig.invoices}">
+                                        <tr style="border-bottom:1px dashed var(--border); font-size:14px;">
+                                            <td style="padding:10px 0;"><strong>${inv.code}</strong></td>
+                                            <td>
+                                                <c:choose>
+                                                    <c:when test="${not empty inv.roomNumber}">🛏️ ${inv.roomNumber}</c:when>
+                                                    <c:otherwise><span class="text-muted fs-sm">Khác</span></c:otherwise>
+                                                </c:choose>
+                                            </td>
+                                            <td><fmt:formatDate value="${inv.issueDate}" pattern="HH:mm dd/MM/yyyy"/></td>
+                                            <td class="fw-bold"><fmt:formatNumber value="${inv.totalAmount}" pattern="#,##0"/>₫</td>
+                                            <td class="text-success"><fmt:formatNumber value="${inv.paidAmount}" pattern="#,##0"/>₫</td>
+                                            <td><span class="badge badge-info">${inv.paymentMethod}</span></td>
+                                            <td style="text-align:right;"><a href="${pageContext.request.contextPath}/manager/invoice?action=detail&id=${inv.id}" class="btn btn-outline btn-sm" style="padding:4px 8px; font-size:12px;">Chi tiết</a></td>
+                                        </tr>
+                                    </c:forEach>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </c:forEach>
-                </tbody>
-            </table></div>
+            </div>
         </c:otherwise>
     </c:choose>
 </main></div>

@@ -65,13 +65,13 @@ CREATE TABLE tbl_room (
 
 CREATE TABLE tbl_customer (
     id            INT             AUTO_INCREMENT PRIMARY KEY,
-    id_card       VARCHAR(20)     DEFAULT NULL UNIQUE,
+    id_card       VARCHAR(20)     NOT NULL UNIQUE,
     id_type       ENUM('CCCD','Hộ chiếu') DEFAULT 'CCCD',
     full_name     VARCHAR(150)    NOT NULL,
     nationality   VARCHAR(50)     DEFAULT 'Việt Nam',
     birth_date    DATE            DEFAULT NULL,
     gender        ENUM('Nam','Nữ','Khác') DEFAULT NULL,
-    phone         VARCHAR(15)     DEFAULT NULL,
+    phone         VARCHAR(15)     NOT NULL UNIQUE,
     email         VARCHAR(100)    DEFAULT NULL UNIQUE,
     address       VARCHAR(300)    DEFAULT NULL,
     password_hash VARCHAR(255)    DEFAULT NULL,
@@ -114,7 +114,7 @@ CREATE TABLE tbl_booking (
     deposit_amount    DECIMAL(15,2)   DEFAULT 0,
     deposit_date      DATETIME        DEFAULT NULL,
     -- Trạng thái booking tổng hợp (tự cập nhật khi tất cả phòng check-out)
-    status            ENUM('Chờ xác nhận','Đã xác nhận','Đang lưu trú','Đã trả phòng','Đã hủy')
+    status            ENUM('Chờ xác nhận','Chưa nhận phòng','Lưu trú một phần','Đang lưu trú','Đã trả phòng','Đã hủy')
                                       DEFAULT 'Chờ xác nhận',
     note              TEXT            DEFAULT NULL,
     created_at        TIMESTAMP       DEFAULT CURRENT_TIMESTAMP,
@@ -142,8 +142,8 @@ CREATE TABLE tbl_booked_room (
     actual_price     DECIMAL(15,2)   DEFAULT NULL,
     is_checked_in    BOOLEAN         DEFAULT FALSE,
     -- Trạng thái từng phòng riêng biệt
-    room_status      ENUM('Chờ','Đã check-in','Đã check-out','Đã hủy')
-                                     DEFAULT 'Chờ',
+    room_status      ENUM('Chờ check in','Đã check-in','Đã check-out','Đã hủy')
+                                     DEFAULT 'Chờ check in',
     created_at       TIMESTAMP       DEFAULT CURRENT_TIMESTAMP,
     updated_at       TIMESTAMP       DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 

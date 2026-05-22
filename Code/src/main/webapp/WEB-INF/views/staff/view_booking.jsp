@@ -9,7 +9,8 @@
         <div>
             <c:choose>
                 <c:when test="${booking.status=='Chờ xác nhận'}"><span class="badge badge-warning" style="font-size:14px;padding:8px 16px;">${booking.status}</span></c:when>
-                <c:when test="${booking.status=='Đã xác nhận'}"><span class="badge badge-info" style="font-size:14px;padding:8px 16px;">${booking.status}</span></c:when>
+                <c:when test="${booking.status=='Chưa nhận phòng'}"><span class="badge badge-info" style="font-size:14px;padding:8px 16px;">${booking.status}</span></c:when>
+                <c:when test="${booking.status=='Lưu trú một phần'}"><span class="badge badge-primary" style="font-size:14px;padding:8px 16px;">${booking.status}</span></c:when>
                 <c:when test="${booking.status=='Đang lưu trú'}"><span class="badge badge-primary" style="font-size:14px;padding:8px 16px;">${booking.status}</span></c:when>
                 <c:when test="${booking.status=='Đã trả phòng'}"><span class="badge badge-success" style="font-size:14px;padding:8px 16px;">${booking.status}</span></c:when>
                 <c:otherwise><span class="badge badge-danger" style="font-size:14px;padding:8px 16px;">${booking.status}</span></c:otherwise>
@@ -53,7 +54,7 @@
                 <td><fmt:formatNumber value="${br.actualPrice}" pattern="#,##0"/>₫</td>
                 <td>
                     <c:choose>
-                        <c:when test="${br.roomStatus=='Chờ'}"><span class="badge badge-warning">${br.roomStatus}</span></c:when>
+                        <c:when test="${br.roomStatus=='Chờ check in'}"><span class="badge badge-warning">${br.roomStatus}</span></c:when>
                         <c:when test="${br.roomStatus=='Đã check-in'}"><span class="badge badge-primary">${br.roomStatus}</span></c:when>
                         <c:when test="${br.roomStatus=='Đã check-out'}"><span class="badge badge-success">${br.roomStatus}</span></c:when>
                         <c:otherwise><span class="badge badge-danger">${br.roomStatus}</span></c:otherwise>
@@ -70,18 +71,24 @@
             <ul class="detail-list">
                 <li><span class="label">Mã phiếu</span><span class="value fw-bold">${booking.code}</span></li>
                 <li><span class="label">Ngày đặt</span><span class="value"><fmt:formatDate value="${booking.bookingDate}" pattern="HH:mm dd/MM/yyyy"/></span></li>
-                <li><span class="label">Tiền cọc</span><span class="value text-accent fw-bold"><fmt:formatNumber value="${booking.depositAmount}" pattern="#,##0"/>₫</span></li>
+                <li>
+                    <span class="label">Nhân viên</span>
+                    <span class="value">
+                        <c:choose>
+                            <c:when test="${booking.staffId != null and not empty booking.staffName}">
+                                <span class="badge badge-info" style="font-size:12px;">${booking.staffCode}</span>
+                                ${booking.staffName}
+                            </c:when>
+                            <c:otherwise>
+                                <span class="badge badge-warning" style="font-size:12px;">Online</span>
+                                Khách đặt online
+                            </c:otherwise>
+                        </c:choose>
+                    </span>
+                </li>
                 <li><span class="label">Ghi chú</span><span class="value">${not empty booking.note ? booking.note : '—'}</span></li>
-                <li><span class="label">Nhân viên</span><span class="value">${not empty booking.staffName ? booking.staffName : 'Khách tự đặt'}</span></li>
             </ul>
             <div class="btn-group mt-3" style="flex-direction:column;gap:8px;">
-                <c:if test="${booking.status == 'Chờ xác nhận'}">
-                    <form method="post" action="${pageContext.request.contextPath}/staff/manageBooking">
-                        <input type="hidden" name="action" value="approve">
-                        <input type="hidden" name="bookingId" value="${booking.id}">
-                        <button type="submit" class="btn btn-primary btn-block" onclick="return confirm('Xác nhận duyệt phiếu này?');">✅ Duyệt phiếu</button>
-                    </form>
-                </c:if>
                 <a href="${pageContext.request.contextPath}/staff/manageBooking?action=search" class="btn btn-outline btn-block">← Quay lại</a>
             </div>
         </div></div>

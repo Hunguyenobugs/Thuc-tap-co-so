@@ -47,7 +47,8 @@
                                 </div>
                             </div>
                             <c:choose>
-                                <c:when test="${b.status=='Đã xác nhận'}"><span class="badge badge-info">${b.status}</span></c:when>
+                                <c:when test="${b.status=='Chưa nhận phòng'}"><span class="badge badge-info">${b.status}</span></c:when>
+                                <c:when test="${b.status=='Lưu trú một phần'}"><span class="badge badge-primary">${b.status}</span></c:when>
                                 <c:when test="${b.status=='Đang lưu trú'}"><span class="badge badge-primary">${b.status}</span></c:when>
                                 <c:otherwise><span class="badge badge-warning">${b.status}</span></c:otherwise>
                             </c:choose>

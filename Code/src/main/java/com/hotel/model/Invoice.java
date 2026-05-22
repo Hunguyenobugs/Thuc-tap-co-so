@@ -23,6 +23,7 @@ public class Invoice {
     private String customerName;
     private String staffName;
     private String bookingCode;
+    private String roomNumber;
 
     public Invoice() {}
 
@@ -62,4 +63,6 @@ public class Invoice {
     public void setStaffName(String staffName) { this.staffName = staffName; }
     public String getBookingCode() { return bookingCode; }
     public void setBookingCode(String bookingCode) { this.bookingCode = bookingCode; }
+    public String getRoomNumber() { return roomNumber; }
+    public void setRoomNumber(String roomNumber) { this.roomNumber = roomNumber; }
 }

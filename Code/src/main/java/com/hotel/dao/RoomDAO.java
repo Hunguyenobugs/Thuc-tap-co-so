@@ -93,7 +93,7 @@ public class RoomDAO {
     }
 
     public boolean hasActiveBooking(int roomId) {
-        String sql = "SELECT COUNT(*) FROM tbl_booked_room br JOIN tbl_booking b ON br.booking_id=b.id WHERE br.room_id=? AND b.status NOT IN ('Đã hủy','Đã trả phòng')";
+        String sql = "SELECT COUNT(*) FROM tbl_booked_room br JOIN tbl_booking b ON br.booking_id=b.id WHERE br.room_id=? AND b.status NOT IN ('Đã hủy','Đã trả phòng') AND br.room_status != 'Đã hủy'";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, roomId);
@@ -111,6 +111,7 @@ public class RoomDAO {
                 "  SELECT br.room_id FROM tbl_booked_room br " +
                 "  JOIN tbl_booking b ON br.booking_id=b.id " +
                 "  WHERE b.status NOT IN ('Đã hủy','Đã trả phòng') " +
+                "  AND br.room_status != 'Đã hủy' " +
                 "  AND br.check_in < ? AND br.check_out > ?" +
                 ") ORDER BY r.room_number";
         try (Connection conn = DBConnection.getConnection();

@@ -1,10 +1,11 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
+<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
 <!DOCTYPE html>
 <html lang="vi">
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Grand Lotus Hotel</title><link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css"></head>
+<title>${applicationScope.hotelInfo.name}</title><link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css"></head>
 <body class="customer-page">
 <jsp:include page="../components/customer_header.jsp"/>
 <section class="hero">
@@ -23,7 +24,18 @@
     <div class="room-grid">
         <c:forEach var="rt" items="${roomTypes}">
             <div class="room-card">
-                <div class="room-card-img">🛏️</div>
+                <c:choose>
+                    <c:when test="${not empty rt.imageUrl}">
+                        <div class="room-gallery" style="display:flex; overflow:hidden; gap:5px; padding:5px; scroll-snap-type: x mandatory;">
+                            <c:forEach var="imgUrl" items="${rt.imageUrl.split(',')}">
+                                <img src="${pageContext.request.contextPath}${imgUrl.trim()}" style="height:150px; min-width:100%; object-fit:cover; border-radius:8px; scroll-snap-align: start;" alt="${rt.name}">
+                            </c:forEach>
+                        </div>
+                    </c:when>
+                    <c:otherwise>
+                        <div class="room-card-img">🛏️</div>
+                    </c:otherwise>
+                </c:choose>
                 <div class="room-card-body">
                     <h3>${rt.name}</h3>
                     <p class="amenities">${rt.amenities}</p>
@@ -50,4 +62,26 @@
 </section>
 <footer class="customer-footer">© 2025 ${hotel.name}. All rights reserved.</footer>
 <script src="${pageContext.request.contextPath}/js/main.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const today = new Date().toISOString().split('T')[0];
+        const checkIn = document.querySelector('input[name="checkIn"]');
+        const checkOut = document.querySelector('input[name="checkOut"]');
+        if(checkIn) checkIn.min = today;
+        if(checkOut) checkOut.min = today;
+        
+        if(checkIn && checkOut) {
+            checkIn.addEventListener('change', function() {
+                if (checkIn.value) {
+                    const next = new Date(checkIn.value);
+                    next.setDate(next.getDate() + 1);
+                    const minOut = next.toISOString().split('T')[0];
+                    checkOut.min = minOut;
+                    if (checkOut.value && checkOut.value <= checkIn.value) checkOut.value = minOut;
+                }
+            });
+        }
+    });
+
+</script>
 </body></html>

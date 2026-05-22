@@ -74,6 +74,16 @@ public class UsedServiceDAO {
     }
 
 
+    public boolean delete(int id) {
+        String sql = "DELETE FROM tbl_used_service WHERE id=?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) { e.printStackTrace(); }
+        return false;
+    }
+
     private UsedService mapRow(ResultSet rs) throws SQLException {
         UsedService us = new UsedService();
         us.setId(rs.getInt("id"));

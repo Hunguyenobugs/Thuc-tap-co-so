@@ -15,7 +15,7 @@
             <div class="form-group"><label>Họ tên <span class="required">*</span></label>
                 <input type="text" name="fullName" class="form-control" required></div>
             <div class="form-row">
-                <div class="form-group"><label>Số CCCD</label><input type="text" name="idCard" class="form-control"></div>
+                <div class="form-group"><label>Số CCCD <span class="required">*</span></label><input type="text" name="idCard" class="form-control" required></div>
                 <div class="form-group"><label>Giới tính</label>
                     <select name="gender" class="form-control"><option value="">--Chọn--</option><option value="Nam">Nam</option><option value="Nữ">Nữ</option><option value="Khác">Khác</option></select></div>
             </div>
@@ -37,4 +37,80 @@
     </div>
 </div>
 <script src="${pageContext.request.contextPath}/js/main.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const form = document.querySelector("form");
+    const fullNameInput = document.querySelector("input[name='fullName']");
+    const idCardInput = document.querySelector("input[name='idCard']");
+    const emailInput = document.querySelector("input[name='email']");
+    const phoneInput = document.querySelector("input[name='phone']");
+    const birthDateInput = document.querySelector("input[name='birthDate']");
+    const passwordInput = document.querySelector("input[name='password']");
+    const confirmPasswordInput = document.querySelector("input[name='confirmPassword']");
+
+    if (birthDateInput) {
+        const today = new Date().toISOString().split('T')[0];
+        birthDateInput.max = today;
+    }
+
+    form.addEventListener("submit", function(e) {
+        let isValid = true;
+        let errorMessage = "";
+
+        // 1. Kiểm tra họ tên
+        if (fullNameInput.value.trim().length < 2) {
+            isValid = false;
+            errorMessage += "• Họ tên phải có ít nhất 2 ký tự.\n";
+        }
+
+        // 2. Kiểm tra CCCD (nếu có nhập)
+        const idCardValue = idCardInput.value.trim();
+        if (idCardValue.length > 0) {
+            const idCardRegex = /^[0-9]+$/;
+            if (!idCardRegex.test(idCardValue)) {
+                isValid = false;
+                errorMessage += "• Số CCCD/Hộ chiếu chỉ được chứa các chữ số.\n";
+            } else if (idCardValue.length !== 9 && idCardValue.length !== 12) {
+                isValid = false;
+                errorMessage += "• Số CCCD phải dài đúng 9 hoặc 12 số.\n";
+            }
+        }
+
+        // 3. Kiểm tra số điện thoại
+        const phoneValue = phoneInput.value.trim();
+        const phoneRegex = /^(0[3|5|7|8|9])[0-9]{8}$/;
+        if (!phoneRegex.test(phoneValue)) {
+            isValid = false;
+            errorMessage += "• Số điện thoại không đúng định dạng (phải gồm 10 chữ số và bắt đầu bằng 03, 05, 07, 08 hoặc 09).\n";
+        }
+
+        // 4. Kiểm tra ngày sinh (nếu có nhập)
+        if (birthDateInput.value) {
+            const birth = new Date(birthDateInput.value);
+            const today = new Date();
+            if (birth >= today) {
+                isValid = false;
+                errorMessage += "• Ngày sinh không thể là ngày hiện tại hoặc tương lai.\n";
+            }
+        }
+
+        // 5. Kiểm tra mật khẩu
+        if (passwordInput.value.length < 6) {
+            isValid = false;
+            errorMessage += "• Mật khẩu phải có ít nhất 6 ký tự.\n";
+        }
+
+        // 6. Kiểm tra mật khẩu trùng khớp
+        if (passwordInput.value !== confirmPasswordInput.value) {
+            isValid = false;
+            errorMessage += "• Mật khẩu xác nhận không khớp.\n";
+        }
+
+        if (!isValid) {
+            e.preventDefault();
+            alert("Vui lòng sửa các lỗi sau để đăng ký:\n\n" + errorMessage);
+        }
+    });
+});
+</script>
 </body></html>

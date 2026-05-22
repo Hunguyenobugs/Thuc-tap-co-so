@@ -37,7 +37,7 @@ public class BookingServlet extends HttpServlet {
                 }
                 String q = req.getParameter("q");
                 if (q == null) q = "";
-                req.setAttribute("customers", customerDAO.searchByIdCard(q));
+                req.setAttribute("customers", customerDAO.searchByKeyword(q));
                 req.setAttribute("keyword", q);
                 req.getRequestDispatcher("/WEB-INF/views/staff/search_customer.jsp").forward(req, resp);
                 break;
@@ -70,16 +70,28 @@ public class BookingServlet extends HttpServlet {
                 String co = req.getParameter("checkOut");
                 String rtId = req.getParameter("roomTypeId");
                 if (ci != null && co != null && rtId != null && !rtId.isEmpty()) {
-                    // Lọc ra những phòng đã có trong giỏ để không hiện lại
-                    List<BookingCartItem> cart = (List<BookingCartItem>) session.getAttribute("bookCart");
-                    List<Room> freeRooms = roomDAO.searchFreeRooms(ci, co, Integer.parseInt(rtId));
-                    if (cart != null) {
-                        freeRooms.removeIf(r -> cart.stream().anyMatch(item -> item.getRoomId() == r.getId()));
+                    try {
+                        java.time.LocalDate ciDate = java.time.LocalDate.parse(ci);
+                        java.time.LocalDate coDate = java.time.LocalDate.parse(co);
+                        if (ciDate.isBefore(java.time.LocalDate.now())) {
+                            req.setAttribute("error", "Không thể chọn ngày trong quá khứ.");
+                        } else if (!coDate.isAfter(ciDate)) {
+                            req.setAttribute("error", "Ngày trả phòng phải sau ngày nhận phòng.");
+                        } else {
+                            // Lọc ra những phòng đã có trong giỏ để không hiện lại
+                            List<BookingCartItem> cart = (List<BookingCartItem>) session.getAttribute("bookCart");
+                            List<Room> freeRooms = roomDAO.searchFreeRooms(ci, co, Integer.parseInt(rtId));
+                            if (cart != null) {
+                                freeRooms.removeIf(r -> cart.stream().anyMatch(item -> item.getRoomId() == r.getId()));
+                            }
+                            req.setAttribute("rooms", freeRooms);
+                            req.setAttribute("checkIn", ci);
+                            req.setAttribute("checkOut", co);
+                            req.setAttribute("selectedType", rtId);
+                        }
+                    } catch (Exception e) {
+                        req.setAttribute("error", "Định dạng ngày không hợp lệ.");
                     }
-                    req.setAttribute("rooms", freeRooms);
-                    req.setAttribute("checkIn", ci);
-                    req.setAttribute("checkOut", co);
-                    req.setAttribute("selectedType", rtId);
                 }
 
                 List<BookingCartItem> cart = (List<BookingCartItem>) session.getAttribute("bookCart");
@@ -134,18 +146,46 @@ public class BookingServlet extends HttpServlet {
 
         // ── Thêm khách hàng mới ──────────────────────────────────────────────
         if ("insertCustomer".equals(action)) {
+            String phone = req.getParameter("phone");
+            String email = req.getParameter("email");
+            String idCard = req.getParameter("idCard");
+
+            // Validate trùng lặp
+            if (phone != null && !phone.isEmpty() && customerDAO.existsByPhone(phone)) {
+                resp.sendRedirect(req.getContextPath() + "/staff/booking?action=addCustomer&error=phone_exists"
+                    + "&fullName=" + java.net.URLEncoder.encode(req.getParameter("fullName"), "UTF-8")
+                    + "&idCard=" + java.net.URLEncoder.encode(idCard, "UTF-8")
+                    + "&phone=" + java.net.URLEncoder.encode(phone, "UTF-8")
+                    + "&email=" + java.net.URLEncoder.encode(email != null ? email : "", "UTF-8"));
+                return;
+            }
+            if (email != null && !email.isEmpty() && customerDAO.existsByEmail(email)) {
+                resp.sendRedirect(req.getContextPath() + "/staff/booking?action=addCustomer&error=email_exists"
+                    + "&fullName=" + java.net.URLEncoder.encode(req.getParameter("fullName"), "UTF-8")
+                    + "&idCard=" + java.net.URLEncoder.encode(idCard, "UTF-8")
+                    + "&phone=" + java.net.URLEncoder.encode(phone != null ? phone : "", "UTF-8")
+                    + "&email=" + java.net.URLEncoder.encode(email, "UTF-8"));
+                return;
+            }
+
             Customer c = new Customer();
             c.setFullName(req.getParameter("fullName"));
-            c.setIdCard(req.getParameter("idCard"));
+            c.setIdCard(idCard);
             c.setIdType("CCCD");
-            c.setPhone(req.getParameter("phone"));
-            c.setEmail(req.getParameter("email"));
+            c.setPhone(phone);
+            c.setEmail(email);
             c.setAddress(req.getParameter("address"));
             String bd = req.getParameter("birthDate");
             if (bd != null && !bd.isEmpty()) c.setBirthDate(Date.valueOf(bd));
             c.setGender(req.getParameter("gender"));
             int newId = customerDAO.insert(c);
-            resp.sendRedirect(req.getContextPath() + "/staff/booking?action=searchRoom&customerId=" + newId);
+            if (newId > 0) {
+                session.setAttribute("bookCustomerId", newId);
+                resp.sendRedirect(req.getContextPath() + "/staff/booking?action=searchRoom&customerId=" + newId);
+            } else {
+                resp.sendRedirect(req.getContextPath() + "/staff/booking?action=addCustomer&error=insert_failed");
+            }
+
 
         // ── Thêm phòng vào giỏ ──────────────────────────────────────────────
         } else if ("addToCart".equals(action)) {
@@ -154,23 +194,44 @@ public class BookingServlet extends HttpServlet {
             String checkOut = req.getParameter("checkOut");
             int customerId = Integer.parseInt(req.getParameter("customerId"));
 
-            Room room = roomDAO.findById(roomId);
-            RoomType rt = roomTypeDAO.findById(room.getRoomTypeId());
-            long nights = java.time.temporal.ChronoUnit.DAYS.between(
-                    LocalDate.parse(checkIn), LocalDate.parse(checkOut));
+            try {
+                // Validate: checkOut phải sau checkIn ít nhất 1 ngày và không trong quá khứ
+                java.time.LocalDate ciDate = java.time.LocalDate.parse(checkIn);
+                java.time.LocalDate coDate = java.time.LocalDate.parse(checkOut);
+                
+                if (ciDate.isBefore(java.time.LocalDate.now())) {
+                    resp.sendRedirect(req.getContextPath() + "/staff/booking?action=searchRoom&customerId=" + customerId
+                            + "&error=past_date&checkIn=" + checkIn + "&checkOut=" + checkOut
+                            + "&roomTypeId=" + req.getParameter("roomTypeId"));
+                    return;
+                }
+                if (!coDate.isAfter(ciDate)) {
+                    resp.sendRedirect(req.getContextPath() + "/staff/booking?action=searchRoom&customerId=" + customerId
+                            + "&error=invalid_dates&checkIn=" + checkIn + "&checkOut=" + checkOut
+                            + "&roomTypeId=" + req.getParameter("roomTypeId"));
+                    return;
+                }
 
-            List<BookingCartItem> cart = (List<BookingCartItem>) session.getAttribute("bookCart");
-            if (cart == null) cart = new ArrayList<>();
+                Room room = roomDAO.findById(roomId);
+                RoomType rt = roomTypeDAO.findById(room.getRoomTypeId());
+                long nights = java.time.temporal.ChronoUnit.DAYS.between(ciDate, coDate);
 
-            // Không thêm trùng
-            final int fRoomId = roomId;
-            if (cart.stream().noneMatch(i -> i.getRoomId() == fRoomId)) {
-                cart.add(new BookingCartItem(roomId, room.getRoomNumber(), rt.getName(),
-                        checkIn, checkOut, nights, rt.getBasePrice()));
+                List<BookingCartItem> cart = (List<BookingCartItem>) session.getAttribute("bookCart");
+                if (cart == null) cart = new ArrayList<>();
+
+                // Không thêm trùng
+                final int fRoomId = roomId;
+                if (cart.stream().noneMatch(i -> i.getRoomId() == fRoomId)) {
+                    cart.add(new BookingCartItem(roomId, room.getRoomNumber(), rt.getName(),
+                            checkIn, checkOut, nights, rt.getBasePrice()));
+                }
+                session.setAttribute("bookCart", cart);
+                resp.sendRedirect(req.getContextPath() + "/staff/booking?action=searchRoom&customerId=" + customerId
+                        + "&checkIn=" + checkIn + "&checkOut=" + checkOut + "&roomTypeId=" + room.getRoomTypeId());
+            } catch (Exception e) {
+                resp.sendRedirect(req.getContextPath() + "/staff/booking?action=searchRoom&customerId=" + customerId
+                        + "&error=invalid_format");
             }
-            session.setAttribute("bookCart", cart);
-            resp.sendRedirect(req.getContextPath() + "/staff/booking?action=searchRoom&customerId=" + customerId
-                    + "&checkIn=" + checkIn + "&checkOut=" + checkOut + "&roomTypeId=" + room.getRoomTypeId());
 
         // ── Đặt phòng (tạo booking) ─────────────────────────────────────────
         } else if ("insert".equals(action)) {
@@ -187,13 +248,23 @@ public class BookingServlet extends HttpServlet {
             b.setCode(bookingDAO.generateCode());
             b.setCustomerId(customerId);
             b.setStaffId(staff.getId());
-            b.setStatus("Đã xác nhận");
+            b.setStatus("Chưa nhận phòng");
             b.setNote(req.getParameter("note"));
 
             List<BookedRoom> bookedRooms = new ArrayList<>();
             for (BookingCartItem item : cart) {
+                LocalDate ciDate = LocalDate.parse(item.getCheckIn());
+                LocalDate coDate = LocalDate.parse(item.getCheckOut());
+
+                // Đảm bảo checkOut phải sau checkIn (an toàn kép)
+                if (!coDate.isAfter(ciDate)) {
+                    resp.sendRedirect(req.getContextPath() + "/staff/booking?action=confirm&error=invalid_dates");
+                    return;
+                }
+
                 BookedRoom br = new BookedRoom();
                 br.setRoomId(item.getRoomId());
+                // check_in: 14:00 ngày nhận phòng; check_out: 12:00 ngày trả phòng
                 br.setCheckIn(java.sql.Timestamp.valueOf(item.getCheckIn() + " 14:00:00"));
                 br.setCheckOut(java.sql.Timestamp.valueOf(item.getCheckOut() + " 12:00:00"));
                 br.setActualPrice(item.getPricePerNight());

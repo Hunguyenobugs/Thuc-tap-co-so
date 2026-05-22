@@ -25,7 +25,7 @@ public class ManagerHomeServlet extends HttpServlet {
             ResultSet rs2 = ps2.executeQuery();
             if (rs2.next()) req.setAttribute("totalRooms", rs2.getInt("cnt"));
 
-            // 3. Số đặt phòng đang chờ xử lý (status 1,2: 'Chờ xác nhận','Đã xác nhận')
+            // 3. Số đặt phòng đang chờ xử lý (status 1,2: 'Chờ xác nhận','Chưa nhận phòng')
             PreparedStatement ps3 = conn.prepareStatement(
                 "SELECT COUNT(*) AS cnt FROM tbl_booking WHERE status IN (1, 2)");
             ResultSet rs3 = ps3.executeQuery();

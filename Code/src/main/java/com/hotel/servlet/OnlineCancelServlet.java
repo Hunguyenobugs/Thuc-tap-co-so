@@ -27,8 +27,30 @@ public class OnlineCancelServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        int bookingId = Integer.parseInt(req.getParameter("bookingId"));
-        bookingDAO.cancel(bookingId);
-        resp.sendRedirect(req.getContextPath() + "/bookingHistory?msg=cancel_success");
+        Customer customer = (Customer) req.getSession().getAttribute("currentCustomer");
+        if (customer == null) {
+            resp.sendRedirect(req.getContextPath() + "/customerAuth?action=loginPage");
+            return;
+        }
+
+        String bookedRoomIdStr = req.getParameter("bookedRoomId");
+        if (bookedRoomIdStr != null && !bookedRoomIdStr.isEmpty()) {
+            int bookedRoomId = Integer.parseInt(bookedRoomIdStr);
+            boolean success = bookingDAO.cancelBookedRoom(bookedRoomId, customer.getId());
+            if (success) {
+                resp.sendRedirect(req.getContextPath() + "/bookingHistory?msg=cancel_room_success");
+            } else {
+                resp.sendRedirect(req.getContextPath() + "/bookingHistory?error=cancel_failed");
+            }
+        } else {
+            int bookingId = Integer.parseInt(req.getParameter("bookingId"));
+            Booking b = bookingDAO.findById(bookingId);
+            if (b != null && b.getCustomerId() == customer.getId()) {
+                bookingDAO.cancel(bookingId);
+                resp.sendRedirect(req.getContextPath() + "/bookingHistory?msg=cancel_success");
+            } else {
+                resp.sendRedirect(req.getContextPath() + "/bookingHistory?error=not_found");
+            }
+        }
     }
 }

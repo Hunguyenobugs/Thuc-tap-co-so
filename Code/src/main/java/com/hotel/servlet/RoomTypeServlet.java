@@ -7,8 +7,17 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.io.File;
+import java.nio.file.Paths;
+import java.util.UUID;
+import jakarta.servlet.annotation.MultipartConfig;
 
 @WebServlet("/manager/roomtype")
+@MultipartConfig(
+    fileSizeThreshold = 1024 * 1024 * 1, // 1 MB
+    maxFileSize = 1024 * 1024 * 10,      // 10 MB
+    maxRequestSize = 1024 * 1024 * 20   // 20 MB
+)
 public class RoomTypeServlet extends HttpServlet {
     private final RoomTypeDAO dao = new RoomTypeDAO();
 
@@ -55,6 +64,28 @@ public class RoomTypeServlet extends HttpServlet {
         }
     }
 
+    private String handleFileUpload(HttpServletRequest req) {
+        try {
+            java.util.List<String> urls = new java.util.ArrayList<>();
+            for (jakarta.servlet.http.Part filePart : req.getParts()) {
+                if (("imageFile".equals(filePart.getName()) || "imageFiles".equals(filePart.getName())) && filePart.getSize() > 0) {
+                    String fileName = java.util.UUID.randomUUID().toString() + "_" + java.nio.file.Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
+                    String uploadPath = req.getServletContext().getRealPath("") + java.io.File.separator + "images" + java.io.File.separator + "rooms";
+                    
+                    java.io.File uploadDir = new java.io.File(uploadPath);
+                    if (!uploadDir.exists()) uploadDir.mkdirs();
+                    
+                    filePart.write(uploadPath + java.io.File.separator + fileName);
+                    urls.add("/images/rooms/" + fileName);
+                }
+            }
+            if (!urls.isEmpty()) return String.join(",", urls);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     private void doInsert(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String name = req.getParameter("name");
         String priceStr = req.getParameter("basePrice");
@@ -71,7 +102,16 @@ public class RoomTypeServlet extends HttpServlet {
         rt.setBasePrice(new BigDecimal(priceStr.trim()));
         rt.setAmenities(req.getParameter("amenities"));
         rt.setDescription(req.getParameter("description"));
-        rt.setImageUrl(req.getParameter("imageUrl"));
+        
+        String uploadedUrl = handleFileUpload(req);
+        String oldUrls = req.getParameter("imageUrl");
+        if (uploadedUrl != null && oldUrls != null && !oldUrls.trim().isEmpty()) {
+            rt.setImageUrl(oldUrls + "," + uploadedUrl);
+        } else if (uploadedUrl != null) {
+            rt.setImageUrl(uploadedUrl);
+        } else {
+            rt.setImageUrl(oldUrls);
+        }
 
         dao.insert(rt);
         resp.sendRedirect(req.getContextPath() + "/manager/roomtype?msg=add_success");
@@ -86,7 +126,16 @@ public class RoomTypeServlet extends HttpServlet {
         rt.setBasePrice(new BigDecimal(req.getParameter("basePrice")));
         rt.setAmenities(req.getParameter("amenities"));
         rt.setDescription(req.getParameter("description"));
-        rt.setImageUrl(req.getParameter("imageUrl"));
+        
+        String uploadedUrl = handleFileUpload(req);
+        String oldUrls = req.getParameter("imageUrl");
+        if (uploadedUrl != null && oldUrls != null && !oldUrls.trim().isEmpty()) {
+            rt.setImageUrl(oldUrls + "," + uploadedUrl);
+        } else if (uploadedUrl != null) {
+            rt.setImageUrl(uploadedUrl);
+        } else {
+            rt.setImageUrl(oldUrls);
+        }
 
         dao.update(rt);
         resp.sendRedirect(req.getContextPath() + "/manager/roomtype?msg=update_success");

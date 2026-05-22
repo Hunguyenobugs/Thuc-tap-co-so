@@ -21,6 +21,7 @@ public class Booking {
 
     private String customerName;
     private String staffName;
+    private String staffCode;     // mã nhân viên tạo phiếu
     private String roomNumber;
     private String roomTypeName;
     private String checkIn;
@@ -59,6 +60,8 @@ public class Booking {
     public void setCustomerName(String customerName) { this.customerName = customerName; }
     public String getStaffName() { return staffName; }
     public void setStaffName(String staffName) { this.staffName = staffName; }
+    public String getStaffCode() { return staffCode; }
+    public void setStaffCode(String staffCode) { this.staffCode = staffCode; }
     public String getRoomNumber() { return roomNumber; }
     public void setRoomNumber(String roomNumber) { this.roomNumber = roomNumber; }
     public String getRoomTypeName() { return roomTypeName; }
