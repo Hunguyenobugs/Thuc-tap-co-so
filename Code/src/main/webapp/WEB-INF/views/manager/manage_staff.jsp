@@ -7,17 +7,17 @@
     <jsp:include page="../components/sidebar.jsp"/>
     <jsp:include page="../components/manager_header.jsp"/>
 <main class="main-content fade-in">
-    <div class="topbar"><div><h1>👥 Quản lý <span>nhân viên</span></h1></div></div>
-    <c:if test="${param.msg != null}"><div class="alert alert-success">✅ Thao tác thành công!</div></c:if>
-    <c:if test="${param.error == 'has_data'}"><div class="alert alert-danger">⚠️ Không thể xóa: nhân viên có dữ liệu liên quan</div></c:if>
+    <div class="topbar"><div><h1>Quản lý <span>nhân viên</span></h1></div></div>
+    <c:if test="${param.msg != null}"><div class="alert alert-success">Thao tác thành công!</div></c:if>
+    <c:if test="${param.error == 'has_data'}"><div class="alert alert-danger">Không thể xóa: nhân viên có dữ liệu liên quan</div></c:if>
 
     <div style="display: flex; gap: 16px; width: 100%; margin-bottom: 20px;">
         <form method="get" action="${pageContext.request.contextPath}/manager/staff" style="display: flex; gap: 16px; flex: 1; margin: 0;">
             <input type="hidden" name="action" value="search">
             <input type="text" name="keyword" class="form-control" placeholder="Tìm tên, mã NV hoặc username..." value="${keyword}" style="flex: 1; max-width: none;">
-            <button type="submit" class="btn btn-primary" style="flex-shrink: 0;">🔍 Tìm kiếm</button>
+            <button type="submit" class="btn btn-primary" style="flex-shrink: 0;">Tìm kiếm</button>
         </form>
-        <a href="${pageContext.request.contextPath}/manager/staff?action=add" class="btn btn-primary" style="flex-shrink: 0;">➕ Thêm nhân viên</a>
+        <a href="${pageContext.request.contextPath}/manager/staff?action=add" class="btn btn-primary" style="flex-shrink: 0;">Thêm nhân viên</a>
     </div>
 
     <c:choose>
@@ -50,8 +50,8 @@
                             </c:choose>
                         </td>
                         <td><div class="btn-group">
-                            <a href="${pageContext.request.contextPath}/manager/staff?action=detail&id=${u.id}" class="btn btn-outline btn-sm" title="Xem chi tiết">👁️</a>
-                            <a href="${pageContext.request.contextPath}/manager/staff?action=edit&id=${u.id}" class="btn btn-outline btn-sm" title="Sửa">✏️</a>
+                            <a href="${pageContext.request.contextPath}/manager/staff?action=detail&id=${u.id}" class="btn btn-outline btn-sm" title="Xem chi tiết">Xem</a>
+                            <a href="${pageContext.request.contextPath}/manager/staff?action=edit&id=${u.id}" class="btn btn-outline btn-sm" title="Sửa">Sửa</a>
                         </div></td>
                     </tr>
                 </c:forEach>

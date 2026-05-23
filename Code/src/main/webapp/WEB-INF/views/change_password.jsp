@@ -16,8 +16,8 @@
         <c:otherwise><jsp:include page="components/staff_header.jsp"/></c:otherwise>
     </c:choose>
     <main class="main-content fade-in">
-        <div class="topbar"><div><h1>🔒 Đổi <span>mật khẩu</span></h1></div></div>
-        <c:if test="${error != null}"><div class="alert alert-danger">⚠️ ${error}</div></c:if>
+        <div class="topbar"><div><h1>Đổi <span>mật khẩu</span></h1></div></div>
+        <c:if test="${error != null}"><div class="alert alert-danger">${error}</div></c:if>
         <div class="card" style="max-width:500px; margin: 0 auto;">
             <form method="post" action="${pageContext.request.contextPath}/auth">
                 <input type="hidden" name="action" value="changePassword">

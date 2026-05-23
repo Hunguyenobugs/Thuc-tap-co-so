@@ -15,18 +15,18 @@
     <main class="main-content fade-in">
         <div class="topbar">
             <div>
-                <h1>📊 Trang chủ <span>Nhân viên</span></h1>
+                <h1>Trang chủ <span>Nhân viên</span></h1>
                 <div class="breadcrumb"><span>Nghiệp vụ lễ tân</span></div>
             </div>
         </div>
         
         <% String msg = request.getParameter("msg"); %>
-        <% if ("booking_success".equals(msg)) { %><div class="alert alert-success">✅ Đặt phòng thành công! Mã phiếu: <strong>${param.code}</strong></div><% } %>
-        <% if ("cancel_success".equals(msg)) { %><div class="alert alert-success">✅ Hủy phiếu đặt thành công</div><% } %>
-        <% if ("booking_updated".equals(msg)) { %><div class="alert alert-success">✅ Cập nhật phiếu đặt thành công</div><% } %>
-        <% if ("checkin_success".equals(msg)) { %><div class="alert alert-success">✅ Check-in thành công</div><% } %>
-        <% if ("checkout_success".equals(msg)) { %><div class="alert alert-success">✅ Check-out thành công! Mã hóa đơn: <strong>${param.code}</strong></div><% } %>
-        <% if ("password_changed".equals(msg)) { %><div class="alert alert-success">✅ Đổi mật khẩu thành công</div><% } %>
+        <% if ("booking_success".equals(msg)) { %><div class="alert alert-success">Đặt phòng thành công! Mã phiếu: <strong>${param.code}</strong></div><% } %>
+        <% if ("cancel_success".equals(msg)) { %><div class="alert alert-success">Hủy phiếu đặt thành công</div><% } %>
+        <% if ("booking_updated".equals(msg)) { %><div class="alert alert-success">Cập nhật phiếu đặt thành công</div><% } %>
+        <% if ("checkin_success".equals(msg)) { %><div class="alert alert-success">Check-in thành công</div><% } %>
+        <% if ("checkout_success".equals(msg)) { %><div class="alert alert-success">Check-out thành công! Mã hóa đơn: <strong>${param.code}</strong></div><% } %>
+        <% if ("password_changed".equals(msg)) { %><div class="alert alert-success">Đổi mật khẩu thành công</div><% } %>
         
         <div class="stat-grid mb-3">
             <div class="stat-card">

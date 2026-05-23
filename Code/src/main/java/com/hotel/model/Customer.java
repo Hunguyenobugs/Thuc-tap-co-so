@@ -15,6 +15,7 @@ public class Customer {
     private String email;
     private String address;
     private String passwordHash;
+    private String status;
     private Timestamp createdAt;
     private Timestamp updatedAt;
 
@@ -42,6 +43,8 @@ public class Customer {
     public void setAddress(String address) { this.address = address; }
     public String getPasswordHash() { return passwordHash; }
     public void setPasswordHash(String passwordHash) { this.passwordHash = passwordHash; }
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
     public Timestamp getCreatedAt() { return createdAt; }
     public void setCreatedAt(Timestamp createdAt) { this.createdAt = createdAt; }
     public Timestamp getUpdatedAt() { return updatedAt; }

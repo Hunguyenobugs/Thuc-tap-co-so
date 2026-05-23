@@ -34,9 +34,30 @@ public class DatabaseInitListener implements ServletContextListener {
             }
 
             System.out.println("========== RESET DATABASE THÀNH CÔNG ==========");
+            
+            // Dọn dẹp ảnh trong thư mục rooms (cả deploy và source code)
+            System.out.println("Đang dọn dẹp hình ảnh trong rooms...");
+            clearFolder(sce.getServletContext().getRealPath("/images/rooms"));
+            clearFolder("d:\\Dai hoc\\Thuc tap co so\\Code\\src\\main\\webapp\\images\\rooms");
+            System.out.println("Dọn dẹp hình ảnh thành công!");
         } catch (Exception e) {
             System.err.println("Lỗi khi reset database: " + e.getMessage());
             e.printStackTrace();
+        }
+    }
+
+    private void clearFolder(String path) {
+        if (path == null) return;
+        java.io.File folder = new java.io.File(path);
+        if (folder.exists() && folder.isDirectory()) {
+            java.io.File[] files = folder.listFiles();
+            if (files != null) {
+                for (java.io.File f : files) {
+                    if (f.isFile()) {
+                        f.delete();
+                    }
+                }
+            }
         }
     }
 

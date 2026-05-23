@@ -15,13 +15,13 @@
     <main class="main-content fade-in">
         <div class="topbar">
             <div>
-                <h1>📊 Tổng quan <span>Hệ thống</span></h1>
+                <h1>Tổng quan <span>Hệ thống</span></h1>
                 <div class="breadcrumb"><span>Dashboard</span></div>
             </div>
         </div>
         
         <% if ("password_changed".equals(request.getParameter("msg"))) { %>
-            <div class="alert alert-success">✅ Đổi mật khẩu thành công</div>
+            <div class="alert alert-success">Đổi mật khẩu thành công</div>
         <% } %>
 
         <div class="stat-grid mb-3">

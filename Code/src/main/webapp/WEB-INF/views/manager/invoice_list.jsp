@@ -8,8 +8,8 @@
     <jsp:include page="../components/sidebar.jsp"/>
     <jsp:include page="../components/manager_header.jsp"/>
 <main class="main-content fade-in">
-    <div class="topbar"><div><h1>💰 Quản lý <span>thanh toán</span></h1></div></div>
-    <c:if test="${param.msg != null}"><div class="alert alert-success">✅ Thao tác thành công!</div></c:if>
+    <div class="topbar"><div><h1>Quản lý <span>thanh toán</span></h1></div></div>
+    <c:if test="${param.msg != null}"><div class="alert alert-success">Thao tác thành công!</div></c:if>
 
     <div class="card mb-3"><div class="flex gap-4" style="flex-wrap:wrap;">
         <form class="search-bar" method="get" action="${pageContext.request.contextPath}/manager/invoice" style="flex:1;margin:0;padding:0;background:none;border:none;display:flex;gap:16px;align-items:center;">
@@ -18,12 +18,12 @@
             <input type="date" name="from" class="form-control" value="${from}" style="max-width:none;">
             <label class="fs-sm text-muted" style="white-space:nowrap;">đến</label>
             <input type="date" name="to" class="form-control" value="${to}" style="max-width:none;">
-            <button type="submit" class="btn btn-primary" style="flex-shrink:0;">📅 Lọc</button>
+            <button type="submit" class="btn btn-primary" style="flex-shrink:0;">Lọc</button>
         </form>
         <form class="search-bar" method="get" action="${pageContext.request.contextPath}/manager/invoice" style="flex:1;margin:0;padding:0;background:none;border:none;display:flex;gap:16px;">
             <input type="hidden" name="action" value="list">
             <input type="text" name="keyword" class="form-control" placeholder="Tìm mã hóa đơn..." value="${keyword}" style="flex:1;max-width:none;">
-            <button type="submit" class="btn btn-primary" style="flex-shrink:0;">🔍 Tìm kiếm</button>
+            <button type="submit" class="btn btn-primary" style="flex-shrink:0;">Tìm kiếm</button>
         </form>
     </div></div>
 
@@ -42,9 +42,9 @@
                     <div class="booking-group">
                         <div class="booking-group-header">
                             <div>
-                                <span class="bk-code">📋 Phiếu đặt: ${ig.bookingCode}</span>
+                                <span class="bk-code">Phiếu đặt: ${ig.bookingCode}</span>
                                 <div class="bk-meta">
-                                    <span>👤 Khách hàng: ${ig.customerName}</span>
+                                    <span>Khách hàng: ${ig.customerName}</span>
                                     <c:if test="${ig.notCheckedOutCount > 0}">
                                         <span class="badge badge-warning" style="padding:2px 6px;">Cần TT: ${ig.notCheckedOutCount} phòng</span>
                                     </c:if>
@@ -74,7 +74,7 @@
                                             <td style="padding:10px 0;"><strong>${inv.code}</strong></td>
                                             <td>
                                                 <c:choose>
-                                                    <c:when test="${not empty inv.roomNumber}">🛏️ ${inv.roomNumber}</c:when>
+                                                    <c:when test="${not empty inv.roomNumber}">${inv.roomNumber}</c:when>
                                                     <c:otherwise><span class="text-muted fs-sm">Khác</span></c:otherwise>
                                                 </c:choose>
                                             </td>

@@ -7,6 +7,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CustomerDAO {
+    static {
+        try (Connection conn = DBConnection.getConnection();
+             Statement stmt = conn.createStatement()) {
+            boolean hasStatus = false;
+            try (ResultSet rs = conn.getMetaData().getColumns(null, null, "tbl_customer", "status")) {
+                if (rs.next()) {
+                    hasStatus = true;
+                }
+            }
+            if (!hasStatus) {
+                stmt.executeUpdate("ALTER TABLE tbl_customer ADD COLUMN status VARCHAR(20) DEFAULT 'active'");
+                System.out.println("Da tu dong them cot status vao bang tbl_customer");
+            }
+        } catch (Exception e) {
+            System.err.println("Khong the check/them cot status vao tbl_customer: " + e.getMessage());
+        }
+    }
 
     public Customer findById(int id) {
         String sql = "SELECT * FROM tbl_customer WHERE id=?";
@@ -110,7 +127,7 @@ public class CustomerDAO {
     }
 
     public int insert(Customer c) {
-        String sql = "INSERT INTO tbl_customer (id_card,id_type,full_name,nationality,birth_date,gender,phone,email,address,password_hash) VALUES (?,?,?,?,?,?,?,?,?,?)";
+        String sql = "INSERT INTO tbl_customer (id_card,id_type,full_name,nationality,birth_date,gender,phone,email,address,password_hash,status) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, c.getIdCard());
@@ -123,6 +140,7 @@ public class CustomerDAO {
             ps.setString(8, c.getEmail());
             ps.setString(9, c.getAddress());
             ps.setString(10, c.getPasswordHash());
+            ps.setString(11, c.getStatus() != null ? c.getStatus() : "active");
             ps.executeUpdate();
             ResultSet keys = ps.getGeneratedKeys();
             if (keys.next()) return keys.getInt(1);
@@ -131,7 +149,7 @@ public class CustomerDAO {
     }
 
     public boolean update(Customer c) {
-        String sql = "UPDATE tbl_customer SET id_card=?, id_type=?, full_name=?, nationality=?, birth_date=?, gender=?, phone=?, email=?, address=?, password_hash=? WHERE id=?";
+        String sql = "UPDATE tbl_customer SET id_card=?, id_type=?, full_name=?, nationality=?, birth_date=?, gender=?, phone=?, email=?, address=?, password_hash=?, status=? WHERE id=?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, c.getIdCard());
@@ -144,7 +162,63 @@ public class CustomerDAO {
             ps.setString(8, c.getEmail());
             ps.setString(9, c.getAddress());
             ps.setString(10, c.getPasswordHash());
-            ps.setInt(11, c.getId());
+            ps.setString(11, c.getStatus() != null ? c.getStatus() : "active");
+            ps.setInt(12, c.getId());
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) { e.printStackTrace(); }
+        return false;
+    }
+
+    public boolean existsByIdCardExcludeId(String idCard, int id) {
+        String sql = "SELECT COUNT(*) FROM tbl_customer WHERE id_card=? AND id != ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, idCard);
+            ps.setInt(2, id);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) return rs.getInt(1) > 0;
+        } catch (SQLException e) { e.printStackTrace(); }
+        return false;
+    }
+
+    public boolean existsByEmailExcludeId(String email, int id) {
+        String sql = "SELECT COUNT(*) FROM tbl_customer WHERE email=? AND id != ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, email);
+            ps.setInt(2, id);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) return rs.getInt(1) > 0;
+        } catch (SQLException e) { e.printStackTrace(); }
+        return false;
+    }
+
+    public boolean existsByPhoneExcludeId(String phone, int id) {
+        String sql = "SELECT COUNT(*) FROM tbl_customer WHERE phone=? AND id != ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, phone);
+            ps.setInt(2, id);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) return rs.getInt(1) > 0;
+        } catch (SQLException e) { e.printStackTrace(); }
+        return false;
+    }
+
+    public boolean delete(int id) throws SQLException {
+        String sql = "UPDATE tbl_customer SET status='inactive' WHERE id=?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            return ps.executeUpdate() > 0;
+        }
+    }
+
+    public boolean restore(int id) {
+        String sql = "UPDATE tbl_customer SET status='active' WHERE id=?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, id);
             return ps.executeUpdate() > 0;
         } catch (SQLException e) { e.printStackTrace(); }
         return false;
@@ -163,6 +237,7 @@ public class CustomerDAO {
         c.setEmail(rs.getString("email"));
         c.setAddress(rs.getString("address"));
         c.setPasswordHash(rs.getString("password_hash"));
+        c.setStatus(rs.getString("status"));
         c.setCreatedAt(rs.getTimestamp("created_at"));
         c.setUpdatedAt(rs.getTimestamp("updated_at"));
         return c;

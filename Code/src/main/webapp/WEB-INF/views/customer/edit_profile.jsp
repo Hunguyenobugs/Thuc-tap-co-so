@@ -13,21 +13,21 @@
 <jsp:include page="../components/customer_header.jsp"/>
 <section class="section fade-in">
     <div class="topbar" style="margin-bottom: 24px;">
-        <div><h1>👤 Thông tin <span>cá nhân</span></h1></div>
+        <div><h1>Thông tin <span>cá nhân</span></h1></div>
     </div>
     
     <div style="max-width:600px; margin: 0 auto;">
         <c:if test="${param.msg == 'success'}">
-            <div class="alert alert-success">✅ Cập nhật thông tin cá nhân thành công!</div>
+            <div class="alert alert-success">Cập nhật thông tin cá nhân thành công!</div>
         </c:if>
         <c:if test="${not empty error}">
-            <div class="alert alert-danger">⚠️ ${error}</div>
+            <div class="alert alert-danger">${error}</div>
         </c:if>
  
         <div class="card">
             <div style="text-align: center; margin-bottom: 24px;">
                 <div class="avatar" style="width: 80px; height: 80px; font-size: 32px; margin: 0 auto 16px;">
-                    ${customer.fullName != null ? customer.fullName.substring(0, 1).toUpperCase() : '👤'}
+                    ${customer.fullName != null ? customer.fullName.substring(0, 1).toUpperCase() : 'U'}
                 </div>
                 <h3>${customer.fullName}</h3>
                 <p class="text-muted">Khách hàng • CCCD: ${not empty customer.idCard ? customer.idCard : 'Chưa cập nhật'}</p>
@@ -80,7 +80,7 @@
                 </div>
                 
                 <div class="btn-group" style="margin-top: 24px; justify-content: center;">
-                    <button type="submit" class="btn btn-primary">💾 Lưu thay đổi</button>
+                    <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
                     <a href="${pageContext.request.contextPath}/home" class="btn btn-outline">← Hủy</a>
                 </div>
             </form>

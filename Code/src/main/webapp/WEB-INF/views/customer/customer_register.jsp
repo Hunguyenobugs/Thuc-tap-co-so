@@ -6,10 +6,10 @@
 <body>
 <div class="login-page">
     <div class="login-box fade-in" style="max-width:500px;">
-        <div class="logo">🏨</div>
+        <div class="logo"></div>
         <h1>Đăng ký tài khoản</h1>
         <p class="subtitle">Tạo tài khoản để đặt phòng trực tuyến</p>
-        <% if (request.getAttribute("error") != null) { %><div class="alert alert-danger">⚠️ ${error}</div><% } %>
+        <% if (request.getAttribute("error") != null) { %><div class="alert alert-danger">${error}</div><% } %>
         <form method="post" action="${pageContext.request.contextPath}/customerAuth">
             <input type="hidden" name="action" value="register">
             <div class="form-group"><label>Họ tên <span class="required">*</span></label>

@@ -4,7 +4,7 @@
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Sửa loại phòng</title><link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css"></head>
 <body><div class="layout manager-layout"><jsp:include page="../components/sidebar.jsp"/>`n    <jsp:include page="../components/manager_header.jsp"/><main class="main-content fade-in">
-    <div class="topbar"><div><h1>✏️ Sửa <span>loại phòng</span></h1></div></div>
+    <div class="topbar"><div><h1>Sửa <span>loại phòng</span></h1></div></div>
     <div class="card" style="max-width:600px;">
         <form method="post" action="${pageContext.request.contextPath}/manager/roomtype" enctype="multipart/form-data">
             <input type="hidden" name="action" value="update"><input type="hidden" name="id" value="${roomType.id}">
@@ -19,7 +19,7 @@
             <div class="form-group" style="margin-top: 16px;">
                 <label>Hình ảnh (Có thể chọn nhiều)</label>
                 <div class="image-upload-wrapper" onclick="document.getElementById('imageFiles').click()">
-                    <div style="font-size:32px; margin-bottom:8px;">📸</div>
+                    <div style="font-size:32px; margin-bottom:8px;">Ảnh</div>
                     <div style="color:var(--text-muted); font-size:14px;">Nhấn vào đây để tải ảnh lên</div>
                 </div>
                 <input type="file" id="imageFiles" name="imageFiles" class="form-control" accept="image/*" multiple style="display:none;" onchange="handleFileSelect(event)">
@@ -38,7 +38,7 @@
             </div>
             <div class="form-group"><label>Tiện nghi</label><input type="text" name="amenities" class="form-control" value="${roomType.amenities}"></div>
             <div class="form-group"><label>Mô tả</label><textarea name="description" class="form-control">${roomType.description}</textarea></div>
-            <div class="form-actions"><button type="submit" class="btn btn-primary">💾 Cập nhật</button><a href="${pageContext.request.contextPath}/manager/roomtype?action=search" class="btn btn-outline">← Quay lại</a></div>
+            <div class="form-actions"><button type="submit" class="btn btn-primary">Cập nhật</button><a href="${pageContext.request.contextPath}/manager/roomtype?action=search" class="btn btn-outline">← Quay lại</a></div>
         </form>
     </div>
 </main></div>

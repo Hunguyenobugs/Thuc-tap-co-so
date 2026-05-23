@@ -75,7 +75,23 @@ public class RoomTypeServlet extends HttpServlet {
                     java.io.File uploadDir = new java.io.File(uploadPath);
                     if (!uploadDir.exists()) uploadDir.mkdirs();
                     
+                    // Ghi vao thu muc deploy
                     filePart.write(uploadPath + java.io.File.separator + fileName);
+                    
+                    // Copy sang thu muc ma nguon goc
+                    try {
+                        String sourceCodePath = "d:\\Dai hoc\\Thuc tap co so\\Code\\src\\main\\webapp\\images\\rooms";
+                        java.io.File sourceCodeDir = new java.io.File(sourceCodePath);
+                        if (!sourceCodeDir.exists()) sourceCodeDir.mkdirs();
+                        
+                        java.io.File uploadedFile = new java.io.File(uploadPath + java.io.File.separator + fileName);
+                        java.io.File sourceCodeFile = new java.io.File(sourceCodeDir, fileName);
+                        
+                        java.nio.file.Files.copy(uploadedFile.toPath(), sourceCodeFile.toPath(), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+                    } catch (Exception err) {
+                        System.err.println("Khong the copy anh phong sang source code dir: " + err.getMessage());
+                    }
+                    
                     urls.add("/images/rooms/" + fileName);
                 }
             }

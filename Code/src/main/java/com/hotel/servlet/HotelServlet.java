@@ -36,6 +36,7 @@ public class HotelServlet extends HttpServlet {
         try { h.setStarRating(Integer.parseInt(req.getParameter("starRating"))); } catch (Exception ignored) {}
 
         hotelDAO.update(h);
+        req.getServletContext().setAttribute("hotelInfo", h);
         resp.sendRedirect(req.getContextPath() + "/manager/hotel?msg=update_success");
     }
 }

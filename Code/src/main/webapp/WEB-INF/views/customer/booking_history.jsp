@@ -10,10 +10,10 @@
 <section class="section fade-in">
     <h2>Lịch sử đặt phòng</h2>
     <p class="section-desc">Quản lý các phiếu đặt phòng của bạn</p>
-    <% if ("booking_success".equals(request.getParameter("msg"))) { %><div class="alert alert-success">✅ Đặt phòng thành công! Mã phiếu: <strong><%= request.getParameter("code") != null ? request.getParameter("code") : "" %></strong></div><% } %>
-    <% if ("cancel_success".equals(request.getParameter("msg"))) { %><div class="alert alert-success">✅ Hủy phiếu đặt thành công</div><% } %>
-    <% if ("cancel_room_success".equals(request.getParameter("msg"))) { %><div class="alert alert-success">✅ Hủy phòng thành công</div><% } %>
-    <% if ("cancel_failed".equals(request.getParameter("error"))) { %><div class="alert alert-danger">⚠️ Hủy phòng thất bại hoặc phòng đã check-in</div><% } %>
+    <% if ("booking_success".equals(request.getParameter("msg"))) { %><div class="alert alert-success">Đặt phòng thành công! Mã phiếu: <strong><%= request.getParameter("code") != null ? request.getParameter("code") : "" %></strong></div><% } %>
+    <% if ("cancel_success".equals(request.getParameter("msg"))) { %><div class="alert alert-success">Hủy phiếu đặt thành công</div><% } %>
+    <% if ("cancel_room_success".equals(request.getParameter("msg"))) { %><div class="alert alert-success">Hủy phòng thành công</div><% } %>
+    <% if ("cancel_failed".equals(request.getParameter("error"))) { %><div class="alert alert-danger">Hủy phòng thất bại hoặc phòng đã check-in</div><% } %>
     <c:choose>
         <c:when test="${empty bookings}"><div class="no-data">Bạn chưa có phiếu đặt phòng nào</div></c:when>
         <c:otherwise>
@@ -21,7 +21,7 @@
                 <div class="card mb-3">
                     <div class="card-header">
                         <div>
-                            <h3 style="margin:0;">📋 ${b.code}</h3>
+                            <h3 style="margin:0;">${b.code}</h3>
                             <div class="fs-sm text-muted">
                                 Ngày đặt: <fmt:formatDate value="${b.bookingDate}" pattern="HH:mm dd/MM/yyyy"/>
                                 • ${b.roomCount} phòng
@@ -72,7 +72,7 @@
                     </c:if>
                     <c:if test="${not empty b.note}">
                         <div style="padding:8px 16px;border-top:1px solid var(--border);">
-                            <span class="fs-sm text-muted">📝 Ghi chú: ${b.note}</span>
+                            <span class="fs-sm text-muted">Ghi chú: ${b.note}</span>
                         </div>
                     </c:if>
                 </div>

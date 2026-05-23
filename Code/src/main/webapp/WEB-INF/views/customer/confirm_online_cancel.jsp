@@ -8,7 +8,7 @@
 <jsp:include page="../components/customer_header.jsp"/>
 <section class="section fade-in">
     <div class="confirm-box">
-        <h2>⚠️ Xác nhận hủy phiếu đặt</h2>
+        <h2>Xác nhận hủy phiếu đặt</h2>
         <div class="alert alert-warning">Bạn có chắc chắn muốn hủy phiếu đặt <strong>${booking.code}</strong>?</div>
         <div class="confirm-detail">
             <div class="card mb-3">

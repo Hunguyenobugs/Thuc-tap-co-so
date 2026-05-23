@@ -3,7 +3,7 @@
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
 <!DOCTYPE html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Chi tiết hóa đơn</title><link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css"></head>
 <body><div class="layout manager-layout"><jsp:include page="../components/sidebar.jsp"/>`n    <jsp:include page="../components/manager_header.jsp"/><main class="main-content fade-in">
-    <div class="topbar"><div><h1>🧾 Hóa đơn <span>${invoice.code}</span></h1><div class="breadcrumb"><a href="${pageContext.request.contextPath}/manager/invoice?action=list">Hóa đơn</a><span>Chi tiết</span></div></div></div>
+    <div class="topbar"><div><h1>Hóa đơn <span>${invoice.code}</span></h1><div class="breadcrumb"><a href="${pageContext.request.contextPath}/manager/invoice?action=list">Hóa đơn</a><span>Chi tiết</span></div></div></div>
     <div class="detail-grid">
         <div><div class="card mb-3"><div class="card-header"><h3>Thông tin hóa đơn</h3></div>
             <ul class="detail-list">
@@ -20,7 +20,7 @@
                 </tbody></table></div></div></c:if>
         </div>
         <div><div class="card" style="position:sticky;top:100px;">
-            <h3 class="mb-3">💰 Tổng kết</h3>
+            <h3 class="mb-3">Tổng kết</h3>
             <ul class="detail-list">
                 <li><span class="label">Tiền phòng</span><span class="value"><fmt:formatNumber value="${invoice.roomTotal}" pattern="#,##0"/>₫</span></li>
                 <li><span class="label">Tiền dịch vụ</span><span class="value"><fmt:formatNumber value="${invoice.serviceTotal}" pattern="#,##0"/>₫</span></li>

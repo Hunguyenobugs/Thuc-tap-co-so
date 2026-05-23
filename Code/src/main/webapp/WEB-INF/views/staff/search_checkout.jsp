@@ -22,12 +22,12 @@
 <body><div class="layout staff-layout"><jsp:include page="../components/sidebar.jsp"/>
 <jsp:include page="../components/staff_header.jsp"/>
 <main class="main-content fade-in">
-    <div class="topbar"><div><h1>🚪 <span>Check-out</span></h1><div class="breadcrumb">Hiển thị theo phiếu đặt</div></div></div>
+    <div class="topbar"><div><h1><span>Check-out</span></h1><div class="breadcrumb">Hiển thị theo phiếu đặt</div></div></div>
 
     <form class="search-bar" method="get" action="${pageContext.request.contextPath}/staff/checkout">
         <input type="hidden" name="action" value="search">
         <input type="text" name="q" class="form-control" placeholder="Nhập mã phiếu hoặc tên khách..." value="${keyword}">
-        <button type="submit" class="btn btn-primary">🔍 Tìm</button>
+        <button type="submit" class="btn btn-primary">Tìm</button>
     </form>
 
     <c:if test="${results != null}">
@@ -40,11 +40,11 @@
                     <div class="booking-group">
                         <div class="booking-group-header">
                             <div>
-                                <span class="bk-code">📋 ${b.code}</span>
+                                <span class="bk-code">${b.code}</span>
                                 <div class="bk-meta">
-                                    <span>👤 ${b.customerName}</span>
-                                    <c:if test="${not empty b.customerPhone}"><span>📞 ${b.customerPhone}</span></c:if>
-                                    <span>🏨 ${b.roomCount} phòng</span>
+                                    <span>${b.customerName}</span>
+                                    <c:if test="${not empty b.customerPhone}"><span>${b.customerPhone}</span></c:if>
+                                    <span>${b.roomCount} phòng</span>
                                 </div>
                             </div>
                             <span class="badge badge-primary">${b.status}</span>
@@ -52,7 +52,7 @@
                         <div class="room-rows">
                             <c:forEach var="br" items="${b.rooms}">
                                 <div class="room-row">
-                                    <span class="room-num">🛏️ ${br.roomNumber}</span>
+                                    <span class="room-num">${br.roomNumber}</span>
                                     <span class="room-type">${br.roomTypeName}</span>
                                     <span class="room-dates">
                                         Check-in TT: <fmt:formatDate value="${br.actualCheckin}" pattern="HH:mm dd/MM/yyyy"/>
@@ -61,7 +61,7 @@
                                     </span>
                                     <span class="badge badge-primary" style="font-size:12px;">${br.roomStatus}</span>
                                     <a href="${pageContext.request.contextPath}/staff/checkout?action=detail&bookedRoomId=${br.id}"
-                                       class="btn btn-warning btn-sm">🚪 Check-out</a>
+                                       class="btn btn-warning btn-sm">Check-out</a>
                                 </div>
                             </c:forEach>
                         </div>

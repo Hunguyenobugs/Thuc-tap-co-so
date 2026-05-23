@@ -12,15 +12,15 @@
 <jsp:include page="../components/customer_header.jsp"/>
 <section class="section fade-in">
     <div class="topbar" style="margin-bottom: 24px;">
-        <div><h1>🔒 Đổi <span>mật khẩu</span></h1></div>
+        <div><h1>Đổi <span>mật khẩu</span></h1></div>
     </div>
     
     <div style="max-width:500px; margin: 0 auto;">
         <c:if test="${param.msg == 'success'}">
-            <div class="alert alert-success">✅ Đổi mật khẩu thành công!</div>
+            <div class="alert alert-success">Đổi mật khẩu thành công!</div>
         </c:if>
         <c:if test="${not empty error}">
-            <div class="alert alert-danger">⚠️ ${error}</div>
+            <div class="alert alert-danger">${error}</div>
         </c:if>
  
         <div class="card">

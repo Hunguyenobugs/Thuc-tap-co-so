@@ -10,7 +10,7 @@
 <section class="section fade-in">
     <div class="topbar" style="margin-bottom:24px;">
         <div>
-            <h2 style="margin:0;">📝 Đặt phòng online</h2>
+            <h2 style="margin:0;">Đặt phòng online</h2>
             <div class="breadcrumb"><span>Chọn phòng và thêm vào giỏ</span></div>
         </div>
     </div>
@@ -18,7 +18,7 @@
     <%-- Thông báo lỗi --%>
     <c:if test="${param.error == 'invalid_dates' || not empty error}">
         <div class="alert alert-danger" style="background:#ff4d6d22;border:1.5px solid #ff4d6d;color:#ff4d6d;padding:12px 18px;border-radius:8px;margin-bottom:16px;">
-            ⚠️ <strong><c:choose>
+            <strong><c:choose>
                 <c:when test="${not empty error}">${error}</c:when>
                 <c:otherwise>Ngày trả phòng phải sau ngày nhận phòng.</c:otherwise>
             </c:choose></strong>
@@ -26,7 +26,7 @@
     </c:if>
     <c:if test="${param.error == 'past_date'}">
         <div class="alert alert-danger" style="background:#ff4d6d22;border:1.5px solid #ff4d6d;color:#ff4d6d;padding:12px 18px;border-radius:8px;margin-bottom:16px;">
-            ⚠️ <strong>Không thể chọn ngày trong quá khứ.</strong>
+            <strong>Không thể chọn ngày trong quá khứ.</strong>
         </div>
     </c:if>
 
@@ -40,7 +40,7 @@
                 </c:if>
                 <div style="flex:1;min-width:200px;">
                     <h3 style="margin:0 0 4px 0;">${selectedRoomType.name}</h3>
-                    <div class="fs-sm text-muted">👥 ${selectedRoomType.capacity} khách • ${selectedRoomType.area}</div>
+                    <div class="fs-sm text-muted">${selectedRoomType.capacity} khách • ${selectedRoomType.area}</div>
                 </div>
                 <div style="text-align:right;">
                     <div class="text-accent fw-bold" style="font-size:20px;"><fmt:formatNumber value="${selectedRoomType.basePrice}" pattern="#,##0"/>₫<span class="fs-sm text-muted" style="font-weight:400;"> /đêm</span></div>
@@ -60,7 +60,7 @@
         <!-- Cột trái: Tìm phòng -->
         <div>
             <div class="card mb-3">
-                <div class="card-header"><h3>🔍 Tìm phòng trống</h3></div>
+                <div class="card-header"><h3>Tìm phòng trống</h3></div>
                 <form method="get" action="${pageContext.request.contextPath}/onlineBooking">
                     <input type="hidden" name="action" value="searchRoom">
                     <div class="form-row">
@@ -82,14 +82,14 @@
                             </c:forEach>
                         </select>
                     </div>
-                    <button type="submit" class="btn btn-primary">🔍 Tìm phòng</button>
+                    <button type="submit" class="btn btn-primary">Tìm phòng</button>
                 </form>
             </div>
 
             <c:if test="${rooms != null}">
                 <div class="card">
                     <div class="card-header">
-                        <h3>🛏️ Phòng trống</h3>
+                        <h3>Phòng trống</h3>
                         <c:if test="${not empty rooms}">
                             <span class="badge badge-success">${rooms.size()} phòng khả dụng</span>
                         </c:if>
@@ -110,7 +110,7 @@
                                         <input type="hidden" name="checkIn" value="${checkIn}">
                                         <input type="hidden" name="checkOut" value="${checkOut}">
                                         <input type="hidden" name="roomTypeId" value="${selectedType}">
-                                        <button type="submit" class="btn btn-success btn-sm">✅ Chọn phòng này</button>
+                                        <button type="submit" class="btn btn-success btn-sm">Chọn phòng này</button>
                                     </form>
                                 </td>
                             </tr></c:forEach>
@@ -125,7 +125,7 @@
         <div>
             <div class="card" style="position:sticky;top:100px;">
                 <div class="card-header">
-                    <h3>✅ Các phòng đã chọn</h3>
+                    <h3>Các phòng đã chọn</h3>
                     <span class="badge badge-primary">${cart.size()} phòng</span>
                 </div>
                 <c:choose>
@@ -151,7 +151,7 @@
                                         <div class="text-accent fw-bold"><fmt:formatNumber value="${item.subtotal}" pattern="#,##0"/>₫</div>
                                         <a href="${pageContext.request.contextPath}/onlineBooking?action=removeRoom&roomId=${item.roomId}"
                                            class="btn btn-danger btn-sm mt-1"
-                                           onclick="return confirm('Xóa phòng này khỏi giỏ?')">🗑️</a>
+                                           onclick="return confirm('Xóa phòng này khỏi giỏ?')">Xóa</a>
                                     </div>
                                 </div>
                             </div>
@@ -168,7 +168,7 @@
                         </div>
 
                         <a href="${pageContext.request.contextPath}/onlineBooking?action=confirm" class="btn btn-primary btn-block btn-lg mt-3">
-                            ✅ Xác nhận đặt (${cart.size()} phòng)
+                            Xác nhận đặt (${cart.size()} phòng)
                         </a>
                     </c:otherwise>
                 </c:choose>

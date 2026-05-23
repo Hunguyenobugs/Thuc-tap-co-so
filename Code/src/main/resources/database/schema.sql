@@ -75,6 +75,7 @@ CREATE TABLE tbl_customer (
     email         VARCHAR(100)    DEFAULT NULL UNIQUE,
     address       VARCHAR(300)    DEFAULT NULL,
     password_hash VARCHAR(255)    DEFAULT NULL,
+    status        VARCHAR(20)     DEFAULT 'active',
     created_at    TIMESTAMP       DEFAULT CURRENT_TIMESTAMP,
     updated_at    TIMESTAMP       DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 

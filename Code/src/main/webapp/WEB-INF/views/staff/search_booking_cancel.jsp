@@ -17,9 +17,12 @@
 </head>
 <body><div class="layout staff-layout"><jsp:include page="../components/sidebar.jsp"/>
     <jsp:include page="../components/staff_header.jsp"/><main class="main-content fade-in">
-    <div class="topbar"><div><h1>❌ Hủy <span>đặt phòng</span></h1><div class="breadcrumb">Chỉ có thể hủy phòng đang "Chờ" trong phiếu</div></div></div>
+    <div class="topbar"><div><h1>Hủy <span>đặt phòng</span></h1><div class="breadcrumb">Chỉ có thể hủy phòng đang "Chờ" trong phiếu</div></div></div>
     <form class="search-bar" method="get" action="${pageContext.request.contextPath}/staff/cancel"><input type="hidden" name="action" value="search">
-        <input type="text" name="q" class="form-control" placeholder="Nhập mã phiếu hoặc tên khách..." value="${keyword}"><button type="submit" class="btn btn-primary">🔍 Tìm</button></form>
+        <input type="text" name="q" class="form-control" placeholder="Nhập mã phiếu hoặc tên khách..." value="${keyword}"><button type="submit" class="btn btn-primary">Tìm</button></form>
+
+    <% if ("cancel_success".equals(request.getParameter("msg"))) { %><div class="alert alert-success">Hủy phòng thành công</div><% } %>
+    <% if ("cancel_booking_success".equals(request.getParameter("msg"))) { %><div class="alert alert-success">Hủy toàn bộ phiếu đặt thành công</div><% } %>
 
     <c:if test="${results != null}">
         <c:choose>
@@ -31,24 +34,29 @@
                     <div class="booking-group">
                         <div class="booking-group-header">
                             <div>
-                                <span class="bk-code">📋 ${b.code}</span>
+                                <span class="bk-code">${b.code}</span>
                                 <div class="bk-meta">
-                                    <span>👤 ${b.customerName}</span>
-                                    <c:if test="${not empty b.customerPhone}"><span>📞 ${b.customerPhone}</span></c:if>
-                                    <span>📅 Đặt ngày: <fmt:formatDate value="${b.bookingDate}" pattern="dd/MM/yyyy"/></span>
+                                    <span>${b.customerName}</span>
+                                    <c:if test="${not empty b.customerPhone}"><span>${b.customerPhone}</span></c:if>
+                                    <span>Đặt ngày: <fmt:formatDate value="${b.bookingDate}" pattern="dd/MM/yyyy"/></span>
                                 </div>
                             </div>
-                            <c:choose>
-                                <c:when test="${b.status=='Chờ xác nhận'}"><span class="badge badge-warning">${b.status}</span></c:when>
-                                <c:when test="${b.status=='Chưa nhận phòng'}"><span class="badge badge-info">${b.status}</span></c:when>
-                                <c:when test="${b.status=='Lưu trú một phần'}"><span class="badge badge-primary">${b.status}</span></c:when>
-                                <c:otherwise><span class="badge badge-primary">${b.status}</span></c:otherwise>
-                            </c:choose>
+                            <div style="display:flex; align-items:center; gap:10px;">
+                                <c:choose>
+                                    <c:when test="${b.status=='Chờ xác nhận'}"><span class="badge badge-warning">${b.status}</span></c:when>
+                                    <c:when test="${b.status=='Chưa nhận phòng'}"><span class="badge badge-info">${b.status}</span></c:when>
+                                    <c:when test="${b.status=='Lưu trú một phần'}"><span class="badge badge-primary">${b.status}</span></c:when>
+                                    <c:otherwise><span class="badge badge-primary">${b.status}</span></c:otherwise>
+                                </c:choose>
+                                <c:if test="${b.status=='Chờ xác nhận' || b.status=='Chưa nhận phòng'}">
+                                    <a href="${pageContext.request.contextPath}/staff/cancel?action=confirmBooking&bookingId=${b.id}" class="btn btn-danger btn-sm">Hủy toàn bộ phiếu</a>
+                                </c:if>
+                            </div>
                         </div>
                         <div class="room-rows">
                             <c:forEach var="br" items="${b.rooms}">
                                 <div class="room-row">
-                                    <span class="room-num">🛏️ ${br.roomNumber}</span>
+                                    <span class="room-num">${br.roomNumber}</span>
                                     <span class="room-type">${br.roomTypeName}</span>
                                     <span class="room-dates">
                                         Nhận: <fmt:formatDate value="${br.checkIn}" pattern="HH:mm dd/MM/yyyy"/>
@@ -56,7 +64,11 @@
                                         Trả: <fmt:formatDate value="${br.checkOut}" pattern="HH:mm dd/MM/yyyy"/>
                                     </span>
                                     <span class="badge badge-warning" style="font-size:12px;">${br.roomStatus}</span>
-                                    <a href="${pageContext.request.contextPath}/staff/cancel?action=confirm&bookedRoomId=${br.id}" class="btn btn-danger btn-sm">❌ Hủy phòng</a>
+                                    <form method="post" action="${pageContext.request.contextPath}/staff/cancel" style="display:inline;" onsubmit="return confirm('Bạn có chắc chắn muốn hủy phòng ${br.roomNumber} này?')">
+                                        <input type="hidden" name="action" value="execute">
+                                        <input type="hidden" name="bookedRoomId" value="${br.id}">
+                                        <button type="submit" class="btn btn-danger btn-sm">Hủy phòng</button>
+                                    </form>
                                 </div>
                             </c:forEach>
                         </div>

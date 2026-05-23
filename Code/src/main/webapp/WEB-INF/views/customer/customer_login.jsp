@@ -6,11 +6,11 @@
 <body>
 <div class="login-page">
     <div class="login-box fade-in">
-        <div class="logo">🏨</div>
+        <div class="logo"></div>
         <h1>Đăng nhập</h1>
         <p class="subtitle">Đăng nhập để đặt phòng trực tuyến</p>
-        <% if (request.getAttribute("error") != null) { %><div class="alert alert-danger">⚠️ ${error}</div><% } %>
-        <% if ("register_success".equals(request.getParameter("msg"))) { %><div class="alert alert-success">✅ Đăng ký thành công! Vui lòng đăng nhập.</div><% } %>
+        <% if (request.getAttribute("error") != null) { %><div class="alert alert-danger">${error}</div><% } %>
+        <% if ("register_success".equals(request.getParameter("msg"))) { %><div class="alert alert-success">Đăng ký thành công! Vui lòng đăng nhập.</div><% } %>
         <form method="post" action="${pageContext.request.contextPath}/customerAuth">
             <input type="hidden" name="action" value="login">
             <div class="form-group">

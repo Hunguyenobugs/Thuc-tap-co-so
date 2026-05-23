@@ -29,19 +29,17 @@ public class CancelServlet extends HttpServlet {
                 req.setAttribute("keyword", q);
                 req.getRequestDispatcher("/WEB-INF/views/staff/search_booking_cancel.jsp").forward(req, resp);
                 break;
-            case "confirm":
-                String bridStr = req.getParameter("bookedRoomId");
-                if (bridStr == null || bridStr.isEmpty()) {
+
+            case "confirmBooking":
+                String bIdStr = req.getParameter("bookingId");
+                if (bIdStr == null || bIdStr.isEmpty()) {
                     resp.sendRedirect(req.getContextPath() + "/staff/cancel?action=search");
                     return;
                 }
-                int bookedRoomId = Integer.parseInt(bridStr);
-                BookedRoom bookedRoom = bookedRoomDAO.findById(bookedRoomId);
-                Booking booking = bookingDAO.findById(bookedRoom.getBookingId());
-                
-                req.setAttribute("bookedRoom", bookedRoom);
-                req.setAttribute("booking", booking);
-                req.getRequestDispatcher("/WEB-INF/views/staff/confirm_cancel.jsp").forward(req, resp);
+                int bId = Integer.parseInt(bIdStr);
+                Booking b = bookingDAO.findById(bId);
+                req.setAttribute("booking", b);
+                req.getRequestDispatcher("/WEB-INF/views/staff/confirm_cancel_booking.jsp").forward(req, resp);
                 break;
             default:
                 resp.sendRedirect(req.getContextPath() + "/staff/cancel?action=search");
@@ -50,10 +48,15 @@ public class CancelServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        if ("execute".equals(req.getParameter("action"))) {
+        String action = req.getParameter("action");
+        if ("execute".equals(action)) {
             int bookedRoomId = Integer.parseInt(req.getParameter("bookedRoomId"));
             bookedRoomDAO.cancelRoom(bookedRoomId);
             resp.sendRedirect(req.getContextPath() + "/staff/cancel?action=search&msg=cancel_success");
+        } else if ("executeBooking".equals(action)) {
+            int bookingId = Integer.parseInt(req.getParameter("bookingId"));
+            bookingDAO.cancel(bookingId);
+            resp.sendRedirect(req.getContextPath() + "/staff/cancel?action=search&msg=cancel_booking_success");
         }
     }
 }

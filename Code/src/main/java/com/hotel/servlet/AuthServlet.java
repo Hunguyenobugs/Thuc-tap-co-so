@@ -142,7 +142,23 @@ public class AuthServlet extends HttpServlet {
                 File uploadDir = new File(uploadPath);
                 if (!uploadDir.exists()) uploadDir.mkdirs();
                 
+                // Ghi vao thu muc deploy
                 filePart.write(uploadPath + File.separator + fileName);
+                
+                // Copy sang thu muc ma nguon goc
+                try {
+                    String sourceCodePath = "d:\\Dai hoc\\Thuc tap co so\\Code\\src\\main\\webapp\\images\\avatars";
+                    File sourceCodeDir = new File(sourceCodePath);
+                    if (!sourceCodeDir.exists()) sourceCodeDir.mkdirs();
+                    
+                    File uploadedFile = new File(uploadPath + File.separator + fileName);
+                    File sourceCodeFile = new File(sourceCodeDir, fileName);
+                    
+                    java.nio.file.Files.copy(uploadedFile.toPath(), sourceCodeFile.toPath(), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+                } catch (Exception err) {
+                    System.err.println("Khong the copy anh avatar sang source code dir: " + err.getMessage());
+                }
+                
                 user.setAvatarUrl("/images/avatars/" + fileName);
             }
         } catch (Exception e) {

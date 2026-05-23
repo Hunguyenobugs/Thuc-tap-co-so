@@ -5,8 +5,8 @@
 <title>Thêm loại phòng</title><link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css"></head>
 <body><div class="layout manager-layout"><jsp:include page="../components/sidebar.jsp"/>
     <jsp:include page="../components/manager_header.jsp"/><main class="main-content fade-in">
-    <div class="topbar"><div><h1>➕ Thêm <span>loại phòng</span></h1><div class="breadcrumb"><a href="${pageContext.request.contextPath}/manager/roomtype?action=manage">Loại phòng</a><span>Thêm mới</span></div></div></div>
-    <c:if test="${error != null}"><div class="alert alert-danger">⚠️ ${error}</div></c:if>
+    <div class="topbar"><div><h1>Thêm <span>loại phòng</span></h1><div class="breadcrumb"><a href="${pageContext.request.contextPath}/manager/roomtype?action=manage">Loại phòng</a><span>Thêm mới</span></div></div></div>
+    <c:if test="${error != null}"><div class="alert alert-danger">${error}</div></c:if>
     <div class="card" style="max-width:600px;">
         <form method="post" action="${pageContext.request.contextPath}/manager/roomtype" enctype="multipart/form-data">
             <input type="hidden" name="action" value="insert">
@@ -21,7 +21,7 @@
             <div class="form-group" style="margin-top: 16px;">
                 <label>Hình ảnh (Có thể chọn nhiều)</label>
                 <div class="image-upload-wrapper" onclick="document.getElementById('imageFiles').click()">
-                    <div style="font-size:32px; margin-bottom:8px;">📸</div>
+                    <div style="font-size:32px; margin-bottom:8px;">Ảnh</div>
                     <div style="color:var(--text-muted); font-size:14px;">Nhấn vào đây để tải ảnh lên</div>
                 </div>
                 <input type="file" id="imageFiles" name="imageFiles" class="form-control" accept="image/*" multiple style="display:none;" onchange="handleFileSelect(event)">
@@ -32,7 +32,7 @@
             </div>
             <div class="form-group"><label>Tiện nghi</label><input type="text" name="amenities" class="form-control" placeholder="TV, minibar, wifi..."></div>
             <div class="form-group"><label>Mô tả</label><textarea name="description" class="form-control"></textarea></div>
-            <div class="form-actions"><button type="submit" class="btn btn-primary">💾 Lưu</button><a href="${pageContext.request.contextPath}/manager/roomtype?action=manage" class="btn btn-outline">← Quay lại</a></div>
+            <div class="form-actions"><button type="submit" class="btn btn-primary">Lưu</button><a href="${pageContext.request.contextPath}/manager/roomtype?action=manage" class="btn btn-outline">← Quay lại</a></div>
         </form>
     </div>
 </main></div>

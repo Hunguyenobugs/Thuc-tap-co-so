@@ -3,8 +3,8 @@
 <!DOCTYPE html><html lang="vi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Thêm nhân viên</title><link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css"></head>
 <body><div class="layout manager-layout"><jsp:include page="../components/sidebar.jsp"/>
     <jsp:include page="../components/manager_header.jsp"/><main class="main-content fade-in">
-    <div class="topbar"><div><h1>➕ Thêm <span>nhân viên</span></h1></div></div>
-    <c:if test="${error != null}"><div class="alert alert-danger">⚠️ ${error}</div></c:if>
+    <div class="topbar"><div><h1>Thêm <span>nhân viên</span></h1></div></div>
+    <c:if test="${error != null}"><div class="alert alert-danger">${error}</div></c:if>
     <div class="card" style="max-width:600px;"><form method="post" action="${pageContext.request.contextPath}/manager/staff"><input type="hidden" name="action" value="insert">
         <div class="form-row">
             <div class="form-group"><label>Họ tên <span class="required">*</span></label><input type="text" name="fullName" class="form-control" value="${param.fullName}" required></div>
@@ -22,7 +22,7 @@
             <div class="form-group"><label>Ngày vào làm <span class="required">*</span></label><input type="date" name="joinDate" class="form-control" value="${param.joinDate}" required></div>
             <div class="form-group"><label>Mô tả</label><input type="text" name="description" class="form-control" value="${param.description}"></div>
         </div>
-        <div class="alert alert-info">🔑 Mật khẩu mặc định: @Hotel2025</div>
-        <div class="form-actions"><button type="submit" class="btn btn-primary">💾 Lưu</button><a href="${pageContext.request.contextPath}/manager/staff?action=manage" class="btn btn-outline">← Quay lại</a></div>
+        <div class="alert alert-info">Mật khẩu mặc định: @Hotel2025</div>
+        <div class="form-actions"><button type="submit" class="btn btn-primary">Lưu</button><a href="${pageContext.request.contextPath}/manager/staff?action=manage" class="btn btn-outline">← Quay lại</a></div>
     </form></div>
 </main></div><script src="${pageContext.request.contextPath}/js/main.js"></script></body></html>

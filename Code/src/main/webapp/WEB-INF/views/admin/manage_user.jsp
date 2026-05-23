@@ -4,7 +4,7 @@
 <html lang="vi">
 <head>
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
-    <title>Quản lý tài khoản</title>
+    <title>Quản lý tài khoản nhân viên</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
 </head>
 <body>
@@ -13,23 +13,23 @@
     <jsp:include page="../components/admin_header.jsp"/>
     <main class="main-content fade-in">
         <div class="topbar">
-            <div><h1>👤 Quản lý <span>tài khoản</span></h1></div>
+            <div><h1>Quản lý <span>tài khoản nhân viên</span></h1></div>
         </div>
 
         <% if (request.getParameter("msg") != null) { %>
-            <div class="alert alert-success">✅ Thao tác thành công!</div>
+            <div class="alert alert-success">Thao tác thành công!</div>
         <% } %>
         <% if ("self_delete".equals(request.getParameter("error"))) { %>
-            <div class="alert alert-danger">⚠️ Không thể xóa: Bạn không thể tự khóa tài khoản của chính mình!</div>
+            <div class="alert alert-danger">Không thể xóa: Bạn không thể tự khóa tài khoản của chính mình!</div>
         <% } %>
 
         <div style="display: flex; gap: 16px; width: 100%; margin-bottom: 20px;">
             <form method="get" action="${pageContext.request.contextPath}/admin/user" style="display: flex; gap: 16px; flex: 1; margin: 0;">
                 <input type="hidden" name="action" value="manage">
                 <input type="text" name="keyword" class="form-control" placeholder="Nhập tên, mã NV hoặc username..." value="${keyword}" style="flex: 1; max-width: none;">
-                <button type="submit" class="btn btn-primary" style="flex-shrink: 0;">🔍 Tìm kiếm</button>
+                <button type="submit" class="btn btn-primary" style="flex-shrink: 0;">Tìm kiếm</button>
             </form>
-            <a href="${pageContext.request.contextPath}/admin/user?action=add" class="btn btn-primary" style="flex-shrink: 0;">➕ Thêm tài khoản</a>
+            <a href="${pageContext.request.contextPath}/admin/user?action=add" class="btn btn-primary" style="flex-shrink: 0;">Thêm tài khoản nhân viên</a>
         </div>
 
         <c:if test="${results != null}">
@@ -71,13 +71,13 @@
                                     </td>
                                     <td>
                                         <div class="btn-group">
-                                            <a href="${pageContext.request.contextPath}/admin/user?action=edit&id=${u.id}" class="btn btn-outline btn-sm" title="Sửa">✏️</a>
+                                            <a href="${pageContext.request.contextPath}/admin/user?action=edit&id=${u.id}" class="btn btn-outline btn-sm" title="Sửa">Sửa</a>
                                             <c:choose>
                                                 <c:when test="${u.status == 'active'}">
-                                                    <button onclick="confirmDelete('${pageContext.request.contextPath}/admin/user?action=delete&id=${u.id}','${u.fullName}')" class="btn btn-danger btn-sm" title="Khóa tài khoản">🗑️</button>
+                                                    <button onclick="confirmDelete('${pageContext.request.contextPath}/admin/user?action=delete&id=${u.id}','${u.fullName}')" class="btn btn-danger btn-sm" title="Khóa tài khoản">Khóa</button>
                                                 </c:when>
                                                 <c:otherwise>
-                                                    <a href="${pageContext.request.contextPath}/admin/user?action=restore&id=${u.id}" class="btn btn-success btn-sm" title="Hoàn tác (Mở khóa)" onclick="return confirm('Bạn có chắc chắn muốn mở khóa tài khoản này không?');">🔄</a>
+                                                    <a href="${pageContext.request.contextPath}/admin/user?action=restore&id=${u.id}" class="btn btn-success btn-sm" title="Hoàn tác (Mở khóa)" onclick="return confirm('Bạn có chắc chắn muốn mở khóa tài khoản này không?');">Mở khóa</a>
                                                 </c:otherwise>
                                             </c:choose>
                                         </div>

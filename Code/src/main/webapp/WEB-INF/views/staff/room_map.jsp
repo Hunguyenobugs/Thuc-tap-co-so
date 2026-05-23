@@ -76,11 +76,11 @@
     <main class="main-content fade-in">
         <div class="topbar">
             <div>
-                <h1>🏨 Sơ đồ phòng <span>(Room Rack)</span></h1>
+                <h1>Sơ đồ phòng <span>(Room Rack)</span></h1>
                 <div class="breadcrumb"><span>Nghiệp vụ lễ tân</span></div>
             </div>
             <div>
-                <a href="${pageContext.request.contextPath}/staff/booking?action=searchRoom" class="btn btn-primary">➕ Đặt phòng mới</a>
+                <a href="${pageContext.request.contextPath}/staff/booking?action=searchRoom" class="btn btn-primary">Đặt phòng mới</a>
             </div>
         </div>
 

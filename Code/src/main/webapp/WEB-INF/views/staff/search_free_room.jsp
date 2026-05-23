@@ -7,7 +7,7 @@
 
     <div class="topbar">
         <div>
-            <h1>📝 Đặt phòng - <span>Chọn phòng</span></h1>
+            <h1>Đặt phòng - <span>Chọn phòng</span></h1>
             <div class="breadcrumb"><span>Bước 2: Tìm và thêm phòng vào giỏ</span></div>
         </div>
         <div>
@@ -18,7 +18,7 @@
     <%-- Thông báo lỗi ngày không hợp lệ --%>
     <c:if test="${param.error == 'invalid_dates'}">
         <div class="alert alert-danger" style="background:#ff4d6d22;border:1.5px solid #ff4d6d;color:#ff4d6d;padding:12px 18px;border-radius:8px;margin-bottom:16px;">
-            ⚠️ <strong>Ngày trả phòng phải sau ngày nhận phòng.</strong>
+            <strong>Ngày trả phòng phải sau ngày nhận phòng.</strong>
             Vui lòng chọn lại thời gian đặt phòng.
         </div>
     </c:if>
@@ -27,7 +27,7 @@
         <!-- Cột trái: Tìm phòng -->
         <div>
             <div class="card mb-3">
-                <div class="card-header"><h3>🔍 Tìm phòng trống</h3></div>
+                <div class="card-header"><h3>Tìm phòng trống</h3></div>
                 <form method="get" action="${pageContext.request.contextPath}/staff/booking">
                     <input type="hidden" name="action" value="searchRoom">
                     <input type="hidden" name="customerId" value="${customer.id}">
@@ -50,13 +50,13 @@
                             </c:forEach>
                         </select>
                     </div>
-                    <button type="submit" class="btn btn-primary">🔍 Tìm phòng</button>
+                    <button type="submit" class="btn btn-primary">Tìm phòng</button>
                 </form>
             </div>
 
             <c:if test="${rooms != null}">
                 <div class="card">
-                    <div class="card-header"><h3>🛏️ Phòng trống</h3></div>
+                    <div class="card-header"><h3>Phòng trống</h3></div>
                     <c:choose>
                         <c:when test="${empty rooms}"><div class="no-data">Không có phòng trống trong khoảng thời gian này</div></c:when>
                         <c:otherwise>
@@ -73,7 +73,7 @@
                                         <input type="hidden" name="checkIn" value="${checkIn}">
                                         <input type="hidden" name="checkOut" value="${checkOut}">
                                         <input type="hidden" name="customerId" value="${customer.id}">
-                                        <button type="submit" class="btn btn-success btn-sm">✅ Chọn</button>
+                                        <button type="submit" class="btn btn-success btn-sm">Chọn</button>
                                     </form>
                                 </td>
                             </tr></c:forEach>
@@ -88,7 +88,7 @@
         <div>
             <div class="card" style="position:sticky;top:100px;">
                 <div class="card-header">
-                    <h3>✅ Các phòng đã chọn</h3>
+                    <h3>Các phòng đã chọn</h3>
                     <span class="badge badge-primary">${cart.size()} phòng</span>
                 </div>
                 <c:choose>
@@ -114,7 +114,7 @@
                                         <div class="text-accent fw-bold"><fmt:formatNumber value="${item.subtotal}" pattern="#,##0"/>₫</div>
                                         <a href="${pageContext.request.contextPath}/staff/booking?action=removeRoom&roomId=${item.roomId}"
                                            class="btn btn-danger btn-sm mt-1"
-                                           onclick="return confirm('Xóa phòng này khỏi giỏ?')">🗑️</a>
+                                           onclick="return confirm('Xóa phòng này khỏi giỏ?')">Xóa</a>
                                     </div>
                                 </div>
                             </div>
@@ -131,7 +131,7 @@
                         </div>
 
                         <a href="${pageContext.request.contextPath}/staff/booking?action=confirm" class="btn btn-primary btn-block btn-lg mt-3">
-                            ✅ Xác nhận đặt (${cart.size()} phòng)
+                            Xác nhận đặt (${cart.size()} phòng)
                         </a>
                     </c:otherwise>
                 </c:choose>

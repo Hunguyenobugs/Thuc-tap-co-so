@@ -80,6 +80,12 @@ public class CustomerAuthServlet extends HttpServlet {
             return;
         }
 
+        if ("inactive".equals(c.getStatus())) {
+            req.setAttribute("error", "Tài khoản của bạn đã bị khóa. Vui lòng liên hệ quản trị viên.");
+            req.getRequestDispatcher("/WEB-INF/views/customer/customer_login.jsp").forward(req, resp);
+            return;
+        }
+
         HttpSession session = req.getSession(true);
         session.setAttribute("currentCustomer", c);
 

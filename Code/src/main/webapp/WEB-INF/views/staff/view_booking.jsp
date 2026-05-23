@@ -5,7 +5,7 @@
 <body><div class="layout staff-layout"><jsp:include page="../components/sidebar.jsp"/>
     <jsp:include page="../components/staff_header.jsp"/><main class="main-content fade-in">
     <div class="topbar">
-        <div><h1>📄 Chi tiết <span>phiếu đặt ${booking.code}</span></h1></div>
+        <div><h1>Chi tiết <span>phiếu đặt ${booking.code}</span></h1></div>
         <div>
             <c:choose>
                 <c:when test="${booking.status=='Chờ xác nhận'}"><span class="badge badge-warning" style="font-size:14px;padding:8px 16px;">${booking.status}</span></c:when>
@@ -21,7 +21,7 @@
     <div class="detail-grid">
         <div>
             <!-- Thông tin khách hàng -->
-            <div class="card mb-3"><div class="card-header"><h3>👤 Thông tin khách hàng</h3></div>
+            <div class="card mb-3"><div class="card-header"><h3>Thông tin khách hàng</h3></div>
                 <ul class="detail-list">
                     <li><span class="label">Họ tên</span><span class="value fw-bold">${booking.customerName}</span></li>
                     <li><span class="label">Số CCCD</span><span class="value">${booking.customerIdCard}</span></li>
@@ -31,7 +31,7 @@
 
             <!-- Danh sách phòng -->
             <div class="card"><div class="card-header">
-                <h3>🛏️ Danh sách phòng</h3>
+                <h3>Danh sách phòng</h3>
                 <span class="badge badge-primary">${bookedRooms.size()} phòng</span>
             </div>
             <div class="table-container"><table><thead><tr>
@@ -67,7 +67,7 @@
 
         <!-- Cột phải: Thông tin booking -->
         <div><div class="card" style="position:sticky;top:100px;">
-            <h3 class="mb-3">📋 Thông tin phiếu</h3>
+            <h3 class="mb-3">Thông tin phiếu</h3>
             <ul class="detail-list">
                 <li><span class="label">Mã phiếu</span><span class="value fw-bold">${booking.code}</span></li>
                 <li><span class="label">Ngày đặt</span><span class="value"><fmt:formatDate value="${booking.bookingDate}" pattern="HH:mm dd/MM/yyyy"/></span></li>

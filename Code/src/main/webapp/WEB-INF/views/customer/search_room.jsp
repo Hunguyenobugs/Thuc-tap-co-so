@@ -39,7 +39,7 @@
                                     </div>
                                 </c:when>
                                 <c:otherwise>
-                                    <div class="room-card-img">🛏️</div>
+                                    <div class="room-card-img">Phòng</div>
                                 </c:otherwise>
                             </c:choose>
                             <div class="room-card-body">
@@ -48,7 +48,7 @@
                                 <div class="price"><fmt:formatNumber value="${rt.basePrice}" pattern="#,##0"/>₫ <span>/đêm</span></div>
                             </div>
                             <div class="room-card-footer">
-                                <span class="capacity">👥 ${rt.capacity} khách • ${rt.area}</span>
+                                <span class="capacity">${rt.capacity} khách • ${rt.area}</span>
                                 <div style="display:flex;gap:6px;">
                                     <a href="${pageContext.request.contextPath}/home?action=roomTypeDetail&id=${rt.id}" class="btn btn-outline btn-sm">Chi tiết</a>
                                     <a href="${pageContext.request.contextPath}/onlineBooking?action=searchRoom&roomTypeId=${rt.id}&checkIn=${checkIn}&checkOut=${checkOut}" class="btn btn-primary btn-sm">Đặt ngay</a>

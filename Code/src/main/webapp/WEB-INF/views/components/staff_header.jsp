@@ -2,9 +2,9 @@
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <c:set var="user" value="${sessionScope.currentUser}"/>
 <header class="admin-header">
-    <div class="logo">
-        <span style="font-size: 24px;">🏨</span>
-        <h2>Grand Lotus Staff</h2>
+    <div class="logo" style="display: flex; align-items: center; gap: 10px;">
+        <img src="${pageContext.request.contextPath}/images/logo.png" alt="Logo" style="height: 35px; width: 35px; border-radius: 50%; object-fit: cover;">
+        <h2><c:choose><c:when test="${not empty applicationScope.hotelInfo.name}">${applicationScope.hotelInfo.name}</c:when><c:otherwise>Grand Lotus</c:otherwise></c:choose> Staff</h2>
     </div>
     
     <div class="user-menu">
@@ -23,9 +23,9 @@
             </c:choose>
         </div>
         <div class="dropdown-menu">
-            <a href="${pageContext.request.contextPath}/auth?action=profilePage">👤 Đổi thông tin cá nhân</a>
-            <a href="${pageContext.request.contextPath}/auth?action=changePasswordPage">🔒 Đổi mật khẩu</a>
-            <a href="${pageContext.request.contextPath}/auth?action=logout" class="logout">🚪 Đăng xuất</a>
+            <a href="${pageContext.request.contextPath}/auth?action=profilePage">Đổi thông tin cá nhân</a>
+            <a href="${pageContext.request.contextPath}/auth?action=changePasswordPage">Đổi mật khẩu</a>
+            <a href="${pageContext.request.contextPath}/auth?action=logout" class="logout">Đăng xuất</a>
         </div>
     </div>
 </header>

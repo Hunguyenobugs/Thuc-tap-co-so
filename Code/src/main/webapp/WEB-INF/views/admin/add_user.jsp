@@ -1,4 +1,4 @@
-﻿<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ page contentType="text/html;charset=UTF-8" %>
     <%@ taglib prefix="c" uri="jakarta.tags.core" %>
         <!DOCTYPE html>
         <html lang="vi">
@@ -6,7 +6,7 @@
         <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width,initial-scale=1.0">
-            <title>Thêm tài khoản</title>
+            <title>Thêm tài khoản nhân viên</title>
             <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
         </head>
 
@@ -17,12 +17,12 @@
                 <main class="main-content fade-in">
                     <div class="topbar">
                         <div>
-                            <h1>➕ Thêm <span>tài khoản</span></h1>
+                            <h1>Thêm <span>tài khoản nhân viên</span></h1>
                         </div>
                     </div>
 
                     <c:if test="${error != null}">
-                        <div class="alert alert-danger">⚠️ ${error}</div>
+                        <div class="alert alert-danger">${error}</div>
                     </c:if>
 
                     <div class="card" style="max-width:700px; margin: 0 auto;">
@@ -99,7 +99,7 @@
                             </div>
 
                             <div class="form-actions">
-                                <button type="submit" class="btn btn-primary">💾 Lưu</button>
+                                <button type="submit" class="btn btn-primary">Lưu</button>
                                 <a href="${pageContext.request.contextPath}/admin/user?action=manage"
                                     class="btn btn-outline">← Quay lại</a>
                             </div>

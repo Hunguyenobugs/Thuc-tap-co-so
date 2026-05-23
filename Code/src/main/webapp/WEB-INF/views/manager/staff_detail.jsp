@@ -10,7 +10,7 @@
 <main class="main-content fade-in">
     <div class="topbar">
         <div>
-            <h1>👤 Chi tiết <span>nhân viên</span></h1>
+            <h1>Chi tiết <span>nhân viên</span></h1>
             <div class="breadcrumb"><a href="${pageContext.request.contextPath}/manager/staff">Nhân viên</a><span>Chi tiết</span></div>
         </div>
     </div>
@@ -19,7 +19,7 @@
         <!-- Thông tin cơ bản -->
         <div>
             <div class="card mb-3">
-                <div class="card-header"><h3>📋 Thông tin cá nhân</h3></div>
+                <div class="card-header"><h3>Thông tin cá nhân</h3></div>
                 <ul class="detail-list">
                     <li><span class="label">Mã nhân viên</span><span class="value fw-bold">${staff.employeeCode}</span></li>
                     <li><span class="label">Họ tên</span><span class="value">${staff.fullName}</span></li>
@@ -54,9 +54,9 @@
         <!-- Hiệu suất làm việc -->
         <div>
             <div class="card" style="position:sticky;top:100px;">
-                <h3 class="mb-3">📊 Hiệu suất làm việc</h3>
+                <h3 class="mb-3">Hiệu suất làm việc</h3>
                 <div class="stat-card mb-3" style="margin-bottom:20px;">
-                    <div class="stat-label">🛏️ Số lượt đặt phòng đã xử lý</div>
+                    <div class="stat-label">Số lượt đặt phòng đã xử lý</div>
                     <div class="stat-value text-accent">${bookingCount}</div>
                     <div class="stat-desc">lượt đặt phòng cho khách</div>
                 </div>

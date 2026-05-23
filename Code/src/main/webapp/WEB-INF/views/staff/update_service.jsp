@@ -18,19 +18,19 @@
 <body><div class="layout staff-layout"><jsp:include page="../components/sidebar.jsp"/>
     <jsp:include page="../components/staff_header.jsp"/><main class="main-content fade-in">
     <div class="topbar"><div>
-        <h1>🛎️ Dịch vụ - <span>${booking.code}</span></h1>
+        <h1>Dịch vụ - <span>${booking.code}</span></h1>
         <div class="breadcrumb">
             ${booking.customerName}
             <c:if test="${bookedRoom != null}"> • Phòng <strong>${bookedRoom.roomNumber}</strong> (${bookedRoom.roomTypeName})</c:if>
         </div>
     </div></div>
 
-    <% if ("updated".equals(request.getParameter("msg"))) { %><div class="alert alert-success">✅ Cập nhật dịch vụ thành công</div><% } %>
+    <% if ("updated".equals(request.getParameter("msg"))) { %><div class="alert alert-success">Cập nhật dịch vụ thành công</div><% } %>
 
     <div class="detail-grid">
         <!-- Cột trái: Dịch vụ đã sử dụng -->
         <div>
-            <div class="card mb-3"><div class="card-header"><h3>📋 Dịch vụ đã sử dụng</h3><span class="badge badge-info">Tổng: <fmt:formatNumber value="${serviceTotal}" pattern="#,##0"/>₫</span></div>
+            <div class="card mb-3"><div class="card-header"><h3>Dịch vụ đã sử dụng</h3><span class="badge badge-info">Tổng: <fmt:formatNumber value="${serviceTotal}" pattern="#,##0"/>₫</span></div>
                 <c:choose><c:when test="${empty usedServices}"><div class="no-data">Chưa có dịch vụ nào</div></c:when>
                 <c:otherwise>
                     <div class="table-container"><table><thead><tr><th>Tên DV</th><th>SL</th><th>Đơn giá</th><th>Thành tiền</th><th>Ngày</th><th></th></tr></thead><tbody>
@@ -47,7 +47,7 @@
                                 <c:if test="${bookedRoomId != null}"><input type="hidden" name="bookedRoomId" value="${bookedRoomId}"></c:if>
                                 <input type="hidden" name="usedServiceId" value="${us.id}">
                                 <button type="submit" class="btn btn-danger btn-sm"
-                                        onclick="return confirm('Bỏ dịch vụ ${us.serviceName}?')">🗑️</button>
+                                        onclick="return confirm('Bỏ dịch vụ ${us.serviceName}?')">Xóa</button>
                             </form>
                         </td>
                     </tr></c:forEach>
@@ -58,11 +58,11 @@
 
         <!-- Cột phải: Tất cả dịch vụ -->
         <div><div class="card" style="position:sticky;top:100px;max-height:80vh;overflow-y:auto;">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
-                <h3 class="m-0">➕ Thêm dịch vụ</h3>
+            <div class="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+                <h3 class="m-0">Thêm dịch vụ</h3>
             </div>
             
-            <input type="text" id="serviceSearch" class="form-control" placeholder="🔍 Tìm nhanh dịch vụ..." style="margin-bottom:16px;" onkeyup="filterServices()">
+            <input type="text" id="serviceSearch" class="form-control" placeholder="Tìm nhanh dịch vụ..." style="margin-bottom:16px;" onkeyup="filterServices()">
 
             <div id="serviceList">
             <c:if test="${not empty allServices}">
@@ -85,7 +85,7 @@
                             <div class="qty-row">
                                 <label class="fs-sm" style="white-space:nowrap;">Số lượng</label>
                                 <input type="number" name="quantity" value="1" min="1" step="0.5">
-                                <button type="submit" class="btn btn-success btn-sm">➕</button>
+                                <button type="submit" class="btn btn-success btn-sm">+</button>
                             </div>
                         </form>
                     </div>

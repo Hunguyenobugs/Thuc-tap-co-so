@@ -19,11 +19,11 @@
     </c:choose>
     <main class="main-content fade-in">
         <div class="topbar">
-            <div><h1>👤 Thông tin <span>cá nhân</span></h1></div>
+            <div><h1>Thông tin <span>cá nhân</span></h1></div>
         </div>
         
         <c:if test="${param.msg == 'profile_updated'}">
-            <div class="alert alert-success">✅ Cập nhật thông tin thành công!</div>
+            <div class="alert alert-success">Cập nhật thông tin thành công!</div>
         </c:if>
 
         <div class="card" style="max-width:600px; margin: 0 auto;">
@@ -71,7 +71,7 @@
                 </div>
 
                 <div class="btn-group" style="margin-top: 24px; justify-content: center;">
-                    <button type="submit" class="btn btn-primary">💾 Lưu thay đổi</button>
+                    <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
                     <c:choose>
                         <c:when test="${user.role == 'ADMIN'}">
                             <a href="${pageContext.request.contextPath}/admin/home" class="btn btn-outline">← Hủy</a>

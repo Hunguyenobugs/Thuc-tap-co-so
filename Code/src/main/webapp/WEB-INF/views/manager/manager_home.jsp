@@ -15,13 +15,13 @@
     <jsp:include page="../components/manager_header.jsp"/>
     <main class="main-content fade-in">
         <div class="topbar">
-            <div><h1>📊 Trang chủ <span>Quản lý</span></h1>
+            <div><h1>Trang chủ <span>Quản lý</span></h1>
                 <div class="breadcrumb"><span>Dashboard</span></div>
             </div>
         </div>
 
         <% if ("password_changed".equals(request.getParameter("msg"))) { %>
-            <div class="alert alert-success">✅ Đổi mật khẩu thành công</div>
+            <div class="alert alert-success">Đổi mật khẩu thành công</div>
         <% } %>
 
         <!-- Welcome & Role Section -->
@@ -41,24 +41,24 @@
         <!-- Stat cards -->
         <div class="stat-grid">
             <div class="stat-card">
-                <div class="stat-label">🛏️ Phòng đang thuê</div>
+                <div class="stat-label">Phòng đang thuê</div>
                 <div class="stat-value text-accent">${rentedRooms} / ${totalRooms}</div>
                 <div class="stat-desc">phòng đang được sử dụng</div>
             </div>
             <div class="stat-card">
-                <div class="stat-label">📋 Đặt phòng chờ</div>
+                <div class="stat-label">Đặt phòng chờ</div>
                 <div class="stat-value" style="color: var(--warning);">${pendingBookings}</div>
                 <div class="stat-desc">đang chờ xử lý</div>
             </div>
             <div class="stat-card green">
-                <div class="stat-label">💰 Doanh thu tháng</div>
+                <div class="stat-label">Doanh thu tháng</div>
                 <div class="stat-value" style="font-size: 1.2rem;">
                     <fmt:formatNumber value="${monthRevenue}" pattern="#,##0"/>₫
                 </div>
                 <div class="stat-desc">tháng hiện tại</div>
             </div>
             <div class="stat-card">
-                <div class="stat-label">🧾 Hóa đơn hôm nay</div>
+                <div class="stat-label">Hóa đơn hôm nay</div>
                 <div class="stat-value">${todayInvoices}</div>
                 <div class="stat-desc">hóa đơn đã lập</div>
             </div>
@@ -69,13 +69,13 @@
 
             <!-- Revenue chart -->
             <div class="card">
-                <h3 style="margin-bottom:16px; font-size:16px;">📈 Doanh thu 7 ngày gần nhất</h3>
+                <h3 style="margin-bottom:16px; font-size:16px;">Doanh thu 7 ngày gần nhất</h3>
                 <canvas id="revenueChart" height="200"></canvas>
             </div>
 
             <!-- Top rooms -->
             <div class="card">
-                <h3 style="margin-bottom:16px; font-size:16px;">🏆 Top phòng được thuê nhiều</h3>
+                <h3 style="margin-bottom:16px; font-size:16px;">Top phòng được thuê nhiều</h3>
                 <c:choose>
                     <c:when test="${empty topRooms}">
                         <div class="no-data">Chưa có dữ liệu</div>
