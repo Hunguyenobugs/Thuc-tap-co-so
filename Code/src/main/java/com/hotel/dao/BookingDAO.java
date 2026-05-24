@@ -365,15 +365,7 @@ public class BookingDAO {
                 ps1.executeUpdate();
             }
 
-            // 2. Giải phóng các phòng trong tbl_room (những phòng thuộc booking này và đang ở trạng thái 'Chờ check in')
-            String sqlReleaseRooms = "UPDATE tbl_room SET status='Trống' WHERE id IN (" +
-                                     "SELECT room_id FROM tbl_booked_room WHERE booking_id=? AND room_status='Chờ check in')";
-            try (PreparedStatement ps2 = conn.prepareStatement(sqlReleaseRooms)) {
-                ps2.setInt(1, bookingId);
-                ps2.executeUpdate();
-            }
-
-            // 3. Cập nhật trạng thái các phòng trong tbl_booked_room thành 'Đã hủy' (chỉ những phòng đang 'Chờ check in')
+            // 2. Cập nhật trạng thái các phòng trong tbl_booked_room thành 'Đã hủy' (chỉ những phòng đang 'Chờ check in')
             try (PreparedStatement ps3 = conn.prepareStatement("UPDATE tbl_booked_room SET room_status='Đã hủy' WHERE booking_id=? AND room_status='Chờ check in'")) {
                 ps3.setInt(1, bookingId);
                 ps3.executeUpdate();
@@ -440,12 +432,6 @@ public class BookingDAO {
                 ps.executeUpdate();
             }
 
-            // 3. Cập nhật trạng thái phòng trong tbl_room thành 'Trống'
-            try (PreparedStatement ps = conn.prepareStatement("UPDATE tbl_room SET status='Trống' WHERE id=?")) {
-                ps.setInt(1, roomId);
-                ps.executeUpdate();
-            }
-
             // 4. Kiểm tra xem toàn bộ các phòng trong booking đã bị hủy chưa
             boolean allCancelled = true;
             try (PreparedStatement ps = conn.prepareStatement("SELECT COUNT(*) FROM tbl_booked_room WHERE booking_id=? AND room_status != 'Đã hủy'")) {
@@ -487,33 +473,33 @@ public class BookingDAO {
         return false;
     }
 
-    public boolean checkin(int bookingId, Timestamp actualCheckin) {
-        Connection conn = null;
-        try {
-            conn = DBConnection.getConnection();
-            conn.setAutoCommit(false);
+    // public boolean checkin(int bookingId, Timestamp actualCheckin) {
+    //     Connection conn = null;
+    //     try {
+    //         conn = DBConnection.getConnection();
+    //         conn.setAutoCommit(false);
 
-            conn.prepareStatement("UPDATE tbl_booking SET status='Đang lưu trú' WHERE id=" + bookingId).executeUpdate();
-            PreparedStatement ps2 = conn.prepareStatement("UPDATE tbl_booked_room SET actual_checkin=?, is_checked_in=TRUE WHERE booking_id=?");
-            ps2.setTimestamp(1, actualCheckin);
-            ps2.setInt(2, bookingId);
-            ps2.executeUpdate();
+    //         conn.prepareStatement("UPDATE tbl_booking SET status='Đang lưu trú' WHERE id=" + bookingId).executeUpdate();
+    //         PreparedStatement ps2 = conn.prepareStatement("UPDATE tbl_booked_room SET actual_checkin=?, is_checked_in=TRUE WHERE booking_id=?");
+    //         ps2.setTimestamp(1, actualCheckin);
+    //         ps2.setInt(2, bookingId);
+    //         ps2.executeUpdate();
 
-            PreparedStatement ps3 = conn.prepareStatement(
-                "UPDATE tbl_room SET status='Đang sử dụng' WHERE id IN (SELECT room_id FROM tbl_booked_room WHERE booking_id=?)");
-            ps3.setInt(1, bookingId);
-            ps3.executeUpdate();
+    //         PreparedStatement ps3 = conn.prepareStatement(
+    //             "UPDATE tbl_room SET status='Đang sử dụng' WHERE id IN (SELECT room_id FROM tbl_booked_room WHERE booking_id=?)");
+    //         ps3.setInt(1, bookingId);
+    //         ps3.executeUpdate();
 
-            conn.commit();
-            return true;
-        } catch (SQLException e) {
-            if (conn != null) try { conn.rollback(); } catch (SQLException ignored) {}
-            e.printStackTrace();
-        } finally {
-            if (conn != null) try { conn.setAutoCommit(true); conn.close(); } catch (SQLException ignored) {}
-        }
-        return false;
-    }
+    //         conn.commit();
+    //         return true;
+    //     } catch (SQLException e) {
+    //         if (conn != null) try { conn.rollback(); } catch (SQLException ignored) {}
+    //         e.printStackTrace();
+    //     } finally {
+    //         if (conn != null) try { conn.setAutoCommit(true); conn.close(); } catch (SQLException ignored) {}
+    //     }
+    //     return false;
+    // }
 
     public boolean updateBookedRoom(int bookingId, int newRoomId, BigDecimal newPrice) {
         String sql = "UPDATE tbl_booked_room SET room_id=?, actual_price=? WHERE booking_id=?";

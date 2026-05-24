@@ -47,12 +47,14 @@ public class ManagerHomeServlet extends HttpServlet {
                 req.setAttribute("todayInvoices", rs5.getInt("cnt"));
             }
 
-            // 6. Top 5 phòng được thuê nhiều nhất
+            // 6. Top 5 phòng được thuê nhiều nhất (loại trừ các phòng đặt bị hủy)
             PreparedStatement ps6 = conn.prepareStatement(
                 "SELECT r.room_number, rt.name AS type_name, COUNT(br.id) AS booking_count " +
                 "FROM tbl_booked_room br " +
                 "JOIN tbl_room r ON br.room_id = r.id " +
                 "JOIN tbl_room_type rt ON r.room_type_id = rt.id " +
+                "JOIN tbl_booking b ON br.booking_id = b.id " +
+                "WHERE b.status != 'Đã hủy' AND br.room_status != 'Đã hủy' " +
                 "GROUP BY r.id, r.room_number, rt.name " +
                 "ORDER BY booking_count DESC LIMIT 5");
             ResultSet rs6 = ps6.executeQuery();

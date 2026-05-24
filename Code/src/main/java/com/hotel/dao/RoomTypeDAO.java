@@ -110,8 +110,8 @@ public class RoomTypeDAO {
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, guestCount);
-            ps.setString(2, checkOut);
-            ps.setString(3, checkIn);
+            ps.setString(2, checkOut + " 12:00:00");
+            ps.setString(3, checkIn + " 14:00:00");
             ResultSet rs = ps.executeQuery();
             while (rs.next()) list.add(mapRow(rs));
         } catch (SQLException e) { e.printStackTrace(); }

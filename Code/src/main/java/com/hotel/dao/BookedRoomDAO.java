@@ -262,12 +262,6 @@ public class BookedRoomDAO {
                 return false; // phòng không ở trạng thái 'Chờ check in'
             }
 
-            // Trả phòng về trạng thái Trống
-            PreparedStatement ps2 = conn.prepareStatement(
-                "UPDATE tbl_room SET status='Trống' WHERE id=(SELECT room_id FROM tbl_booked_room WHERE id=?)");
-            ps2.setInt(1, bookedRoomId);
-            ps2.executeUpdate();
-
             // Cập nhật trạng thái booking
             if (bookingId > 0) updateBookingStatus(conn, bookingId);
 

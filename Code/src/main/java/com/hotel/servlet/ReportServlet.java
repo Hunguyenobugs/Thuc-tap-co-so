@@ -22,7 +22,7 @@ public class ReportServlet extends HttpServlet {
                     Map<String, Object> rev = new HashMap<>();
                     rev.put("period", rs1.getString("period"));
                     rev.put("totalGuests", rs1.getInt("total_guests"));
-                    rev.put("totalRoomNights", rs1.getInt("total_room_nights"));
+                    rev.put("totalInvoices", rs1.getInt("total_invoices"));
                     rev.put("roomRevenue", rs1.getBigDecimal("room_revenue"));
                     rev.put("serviceRevenue", rs1.getBigDecimal("service_revenue"));
                     rev.put("totalRevenue", rs1.getBigDecimal("total_revenue"));

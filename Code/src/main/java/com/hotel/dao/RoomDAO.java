@@ -117,8 +117,8 @@ public class RoomDAO {
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, roomTypeId);
-            ps.setString(2, checkOut);
-            ps.setString(3, checkIn);
+            ps.setString(2, checkOut + " 12:00:00");
+            ps.setString(3, checkIn + " 14:00:00");
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 Room room = mapRow(rs);

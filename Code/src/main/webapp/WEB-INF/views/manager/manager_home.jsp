@@ -81,7 +81,7 @@
                         <div class="no-data">Chưa có dữ liệu</div>
                     </c:when>
                     <c:otherwise>
-                        <div class="table-container" style="max-height:220px; overflow-y:auto;">
+                        <div class="table-container">
                             <table>
                                 <thead><tr><th>#</th><th>Phòng</th><th>Loại</th><th>Lần thuê</th></tr></thead>
                                 <tbody>

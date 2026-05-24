@@ -1,7 +1,7 @@
 -- Dữ liệu khách sạn
 INSERT INTO tbl_hotel (name, address, phone, email, description, star_rating, image_url)
 VALUES (
-    'Grand Lotus Hotel',
+    'Aurora Hotel',
     '123 Trần Hưng Đạo, Hoàn Kiếm, Hà Nội',
     '024.3826.1234',
     'info@grandlotus.vn',

@@ -12,7 +12,7 @@
     <c:if test="${revenue != null}">
         <div class="stat-grid">
             <div class="stat-card"><div class="stat-label">Tổng khách</div><div class="stat-value">${revenue.totalGuests}</div><div class="stat-desc">lượt khách</div></div>
-            <div class="stat-card green"><div class="stat-label">Tổng đêm phòng</div><div class="stat-value">${revenue.totalRoomNights}</div><div class="stat-desc">đêm</div></div>
+            <div class="stat-card green"><div class="stat-label">Tổng hóa đơn</div><div class="stat-value">${revenue.totalInvoices}</div><div class="stat-desc">hóa đơn</div></div>
             <div class="stat-card cyan"><div class="stat-label">Doanh thu phòng</div><div class="stat-value"><fmt:formatNumber value="${revenue.roomRevenue}" pattern="#,##0"/>₫</div></div>
             <div class="stat-card orange"><div class="stat-label">Doanh thu DV</div><div class="stat-value"><fmt:formatNumber value="${revenue.serviceRevenue}" pattern="#,##0"/>₫</div></div>
         </div>

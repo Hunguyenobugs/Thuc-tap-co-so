@@ -237,13 +237,13 @@ CREATE VIEW v_revenue_stat AS
 SELECT
     DATE_FORMAT(i.issue_date, '%Y-%m')                          AS period,
     COUNT(DISTINCT b.customer_id)                               AS total_guests,
-    SUM(DATEDIFF(br.check_out, br.check_in))                    AS total_room_nights,
+    COUNT(i.id)                                                 AS total_invoices,
     SUM(i.room_total)                                           AS room_revenue,
     SUM(i.service_total)                                        AS service_revenue,
     SUM(i.total_amount)                                         AS total_revenue
 FROM tbl_invoice i
     JOIN tbl_booking b      ON i.booking_id = b.id
-    JOIN tbl_booked_room br ON i.booked_room_id = br.id
+    LEFT JOIN tbl_booked_room br ON i.booked_room_id = br.id
 WHERE b.status IN ('Đang lưu trú', 'Đã trả phòng')
 GROUP BY DATE_FORMAT(i.issue_date, '%Y-%m');
 
@@ -251,7 +251,7 @@ CREATE VIEW v_room_stat AS
 SELECT
     DATE_FORMAT(br.check_in, '%Y-%m')   AS period,
     rt.name                             AS room_type_name,
-    COUNT(DISTINCT r.id)                AS total_rooms,
+    (SELECT COUNT(*) FROM tbl_room r2 WHERE r2.room_type_id = rt.id) AS total_rooms,
     COUNT(DISTINCT CASE
         WHEN b.status IN ('Đang lưu trú','Đã trả phòng')
         THEN br.room_id END)            AS rented_rooms,
@@ -260,12 +260,13 @@ SELECT
             WHEN b.status IN ('Đang lưu trú','Đã trả phòng')
             THEN br.room_id END)
         * 100.0
-        / NULLIF(COUNT(DISTINCT r.id), 0)
+        / NULLIF((SELECT COUNT(*) FROM tbl_room r2 WHERE r2.room_type_id = rt.id), 0)
     , 2)                                AS occupancy_rate
 FROM tbl_room_type rt
     LEFT JOIN tbl_room r            ON r.room_type_id = rt.id
     LEFT JOIN tbl_booked_room br    ON br.room_id = r.id
     LEFT JOIN tbl_booking b         ON br.booking_id = b.id
+WHERE br.check_in IS NOT NULL
 GROUP BY DATE_FORMAT(br.check_in, '%Y-%m'), rt.name, rt.id;
 
 SET FOREIGN_KEY_CHECKS = 1;
