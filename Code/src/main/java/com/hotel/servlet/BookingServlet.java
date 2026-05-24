@@ -151,6 +151,14 @@ public class BookingServlet extends HttpServlet {
             String idCard = req.getParameter("idCard");
 
             // Validate trùng lặp
+            if (idCard != null && !idCard.isEmpty() && customerDAO.existsByIdCard(idCard)) {
+                resp.sendRedirect(req.getContextPath() + "/staff/booking?action=addCustomer&error=idcard_exists"
+                    + "&fullName=" + java.net.URLEncoder.encode(req.getParameter("fullName"), "UTF-8")
+                    + "&idCard=" + java.net.URLEncoder.encode(idCard, "UTF-8")
+                    + "&phone=" + java.net.URLEncoder.encode(phone != null ? phone : "", "UTF-8")
+                    + "&email=" + java.net.URLEncoder.encode(email != null ? email : "", "UTF-8"));
+                return;
+            }
             if (phone != null && !phone.isEmpty() && customerDAO.existsByPhone(phone)) {
                 resp.sendRedirect(req.getContextPath() + "/staff/booking?action=addCustomer&error=phone_exists"
                     + "&fullName=" + java.net.URLEncoder.encode(req.getParameter("fullName"), "UTF-8")

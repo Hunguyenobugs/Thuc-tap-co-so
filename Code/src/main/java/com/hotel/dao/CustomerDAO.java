@@ -38,7 +38,7 @@ public class CustomerDAO {
 
     public List<Customer> searchByKeyword(String keyword) {
         List<Customer> list = new ArrayList<>();
-        String sql = "SELECT * FROM tbl_customer WHERE id_card LIKE ? OR full_name LIKE ? OR phone LIKE ? ORDER BY full_name";
+        String sql = "SELECT * FROM tbl_customer WHERE id_card LIKE ? OR full_name LIKE ? OR phone LIKE ? ORDER BY SUBSTRING_INDEX(full_name, ' ', -1), full_name";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             String k = "%" + keyword + "%";

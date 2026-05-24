@@ -83,7 +83,7 @@ INSERT INTO tbl_booking (id, code, customer_id, staff_id, booking_date, deposit_
 (8, 'PD2026050008', 8, 4, '2026-05-07 10:00:00', 1500000.00, '2026-05-07 10:20:00', 'Đang lưu trú', 'Chuẩn bị phòng tắm'),
 -- Tương lai
 (9, 'PD2026050009', 1, 3, '2026-05-08 12:00:00', 800000.00,  '2026-05-08 12:05:00', 'Chưa nhận phòng',  'Đến muộn'),
-(10,'PD2026050010', 2, NULL, '2026-05-08 15:00:00', 0, NULL, 'Chờ xác nhận', 'Vui lòng gọi lại xác nhận');
+(10,'PD2026050010', 2, NULL, '2026-05-08 15:00:00', 0, NULL, 'Chưa nhận phòng', 'Vui lòng gọi lại xác nhận');
 
 -- Booked Room (id cột có giá trị tường minh để dùng trong FK)
 INSERT INTO tbl_booked_room (id, booking_id, room_id, check_in, check_out, actual_checkin, actual_checkout, actual_price, is_checked_in, room_status) VALUES

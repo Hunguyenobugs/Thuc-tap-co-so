@@ -116,7 +116,7 @@ CREATE TABLE tbl_booking (
     deposit_date      DATETIME        DEFAULT NULL,
     -- Trạng thái booking tổng hợp (tự cập nhật khi tất cả phòng check-out)
     status            ENUM('Chờ xác nhận','Chưa nhận phòng','Lưu trú một phần','Đang lưu trú','Đã trả phòng','Đã hủy')
-                                      DEFAULT 'Chờ xác nhận',
+                                      DEFAULT 'Chưa nhận phòng',
     note              TEXT            DEFAULT NULL,
     created_at        TIMESTAMP       DEFAULT CURRENT_TIMESTAMP,
     updated_at        TIMESTAMP       DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
