@@ -22,7 +22,7 @@ CREATE TABLE tbl_hotel (
     email       VARCHAR(100)    DEFAULT NULL,
     description TEXT            DEFAULT NULL,
     star_rating TINYINT         DEFAULT 0,
-    image_url   VARCHAR(500)    DEFAULT NULL,
+    image_url   TEXT            DEFAULT NULL,
     created_at  TIMESTAMP       DEFAULT CURRENT_TIMESTAMP,
     updated_at  TIMESTAMP       DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
@@ -37,7 +37,7 @@ CREATE TABLE tbl_room_type (
     base_price  DECIMAL(15,2)   NOT NULL,
     amenities   TEXT            DEFAULT NULL,
     description TEXT            DEFAULT NULL,
-    image_url   VARCHAR(500)    DEFAULT NULL,
+    image_url   TEXT            DEFAULT NULL,
     created_at  TIMESTAMP       DEFAULT CURRENT_TIMESTAMP,
     updated_at  TIMESTAMP       DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 

@@ -48,12 +48,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function updateSwitchBtn(theme) {
         if (theme === 'light-new') {
-            switchBtn.innerHTML = '✨ Giao diện Sáng';
+            switchBtn.innerHTML = '✨ Giao diện sáng';
             switchBtn.style.backgroundColor = '#ffffff';
             switchBtn.style.color = '#2563eb';
             switchBtn.style.border = '1px solid #2563eb';
         } else {
-            switchBtn.innerHTML = '🌙 Giao diện Tối';
+            switchBtn.innerHTML = '🌙 Giao diện tối';
             switchBtn.style.backgroundColor = '#1e293b';
             switchBtn.style.color = '#f1f5f9';
             switchBtn.style.border = '1px solid #334155';

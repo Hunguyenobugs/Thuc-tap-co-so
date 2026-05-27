@@ -8,13 +8,13 @@
                 <c:if test="${role == 'ADMIN'}">
                     <div class="nav-divider">Quản trị</div>
                     <a href="${base}/admin/home">Trang chủ</a>
-                    <a href="${base}/admin/user?action=manage">Quản lý TK nhân viên</a>
-                    <a href="${base}/admin/customer?action=manage">Quản lý TK khách hàng</a>
+                    <a href="${base}/admin/user?action=manage">Quản lý tài khoản nhân viên</a>
+                    <a href="${base}/admin/customer?action=manage">Quản lý tài khoản khách hàng</a>
                 </c:if>
                 <c:if test="${role == 'MANAGER'}">
                     <div class="nav-divider">Quản lý</div>
                     <a href="${base}/manager/home">Trang chủ</a>
-                    <a href="${base}/manager/hotel">Thông tin KS</a>
+                    <a href="${base}/manager/hotel">Thông tin khách sạn</a>
                     <a href="${base}/manager/roomtype?action=manage">Loại phòng</a>
                     <a href="${base}/manager/room?action=manage">Phòng</a>
                     <a href="${base}/manager/service?action=manage">Dịch vụ</a>
@@ -29,7 +29,7 @@
                     <a href="${base}/staff/cancel?action=search">Hủy đặt phòng</a>
                     <a href="${base}/staff/manageBooking?action=search">Quản lý phiếu đặt</a>
                     <a href="${base}/staff/checkin?action=search">Check-in</a>
-                    <a href="${base}/staff/serviceUpdate?action=search">Cập nhật DV</a>
+                    <a href="${base}/staff/serviceUpdate?action=search">Cập nhật dịch vụ</a>
                     <a href="${base}/staff/checkout?action=search">Check-out</a>
                 </c:if>
             </nav>

@@ -49,6 +49,21 @@
         </c:forEach>
     </div>
 </section>
+
+<c:if test="${not empty hotel.imageUrl}">
+<section class="section" style="padding-top:0;">
+    <h2>Không gian khách sạn</h2>
+    <p class="section-desc">Hình ảnh thực tế về không gian và dịch vụ tại ${hotel.name}</p>
+    <div class="hotel-gallery" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; margin-top: 20px;">
+        <c:forEach var="imgUrl" items="${hotel.imageUrl.split(',')}">
+            <div class="gallery-item" style="border-radius: var(--radius); overflow: hidden; height: 200px; box-shadow: var(--shadow); transition: var(--transition);">
+                <img src="${pageContext.request.contextPath}${imgUrl.trim()}" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s;" alt="${hotel.name}" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'">
+            </div>
+        </c:forEach>
+    </div>
+</section>
+</c:if>
+
 <section class="section" style="padding-top:0;">
     <h2>Thông tin liên hệ</h2>
     <div class="card mt-2" style="max-width:600px;">

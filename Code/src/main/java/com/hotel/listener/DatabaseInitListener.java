@@ -35,10 +35,12 @@ public class DatabaseInitListener implements ServletContextListener {
 
             System.out.println("========== RESET DATABASE THÀNH CÔNG ==========");
             
-            // Dọn dẹp ảnh trong thư mục rooms (cả deploy và source code)
-            System.out.println("Đang dọn dẹp hình ảnh trong rooms...");
+            // Dọn dẹp ảnh trong thư mục rooms và hotel (cả deploy và source code)
+            System.out.println("Đang dọn dẹp hình ảnh trong rooms và hotel...");
             clearFolder(sce.getServletContext().getRealPath("/images/rooms"));
             clearFolder("d:\\Dai hoc\\Thuc tap co so\\Code\\src\\main\\webapp\\images\\rooms");
+            clearFolder(sce.getServletContext().getRealPath("/images/hotel"));
+            clearFolder("d:\\Dai hoc\\Thuc tap co so\\Code\\src\\main\\webapp\\images\\hotel");
             System.out.println("Dọn dẹp hình ảnh thành công!");
         } catch (Exception e) {
             System.err.println("Lỗi khi reset database: " + e.getMessage());
