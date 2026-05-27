@@ -39,12 +39,16 @@ public class ServiceUpdateServlet extends HttpServlet {
                 }
                 int bookingId = Integer.parseInt(bidStr);
                 Booking booking = bookingDAO.findById(bookingId);
+                if (booking == null || "Đã trả phòng".equals(booking.getStatus()) || "Đã hủy".equals(booking.getStatus())) {
+                    resp.sendRedirect(req.getContextPath() + "/staff/serviceUpdate?action=search&error=invalid_status");
+                    return;
+                }
                 req.setAttribute("booking", booking);
-
+ 
                 // Luôn load toàn bộ danh sách dịch vụ (theo category)
                 List<Service> allServices = serviceDAO.getAll();
                 req.setAttribute("allServices", allServices);
-
+ 
                 // Nếu có bookedRoomId → hiển thị dịch vụ theo phòng cụ thể
                 if (brid != null && !brid.isEmpty()) {
                     int bookedRoomId = Integer.parseInt(brid);
@@ -59,7 +63,7 @@ public class ServiceUpdateServlet extends HttpServlet {
                     req.setAttribute("usedServices", usedServiceDAO.listByBooking(bookingId));
                     req.setAttribute("serviceTotal", usedServiceDAO.getTotalByBooking(bookingId));
                 }
-
+ 
                 req.getRequestDispatcher("/WEB-INF/views/staff/update_service.jsp").forward(req, resp);
                 break;
             }
@@ -67,36 +71,43 @@ public class ServiceUpdateServlet extends HttpServlet {
                 resp.sendRedirect(req.getContextPath() + "/staff/serviceUpdate?action=search");
         }
     }
-
+ 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String action = req.getParameter("action");
         String brid = req.getParameter("bookedRoomId");
         int bookingId = Integer.parseInt(req.getParameter("bookingId"));
-
+ 
+        // Kiểm tra trạng thái booking trên server-side
+        Booking booking = bookingDAO.findById(bookingId);
+        if (booking == null || "Đã trả phòng".equals(booking.getStatus()) || "Đã hủy".equals(booking.getStatus())) {
+            resp.sendRedirect(req.getContextPath() + "/staff/serviceUpdate?action=search&error=invalid_status");
+            return;
+        }
+ 
         if ("addService".equals(action)) {
             int serviceId = Integer.parseInt(req.getParameter("serviceId"));
             BigDecimal qty = new BigDecimal(req.getParameter("quantity"));
             Service svc = serviceDAO.findById(serviceId);
-
+ 
             UsedService us = new UsedService();
             us.setBookingId(bookingId);
             us.setServiceId(serviceId);
             us.setQuantity(qty);
             us.setUnitPrice(svc.getPrice());
-
+ 
             // Gắn bookedRoomId nếu có
             if (brid != null && !brid.isEmpty()) {
                 us.setBookedRoomId(Integer.parseInt(brid));
             }
             usedServiceDAO.insert(us);
-
+ 
         } else if ("deleteService".equals(action)) {
             // Xóa dịch vụ đã thêm nhầm
             int usedServiceId = Integer.parseInt(req.getParameter("usedServiceId"));
             usedServiceDAO.delete(usedServiceId);
         }
-
+ 
         String redirectUrl = req.getContextPath() + "/staff/serviceUpdate?action=load&bookingId=" + bookingId + "&msg=updated";
         if (brid != null && !brid.isEmpty()) redirectUrl += "&bookedRoomId=" + brid;
         resp.sendRedirect(redirectUrl);

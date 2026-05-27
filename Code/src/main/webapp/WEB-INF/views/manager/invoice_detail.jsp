@@ -10,6 +10,11 @@
                 <li><span class="label">Mã hóa đơn</span><span class="value fw-bold">${invoice.code}</span></li>
                 <li><span class="label">Mã phiếu đặt</span><span class="value">${invoice.bookingCode}</span></li>
                 <li><span class="label">Khách hàng</span><span class="value">${invoice.customerName}</span></li>
+                <c:if test="${not empty customer}">
+                    <li><span class="label">Số CCCD</span><span class="value">${customer.idCard}</span></li>
+                    <li><span class="label">Số điện thoại</span><span class="value">${customer.phone}</span></li>
+                    <li><span class="label">Email</span><span class="value">${customer.email}</span></li>
+                </c:if>
                 <li><span class="label">NV lập</span><span class="value">${invoice.staffName}</span></li>
                 <li><span class="label">Ngày lập</span><span class="value"><fmt:formatDate value="${invoice.issueDate}" pattern="HH:mm dd/MM/yyyy"/></span></li>
                 <li><span class="label">Phương thức</span><span class="value"><span class="badge badge-info">${invoice.paymentMethod}</span></span></li>

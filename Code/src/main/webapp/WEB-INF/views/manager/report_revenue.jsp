@@ -11,8 +11,8 @@
     </form>
     <c:if test="${revenue != null}">
         <div class="stat-grid">
-            <div class="stat-card"><div class="stat-label">Tổng khách</div><div class="stat-value">${revenue.totalGuests}</div><div class="stat-desc">lượt khách</div></div>
-            <div class="stat-card green"><div class="stat-label">Tổng hóa đơn</div><div class="stat-value">${revenue.totalInvoices}</div><div class="stat-desc">hóa đơn</div></div>
+            <div class="stat-card"><div class="stat-label">Tổng lượt đặt</div><div class="stat-value">${revenue.totalBookings}</div><div class="stat-desc">phiếu đặt</div></div>
+            <div class="stat-card green"><div class="stat-label">Số phòng đã đặt</div><div class="stat-value">${revenue.rentedRoomsCount} / ${revenue.totalRoomsCount}</div><div class="stat-desc">phòng</div></div>
             <div class="stat-card cyan"><div class="stat-label">Doanh thu phòng</div><div class="stat-value"><fmt:formatNumber value="${revenue.roomRevenue}" pattern="#,##0"/>₫</div></div>
             <div class="stat-card orange"><div class="stat-label">Doanh thu DV</div><div class="stat-value"><fmt:formatNumber value="${revenue.serviceRevenue}" pattern="#,##0"/>₫</div></div>
         </div>
@@ -21,10 +21,17 @@
         </div>
     </c:if>
     <c:if test="${roomStats != null && !roomStats.isEmpty()}">
-        <div class="card"><div class="card-header"><h3>Công suất phòng</h3></div>
-            <div class="table-container"><table><thead><tr><th>Loại phòng</th><th>Tổng phòng</th><th>Đã cho thuê</th><th>Công suất</th></tr></thead><tbody>
-            <c:forEach var="rs" items="${roomStats}"><tr><td><strong>${rs.roomTypeName}</strong></td><td>${rs.totalRooms}</td><td>${rs.rentedRooms}</td>
-                <td><span class="badge ${rs.occupancyRate > 70 ? 'badge-success' : rs.occupancyRate > 40 ? 'badge-warning' : 'badge-danger'}">${rs.occupancyRate}%</span></td></tr></c:forEach>
+        <div class="card mb-3"><div class="card-header"><h3>Doanh thu theo phòng</h3></div>
+            <div class="table-container"><table><thead><tr><th>Số phòng</th><th>Loại phòng</th><th>Số ngày có khách ở</th><th>Tổng tiền thu được</th></tr></thead><tbody>
+            <c:forEach var="rs" items="${roomStats}"><tr><td><strong>${rs.roomNumber}</strong></td><td>${rs.roomTypeName}</td><td>${rs.occupiedDays} ngày</td>
+                <td class="fw-bold"><fmt:formatNumber value="${rs.totalRevenue}" pattern="#,##0"/>₫</td></tr></c:forEach>
+            </tbody></table></div></div>
+    </c:if>
+    <c:if test="${serviceStats != null && !serviceStats.isEmpty()}">
+        <div class="card"><div class="card-header"><h3>Doanh thu theo dịch vụ</h3></div>
+            <div class="table-container"><table><thead><tr><th>Tên dịch vụ</th><th>Danh mục</th><th>Đơn vị</th><th>Số lượt sử dụng</th><th>Số tiền thu được</th></tr></thead><tbody>
+            <c:forEach var="ss" items="${serviceStats}"><tr><td><strong>${ss.serviceName}</strong></td><td>${ss.category}</td><td>${ss.unit}</td><td><fmt:formatNumber value="${ss.totalQuantity}" pattern="#,##0.##"/></td>
+                <td class="fw-bold"><fmt:formatNumber value="${ss.totalRevenue}" pattern="#,##0"/>₫</td></tr></c:forEach>
             </tbody></table></div></div>
     </c:if>
 </main></div><script src="${pageContext.request.contextPath}/js/main.js"></script></body></html>

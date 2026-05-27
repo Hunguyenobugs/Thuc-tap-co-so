@@ -14,6 +14,7 @@ public class InvoiceServlet extends HttpServlet {
     private final BookingDAO bookingDAO = new BookingDAO();
     private final UsedServiceDAO usedServiceDAO = new UsedServiceDAO();
     private final BookedRoomDAO bookedRoomDAO = new BookedRoomDAO();
+    private final CustomerDAO customerDAO = new CustomerDAO();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -63,6 +64,13 @@ public class InvoiceServlet extends HttpServlet {
                     int id = Integer.parseInt(idStr);
                     Invoice inv = invoiceDAO.findById(id);
                     req.setAttribute("invoice", inv);
+                    
+                    // Lấy thông tin khách hàng đầy đủ
+                    com.hotel.model.Booking booking = bookingDAO.findById(inv.getBookingId());
+                    if (booking != null) {
+                        req.setAttribute("customer", customerDAO.findById(booking.getCustomerId()));
+                    }
+                    
                     if (inv.getBookedRoomId() != null) {
                         req.setAttribute("usedServices", usedServiceDAO.listByBookedRoom(inv.getBookedRoomId()));
                     } else {
@@ -106,6 +114,12 @@ public class InvoiceServlet extends HttpServlet {
                     merged.setTotalAmount(tTotal);
                     merged.setPaidAmount(pTotal);
 
+                    // Lấy thông tin khách hàng cho hóa đơn gộp
+                    com.hotel.model.Booking booking = bookingDAO.findById(bookingId);
+                    if (booking != null) {
+                        req.setAttribute("customer", customerDAO.findById(booking.getCustomerId()));
+                    }
+ 
                     req.setAttribute("invoice", merged);
                     req.setAttribute("usedServices", usedServiceDAO.listByBooking(bookingId));
                     req.setAttribute("bookedRooms", bookedRoomDAO.findByBookingId(bookingId));

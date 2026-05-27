@@ -2,6 +2,8 @@ SET FOREIGN_KEY_CHECKS = 0;
 
 DROP VIEW IF EXISTS v_revenue_stat;
 DROP VIEW IF EXISTS v_room_stat;
+DROP VIEW IF EXISTS v_room_revenue_stat;
+DROP VIEW IF EXISTS v_service_revenue_stat;
 
 DROP TABLE IF EXISTS tbl_invoice;
 DROP TABLE IF EXISTS tbl_used_service;
@@ -236,8 +238,9 @@ CREATE TABLE tbl_invoice (
 CREATE VIEW v_revenue_stat AS
 SELECT
     DATE_FORMAT(i.issue_date, '%Y-%m')                          AS period,
-    COUNT(DISTINCT b.customer_id)                               AS total_guests,
-    COUNT(i.id)                                                 AS total_invoices,
+    COUNT(DISTINCT i.booking_id)                                AS total_bookings,
+    COUNT(DISTINCT br.room_id)                                  AS rented_rooms_count,
+    (SELECT COUNT(*) FROM tbl_room)                             AS total_rooms_count,
     SUM(i.room_total)                                           AS room_revenue,
     SUM(i.service_total)                                        AS service_revenue,
     SUM(i.total_amount)                                         AS total_revenue
@@ -247,26 +250,31 @@ FROM tbl_invoice i
 WHERE b.status IN ('Đang lưu trú', 'Đã trả phòng')
 GROUP BY DATE_FORMAT(i.issue_date, '%Y-%m');
 
-CREATE VIEW v_room_stat AS
+CREATE VIEW v_room_revenue_stat AS
 SELECT
-    DATE_FORMAT(br.check_in, '%Y-%m')   AS period,
-    rt.name                             AS room_type_name,
-    (SELECT COUNT(*) FROM tbl_room r2 WHERE r2.room_type_id = rt.id) AS total_rooms,
-    COUNT(DISTINCT CASE
-        WHEN b.status IN ('Đang lưu trú','Đã trả phòng')
-        THEN br.room_id END)            AS rented_rooms,
-    ROUND(
-        COUNT(DISTINCT CASE
-            WHEN b.status IN ('Đang lưu trú','Đã trả phòng')
-            THEN br.room_id END)
-        * 100.0
-        / NULLIF((SELECT COUNT(*) FROM tbl_room r2 WHERE r2.room_type_id = rt.id), 0)
-    , 2)                                AS occupancy_rate
-FROM tbl_room_type rt
-    LEFT JOIN tbl_room r            ON r.room_type_id = rt.id
-    LEFT JOIN tbl_booked_room br    ON br.room_id = r.id
-    LEFT JOIN tbl_booking b         ON br.booking_id = b.id
-WHERE br.check_in IS NOT NULL
-GROUP BY DATE_FORMAT(br.check_in, '%Y-%m'), rt.name, rt.id;
+    DATE_FORMAT(i.issue_date, '%Y-%m')                          AS period,
+    r.room_number                                               AS room_number,
+    rt.name                                                     AS room_type_name,
+    SUM(DATEDIFF(br.check_out, br.check_in))                    AS occupied_days,
+    SUM(i.room_total)                                           AS total_revenue
+FROM tbl_invoice i
+    JOIN tbl_booked_room br ON i.booked_room_id = br.id
+    JOIN tbl_room r         ON br.room_id = r.id
+    JOIN tbl_room_type rt   ON r.room_type_id = rt.id
+GROUP BY DATE_FORMAT(i.issue_date, '%Y-%m'), r.room_number, rt.name;
+
+CREATE VIEW v_service_revenue_stat AS
+SELECT
+    DATE_FORMAT(us.used_date, '%Y-%m')                          AS period,
+    s.name                                                      AS service_name,
+    s.category                                                  AS category,
+    s.unit                                                      AS unit,
+    SUM(us.quantity)                                            AS total_quantity,
+    SUM(us.quantity * us.unit_price)                            AS total_revenue
+FROM tbl_used_service us
+    JOIN tbl_service s      ON us.service_id = s.id
+    JOIN tbl_booking b      ON us.booking_id = b.id
+WHERE b.status IN ('Đang lưu trú', 'Đã trả phòng')
+GROUP BY DATE_FORMAT(us.used_date, '%Y-%m'), s.name, s.category, s.unit;
 
 SET FOREIGN_KEY_CHECKS = 1;

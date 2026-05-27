@@ -23,6 +23,12 @@
 <main class="main-content fade-in">
     <div class="topbar"><div><h1>Cập nhật <span>dịch vụ</span></h1><div class="breadcrumb">Hiển thị theo phiếu đặt</div></div></div>
 
+    <c:if test="${param.error == 'invalid_status'}">
+        <div class="alert alert-danger" style="background:#ff4d6d22;border:1.5px solid #ff4d6d;color:#ff4d6d;padding:12px 18px;border-radius:8px;margin-bottom:16px;">
+            <strong>Không thể cập nhật dịch vụ cho phiếu đặt phòng đã trả phòng hoặc đã hủy.</strong>
+        </div>
+    </c:if>
+
     <form class="search-bar" method="get" action="${pageContext.request.contextPath}/staff/serviceUpdate">
         <input type="hidden" name="action" value="search">
         <input type="text" name="q" class="form-control" placeholder="Nhập mã phiếu hoặc tên khách..." value="${keyword}">
