@@ -47,13 +47,39 @@
                             <tr>
                                 <td><strong>${br.roomNumber}</strong></td>
                                 <td>${br.roomTypeName}</td>
-                                <td><fmt:formatDate value="${br.checkIn}" pattern="HH:mm dd/MM/yyyy"/></td>
-                                <td><fmt:formatDate value="${br.checkOut}" pattern="HH:mm dd/MM/yyyy"/></td>
+                                <td>
+                                    <fmt:formatDate value="${br.checkIn}" pattern="HH:mm dd/MM/yyyy"/>
+                                    <c:if test="${not empty br.actualCheckin}">
+                                        <div style="font-size:11px;color:#2ec4b6;margin-top:4px;">
+                                            Thực tế: <fmt:formatDate value="${br.actualCheckin}" pattern="HH:mm dd/MM/yyyy"/>
+                                        </div>
+                                    </c:if>
+                                </td>
+                                <td>
+                                    <fmt:formatDate value="${br.checkOut}" pattern="HH:mm dd/MM/yyyy"/>
+                                    <c:if test="${not empty br.actualCheckout}">
+                                        <div style="font-size:11px;color:#2ec4b6;margin-top:4px;">
+                                            Thực tế: <fmt:formatDate value="${br.actualCheckout}" pattern="HH:mm dd/MM/yyyy"/>
+                                        </div>
+                                    </c:if>
+                                </td>
                                 <td>
                                     <c:choose>
                                         <c:when test="${br.roomStatus=='Chờ check in'}"><span class="badge badge-warning">${br.roomStatus}</span></c:when>
                                         <c:when test="${br.roomStatus=='Đã check-in'}"><span class="badge badge-primary">${br.roomStatus}</span></c:when>
-                                        <c:when test="${br.roomStatus=='Đã check-out'}"><span class="badge badge-success">${br.roomStatus}</span></c:when>
+                                        <c:when test="${br.roomStatus=='Đã check-out'}">
+                                            <span class="badge badge-success">${br.roomStatus}</span>
+                                            <c:if test="${not empty br.invoice}">
+                                                <div style="font-size:11px;margin-top:6px;text-align:left;line-height:1.4;">
+                                                    <span style="font-weight:bold;color:var(--accent);display:block;">Đã thanh toán: <fmt:formatNumber value="${br.invoice.totalAmount}" pattern="#,##0"/>₫</span>
+                                                    <span class="text-muted" style="font-size:10px;display:block;">
+                                                        (Phòng: <fmt:formatNumber value="${br.invoice.roomTotal}" pattern="#,##0"/>₫ 
+                                                        • DV: <fmt:formatNumber value="${br.invoice.serviceTotal}" pattern="#,##0"/>₫ 
+                                                        • Phụ thu: <fmt:formatNumber value="${br.invoice.surcharge}" pattern="#,##0"/>₫)
+                                                    </span>
+                                                </div>
+                                            </c:if>
+                                        </c:when>
                                         <c:when test="${br.roomStatus=='Đã hủy'}"><span class="badge badge-danger">${br.roomStatus}</span></c:when>
                                         <c:otherwise><span class="badge">${br.roomStatus}</span></c:otherwise>
                                     </c:choose>

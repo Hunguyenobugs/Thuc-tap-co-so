@@ -20,6 +20,7 @@ public class BookedRoom {
 
     private String roomNumber;
     private String roomTypeName;
+    private Invoice invoice;
 
     public BookedRoom() {}
 
@@ -51,4 +52,6 @@ public class BookedRoom {
     public void setRoomNumber(String roomNumber) { this.roomNumber = roomNumber; }
     public String getRoomTypeName() { return roomTypeName; }
     public void setRoomTypeName(String roomTypeName) { this.roomTypeName = roomTypeName; }
+    public Invoice getInvoice() { return invoice; }
+    public void setInvoice(Invoice invoice) { this.invoice = invoice; }
 }
