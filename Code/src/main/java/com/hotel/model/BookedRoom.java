@@ -21,6 +21,7 @@ public class BookedRoom {
     private String roomNumber;
     private String roomTypeName;
     private Invoice invoice;
+    private java.util.List<UsedService> services;
 
     public BookedRoom() {}
 
@@ -54,4 +55,6 @@ public class BookedRoom {
     public void setRoomTypeName(String roomTypeName) { this.roomTypeName = roomTypeName; }
     public Invoice getInvoice() { return invoice; }
     public void setInvoice(Invoice invoice) { this.invoice = invoice; }
+    public java.util.List<UsedService> getServices() { return services; }
+    public void setServices(java.util.List<UsedService> services) { this.services = services; }
 }
