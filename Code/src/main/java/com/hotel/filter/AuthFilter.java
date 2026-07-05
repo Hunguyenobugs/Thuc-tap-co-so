@@ -16,7 +16,6 @@ public class AuthFilter implements Filter {
         HttpSession session = req.getSession(false);
         User user = (session != null) ? (User) session.getAttribute("currentUser") : null;
 
-        String uri = req.getRequestURI();
         String path = req.getServletPath();
 
         // Cho phép truy cập static resources và các đường dẫn công khai
@@ -32,19 +31,19 @@ public class AuthFilter implements Filter {
             return;
         }
 
-
         String role = user.getRole();
 
-        if (uri.contains("/admin/") && !"ADMIN".equals(role)) {
-            res.sendRedirect(req.getContextPath() + "/auth?action=loginPage&error=unauthorized");
+        // Phân quyền nghiêm ngặt: mỗi role chỉ truy cập đúng đường dẫn của mình
+        if (path.startsWith("/admin/") && !"ADMIN".equals(role)) {
+            res.sendRedirect(req.getContextPath() + "/" + role.toLowerCase() + "/home");
             return;
         }
-        if (uri.contains("/manager/") && !"MANAGER".equals(role) && !"ADMIN".equals(role)) {
-            res.sendRedirect(req.getContextPath() + "/auth?action=loginPage&error=unauthorized");
+        if (path.startsWith("/manager/") && !"MANAGER".equals(role)) {
+            res.sendRedirect(req.getContextPath() + "/" + role.toLowerCase() + "/home");
             return;
         }
-        if (uri.contains("/staff/") && !"STAFF".equals(role) && !"MANAGER".equals(role) && !"ADMIN".equals(role)) {
-            res.sendRedirect(req.getContextPath() + "/auth?action=loginPage&error=unauthorized");
+        if (path.startsWith("/staff/") && !"STAFF".equals(role)) {
+            res.sendRedirect(req.getContextPath() + "/" + role.toLowerCase() + "/home");
             return;
         }
 

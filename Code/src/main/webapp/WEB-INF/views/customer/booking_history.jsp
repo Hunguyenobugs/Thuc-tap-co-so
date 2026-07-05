@@ -190,10 +190,7 @@
                                     <div style="display:flex; gap: 8px; align-items:center;">
                                         <button type="button" class="btn btn-info btn-sm" style="padding: 2px 8px; font-size: 11px;" onclick="showDetailModal(${br.id})">Xem chi tiết</button>
                                         <c:if test="${br.roomStatus=='Chờ check in'}">
-                                            <form method="post" action="${pageContext.request.contextPath}/onlineCancel" style="display:inline; margin: 0;" onsubmit="return confirm('Bạn có chắc chắn muốn hủy phòng ${br.roomNumber} này?')">
-                                                <input type="hidden" name="bookedRoomId" value="${br.id}">
-                                                <button type="submit" class="btn btn-danger btn-sm" style="padding: 2px 8px; font-size: 11px;">Hủy phòng</button>
-                                            </form>
+                                            <button type="button" class="btn btn-danger btn-sm" style="padding: 2px 8px; font-size: 11px;" onclick="showCancelRoomModal(${br.id}, '${br.roomNumber}')">Hủy phòng</button>
                                         </c:if>
                                     </div>
                                 </td>
@@ -326,6 +323,27 @@
     </c:forEach>
 </c:forEach>
 
+<!-- Modal xác nhận hủy phòng (theo theme) -->
+<div id="cancelRoomModal" class="custom-modal">
+    <div class="custom-modal-content" style="max-width:450px;">
+        <div class="custom-modal-header">
+            <h3 class="custom-modal-title">⚠️ Xác nhận hủy phòng</h3>
+            <button class="custom-modal-close" onclick="closeCancelRoomModal()">&times;</button>
+        </div>
+        <div style="margin-bottom:20px;">
+            <div class="alert alert-warning" style="margin:0;">Bạn có chắc chắn muốn hủy phòng <strong id="cancelRoomNumber"></strong>?</div>
+            <p style="margin-top:12px; font-size:0.9rem; color:var(--text-secondary);">Hành động này không thể hoàn tác.</p>
+        </div>
+        <form id="cancelRoomForm" method="post" action="${pageContext.request.contextPath}/onlineCancel">
+            <input type="hidden" id="cancelBookedRoomId" name="bookedRoomId" value="">
+            <div class="btn-group" style="justify-content:flex-end;">
+                <button type="button" class="btn btn-outline btn-sm" onclick="closeCancelRoomModal()">Quay lại</button>
+                <button type="submit" class="btn btn-danger btn-sm">Xác nhận hủy</button>
+            </div>
+        </form>
+    </div>
+</div>
+
 <footer class="customer-footer">© 2025 ${applicationScope.hotelInfo.name}</footer>
 <script src="${pageContext.request.contextPath}/js/main.js"></script>
 <script>
@@ -343,6 +361,21 @@ function closeDetailModal(id) {
         modal.classList.remove('show');
         document.body.style.overflow = '';
     }
+}
+
+// --- Hủy phòng modal ---
+function showCancelRoomModal(bookedRoomId, roomNumber) {
+    document.getElementById('cancelBookedRoomId').value = bookedRoomId;
+    document.getElementById('cancelRoomNumber').textContent = roomNumber;
+    var modal = document.getElementById('cancelRoomModal');
+    modal.classList.add('show');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeCancelRoomModal() {
+    var modal = document.getElementById('cancelRoomModal');
+    modal.classList.remove('show');
+    document.body.style.overflow = '';
 }
 
 window.onclick = function(event) {

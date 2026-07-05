@@ -28,5 +28,6 @@
         </form>
     </div>
 </section>
-<footer class="customer-footer">© 2025 Grand Lotus Hotel</footer>
+<footer class="customer-footer">© 2025 ${applicationScope.hotelInfo.name}</footer>
+<script src="${pageContext.request.contextPath}/js/main.js"></script>
 </body></html>
